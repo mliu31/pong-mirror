@@ -3,11 +3,12 @@
   "private": true,
   "module": "index.ts",
   "workspaces": [
-    "frontend"
+    "frontend",
+    "backend"
   ],
   "scripts": {
-    "lint": "bun -F carpooling-frontend lint",
-    "precommit": "lint-staged && bun -F carpooling-frontend precommit",
+    "lint": "bun -F carpooling-frontend lint && bun -F carpooling-backend lint",
+    "precommit": "lint-staged && bun -F carpooling-frontend precommit && bun -F carpooling-backend precommit",
     "prepare": "husky"
   },
   "devDependencies": {
