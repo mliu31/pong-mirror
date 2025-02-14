@@ -1,24 +1,52 @@
-# Carpooling
+# Project Code Name "Carpooling"
 
-![Team Photo](Insert a Team Photo URL here)
-[*how?*](https://help.github.com/articles/about-readmes/#relative-links-and-image-paths-in-readme-files)
+![Team Photo](https://github.com/user-attachments/assets/e8ff7122-5bea-4236-9e76-0320ec9af3c5)
 
-TODO: short project description, some sample screenshots or mockups
+<!-- TODO: continue to update short project description, some sample screenshots or mockups -->
+
+Our team is developing an application to support Dartmouth's pong culture.
+
+This addresses the competitive needs of the sport (designing a ranking system to help match players at the same skill level) as well as its social aspects (helping players quickly find partners and track their games).
 
 ## Architecture
 
-TODO:  descriptions of code organization and tools and libraries used
+<!-- TODO: continue to update descriptions of code organization and tools and libraries used -->
+
+We are using a ~~MERN~~ MERB stack: MongoDB, Express, React, and Bun.
+
+This repository contains a TypeScript monorepo which mirrors the structure of the application.
+
+### Frontend
+The [frontend](./frontend) directory contains source code and instructions to build, run, and deploy a static site.
+
+This site is built with Vite (using Bun as a package manager) and React.
+
+### Backend
+The [backend](./backend) directory contains source code and instructions to build, run, and deploy a server application.
+
+This server is built with Express, and connects to a MongoDB database.
 
 ## Setup
 
-TODO: how to get the project dev environment up and running, npm install etc
+Install [`bun`](https://bun.sh), then refer to the [frontend](./frontend) and [backend](./backend) directories for specific instructions on how to build, run, and deploy the client and server applications.
 
-## Deployment
+<!-- ## Deployment -->
 
-TODO: how to deploy the project
+<!-- TODO: how to deploy the project -->
 
 ## Authors
 
-TODO: list of authors
+| Username    | Name              |
+| ----------- | ----------------- |
+| @jrmann100  | Jordan Mann       |
+| @mliu31     | Megan Liu         |
+| @JetWavs    | Teddy Wavle       |
+| @brianng882 | Brian Chun Yin Ng |
+| @etatishev  | Liza Tatishev     |
+| @Ebop14     | Ethan Child       |
 
 ## Acknowledgments
+
+We are thankful to Professor Vasanta Lakshmi Kommineni (@kvasanta) for her guidance and support throughout the project.
+
+This project was developed with assistance from generative AI models by OpenAI, including GPT-4o, o1, and o3-mini.
