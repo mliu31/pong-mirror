@@ -1,4 +1,4 @@
-# Frontend
+# Welcome to your Expo app 👋
 
 We used Expo due to ease of testing. Under the hood, it's still react native.
 
