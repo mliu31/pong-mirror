@@ -6,7 +6,7 @@
 1. Install [bun](https://bun.sh/)
 2. Clone this repo and `bun install`
 3. `cd backend`
-4. `cp .env.example .env` and fill in your environment variables.
+4. `cp .env.sample .env` and fill in your environment variables.
 5. `bun run dev` to start a local live server.
 
 ### Scripts
@@ -22,3 +22,4 @@
 | ------------- | ------------------- | -------------------------- |
 | `MONGODB_URI` | Required            | MongoDB connection URI.    |
 | `PORT`        | `3000`              | Port to run the server on. |
+
