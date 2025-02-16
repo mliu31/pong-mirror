@@ -45,6 +45,15 @@ export default function TabLayout() {
           )
         }}
       />
+      <Tabs.Screen
+        name="game"
+        options={{
+          title: 'Game',
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={28} name="plus" color={color} />
+          )
+        }}
+      />
     </Tabs>
   );
 }
