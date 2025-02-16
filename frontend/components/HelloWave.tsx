@@ -35,7 +35,7 @@ export function HelloWave() {
   );
 }
 
-createGame().then((res) => console.log(res));
+// createGame().then((res) => console.log(res));
 
 const styles = StyleSheet.create({
   text: {
