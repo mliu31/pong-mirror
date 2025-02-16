@@ -1,10 +1,13 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import env from './env';
+import cors from 'cors';
 
 mongoose.connect(env.MONGODB_URI);
 
 const app = express();
+
+app.use(cors());
 
 app.get('/', async (_, res) => {
   res.send(
