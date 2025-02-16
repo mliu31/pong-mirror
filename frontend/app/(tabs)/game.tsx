@@ -1,13 +1,6 @@
-import { StyleSheet, Image, Platform, Button } from 'react-native';
+import { StyleSheet, Button } from 'react-native';
 
-import { Collapsible } from '@/components/Collapsible';
-import { ExternalLink } from '@/components/ExternalLink';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-
-import logo from '@/assets/images/react-logo.png';
 
 export default function TabTwoScreen() {
   return (
