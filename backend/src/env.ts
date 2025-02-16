@@ -1,11 +1,12 @@
-const REQUIRED_ENVIRONMENT_VARIABLES = ['MONGODB_URI'];
+const REQUIRED_ENVIRONMENT_VARIABLES = ['MONGODB_URI'] as const;
 const OPTIONAL_ENVIRONMENT_VARIABLES = {
   PORT: '3000'
 };
 
-type RequiredEnvironmentVariables = {
-  [K in (typeof REQUIRED_ENVIRONMENT_VARIABLES)[number]]: string;
-};
+type RequiredEnvironmentVariables = Record<
+  (typeof REQUIRED_ENVIRONMENT_VARIABLES)[number],
+  string
+>;
 
 type OptionalEnvironmentVariables = {
   [K in keyof typeof OPTIONAL_ENVIRONMENT_VARIABLES]:
@@ -20,7 +21,7 @@ export default {
     if (!process.env[key]) {
       throw new Error(`Environment variable ${key} is not set`);
     }
-    acc[key] = process.env[key]!;
+    acc[key] = process.env[key];
     return acc;
   }, {} as RequiredEnvironmentVariables),
   ...Object.entries(OPTIONAL_ENVIRONMENT_VARIABLES).reduce(
