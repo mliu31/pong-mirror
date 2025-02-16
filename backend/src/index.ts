@@ -17,6 +17,10 @@ app.get('/', async (_, res) => {
   );
 });
 
+app.post('/games', async (_, res) => {
+  res.json({ id: 'gameidwouldgohere' });
+});
+
 app.listen(env.PORT, () => {
   console.log(`Example app listening on port ${env.PORT}`);
 });
