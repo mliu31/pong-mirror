@@ -9,7 +9,6 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { ThemedText } from '@/components/ThemedText';
-import { createGame } from '@/api/games';
 
 export function HelloWave() {
   const rotationAnimation = useSharedValue(0);
@@ -34,8 +33,6 @@ export function HelloWave() {
     </Animated.View>
   );
 }
-
-// createGame().then((res) => console.log(res));
 
 const styles = StyleSheet.create({
   text: {
