@@ -40,17 +40,19 @@ export default function WinnerScreen(){
               // both winner's ELO
               // both loser's ELO 
           <TouchableHighlight onPress={() => navigation.navigate('')}> 
+
           <View style={[styles.playerViews, { backgroundColor: '#D2042D' }]}>
               <ThemedText>Ethan and Jordan</ThemedText>
-            </View>
+          </View>
+
           </TouchableHighlight>  
             
-    
-            <View style={{ flexDirection: 'column', alignItems: 'center' }}>
-              <ThemedText>Select Winner</ThemedText>
-            </View>
-          <TouchableHighlight>
-          <View style={[styles.playerViews, { backgroundColor: '#0000FF' }]}>
+          <View style={{ flexDirection: 'column', alignItems: 'center' }}>
+            <ThemedText>Select Winner</ThemedText>
+          </View>
+
+          <TouchableHighlight onPress={() => navigation.navigate('')}>
+            <View style={[styles.playerViews, { backgroundColor: '#0000FF' }]}>
               <ThemedText>Brian and Megan</ThemedText>
             </View>
           </TouchableHighlight>

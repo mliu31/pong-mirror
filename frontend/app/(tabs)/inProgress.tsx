@@ -39,7 +39,7 @@ export default function InProgress() {
           <ThemedText>Ethan and Jordan</ThemedText>
         </View>
 
-        <View style={{ flexDirection: 'column', alignItems: 'center' }}>
+        <View style={{ flexDirection: 'column', alignItems: 'center'}}>
           <Button
             title="Finish Game"
             onPress={() => navigation.navigate('winner')}
