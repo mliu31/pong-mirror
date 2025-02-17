@@ -1,15 +1,16 @@
-import { Text, View } from 'react-native';
-import { useLocalSearchParams, useGlobalSearchParams } from 'expo-router';
+import { Text } from 'react-native';
+import { router, useLocalSearchParams } from 'expo-router';
+import { ThemedView } from '@/components/ThemedView';
+import { ThemedText } from '@/components/ThemedText';
 
 export default function Route() {
-  const glob = useGlobalSearchParams();
   const local = useLocalSearchParams();
 
-  console.log('Local:', local.user, 'Global:', glob.user);
-
   return (
-    <View>
-      <Text>User: {local.user}</Text>
-    </View>
+    <ThemedView>
+      <ThemedText>
+        This page will display information for the game with ID: {local.game}
+      </ThemedText>
+    </ThemedView>
   );
 }
