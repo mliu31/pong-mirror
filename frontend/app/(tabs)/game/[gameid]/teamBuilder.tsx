@@ -8,10 +8,25 @@ import { getGame } from '@/api/games';
 export default function Route() {
   const local = useLocalSearchParams();
 
-  const [gameData, setGameData] = useState(null);
+  type GameData = {
+    _id: string;
+    players: {
+      player: {
+        _id: string;
+        name: string;
+        email: string;
+      }; // ObjectId as string
+      team: 'RED' | 'BLUE' | null;
+    }[];
+  };
+
+  // const [gameData, setGameData] = useState(null);
+  const [gameData, setGameData] = useState<GameData | null>(null);
 
   useEffect(() => {
-    getGame(local.gameid as string).then((res) => setGameData(res.data));
+    getGame(local.gameid as string).then((res) =>
+      setGameData(res.data as GameData)
+    );
   }, []);
 
   return (
@@ -22,9 +37,17 @@ export default function Route() {
       {gameData === null ? (
         <ThemedText>Loading</ThemedText>
       ) : (
-        <ThemedText>{JSON.stringify(gameData)}</ThemedText>
+        <>
+          <ThemedText>Game Data:</ThemedText>
+          <ThemedText>{JSON.stringify(gameData)}</ThemedText>
+          {console.log(gameData)}
+          {gameData.players.map(({ player, team }) => (
+            <ThemedText key={player._id}>
+              Player ID: {player.name} - Team: {team ?? 'Unassigned'}
+            </ThemedText>
+          ))}
+        </>
       )}
-      <ThemedText></ThemedText>
     </ThemedView>
   );
 }
