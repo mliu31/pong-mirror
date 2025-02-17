@@ -31,16 +31,12 @@ export default function Route() {
 
   return (
     <ThemedView>
-      <ThemedText>
-        This page will display information for the game with ID: {local.gameid}
-      </ThemedText>
       {gameData === null ? (
         <ThemedText>Loading</ThemedText>
       ) : (
         <>
-          <ThemedText>Game Data:</ThemedText>
-          <ThemedText>{JSON.stringify(gameData)}</ThemedText>
-          {console.log(gameData)}
+          <ThemedText>Game ID: {local.gameid}</ThemedText>
+
           {gameData.players.map(({ player, team }) => (
             <ThemedText key={player._id}>
               Player ID: {player.name} - Team: {team ?? 'Unassigned'}
