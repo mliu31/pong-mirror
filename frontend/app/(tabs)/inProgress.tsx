@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Button, View, } from 'react-native';
+import { StyleSheet, Button, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import winnerScreen from './winner';
@@ -28,18 +28,20 @@ export default function InProgress() {
     <SafeAreaProvider>
       <View>
         <View style={styles.fixedButton}></View>
-            <Button title="Back" onPress={() => navigation.navigate('home')}></Button>
+        <Button
+          title="Back"
+          onPress={() => navigation.navigate('home')}
+        ></Button>
 
-          <View
+        <View
           style={{ flexDirection: 'column', justifyContent: 'space-between' }}
-        >
-      </View>
-        
+        ></View>
+
         <View style={[styles.playerViews, { backgroundColor: '#D2042D' }]}>
           <ThemedText>Ethan and Jordan</ThemedText>
         </View>
 
-        <View style={{ flexDirection: 'column', alignItems: 'center'}}>
+        <View style={{ flexDirection: 'column', alignItems: 'center' }}>
           <Button
             title="Finish Game"
             onPress={() => navigation.navigate('winner')}
@@ -53,5 +55,3 @@ export default function InProgress() {
     </SafeAreaProvider>
   );
 }
-
-

@@ -1,5 +1,13 @@
 import React from 'react';
-import { StyleSheet, Image, Platform, Button, View, TouchableHighlight, Touchable, } from 'react-native';
+import {
+  StyleSheet,
+  Image,
+  Platform,
+  Button,
+  View,
+  TouchableHighlight,
+  Touchable
+} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { ThemedText } from '@/components/ThemedText';
@@ -22,44 +30,35 @@ const styles = StyleSheet.create({
   }
 });
 
-
-export default function WinnerScreen(){
-
-      return (
-        <SafeAreaProvider>
-          <View>
-            <View style={styles.fixedButton}></View>
-                <Button title="Back" onPress={() => navigation.navigate('inProgress')}></Button>
-              <View
-              style={{ flexDirection: 'column', justifyContent: 'space-between' }}
-            >
-          </View>
-          // this has to:
-            // change the screen
-            // send an API request to call a server-side function that updates:
-              // both winner's ELO
-              // both loser's ELO 
-          <TouchableHighlight onPress={() => navigation.navigate('')}> 
-
+export default function WinnerScreen() {
+  return (
+    <SafeAreaProvider>
+      <View>
+        <View style={styles.fixedButton}></View>
+        <Button
+          title="Back"
+          onPress={() => navigation.navigate('inProgress')}
+        ></Button>
+        <View
+          style={{ flexDirection: 'column', justifyContent: 'space-between' }}
+        ></View>
+        // this has to: // change the screen // send an API request to call a
+        server-side function that updates: // both winner's ELO // both loser's
+        ELO
+        <TouchableHighlight onPress={() => navigation.navigate('')}>
           <View style={[styles.playerViews, { backgroundColor: '#D2042D' }]}>
-              <ThemedText>Ethan and Jordan</ThemedText>
+            <ThemedText>Ethan and Jordan</ThemedText>
           </View>
-
-          </TouchableHighlight>  
-            
-          <View style={{ flexDirection: 'column', alignItems: 'center' }}>
-            <ThemedText>Select Winner</ThemedText>
+        </TouchableHighlight>
+        <View style={{ flexDirection: 'column', alignItems: 'center' }}>
+          <ThemedText>Select Winner</ThemedText>
+        </View>
+        <TouchableHighlight onPress={() => navigation.navigate('')}>
+          <View style={[styles.playerViews, { backgroundColor: '#0000FF' }]}>
+            <ThemedText>Brian and Megan</ThemedText>
           </View>
-
-          <TouchableHighlight onPress={() => navigation.navigate('')}>
-            <View style={[styles.playerViews, { backgroundColor: '#0000FF' }]}>
-              <ThemedText>Brian and Megan</ThemedText>
-            </View>
-          </TouchableHighlight>
-            
-          </View>
-        </SafeAreaProvider>
-      );
-      
-    
+        </TouchableHighlight>
+      </View>
+    </SafeAreaProvider>
+  );
 }
