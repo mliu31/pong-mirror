@@ -1,9 +1,10 @@
-import { Button, Text, View, StyleSheet } from 'react-native';
+import { Button, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { useEffect, useState } from 'react';
 import { getGame } from '@/api/games';
+import TeamChoiceButtons from './TeamChoiceButtons';
 
 export default function Route() {
   const local = useLocalSearchParams();
@@ -20,7 +21,6 @@ export default function Route() {
     }[];
   }
 
-  // const [gameData, setGameData] = useState(null);
   const [gameData, setGameData] = useState<GameData | null>(null);
 
   useEffect(() => {
@@ -40,18 +40,7 @@ export default function Route() {
           {gameData.players.map(({ player, team }) => (
             <ThemedText key={player._id}>
               Player: {player.name} - Team: {team ?? 'Unassigned'}
-              <View style={styles.fixToText}>
-                <Button
-                  title="red team"
-                  onPress={() => console.log('red team pressed')}
-                  color="red"
-                />
-                <Button
-                  title="blue team"
-                  onPress={() => console.log('blue team pressed')}
-                  color="blue"
-                />
-              </View>
+              <TeamChoiceButtons />
             </ThemedText>
           ))}
         </>
@@ -59,10 +48,3 @@ export default function Route() {
     </ThemedView>
   );
 }
-
-const styles = StyleSheet.create({
-  fixToText: {
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  }
-});
