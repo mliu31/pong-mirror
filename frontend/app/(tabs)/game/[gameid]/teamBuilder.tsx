@@ -1,4 +1,4 @@
-import { Text } from 'react-native';
+import { Button, Text, View, StyleSheet } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
@@ -39,7 +39,19 @@ export default function Route() {
 
           {gameData.players.map(({ player, team }) => (
             <ThemedText key={player._id}>
-              Player ID: {player.name} - Team: {team ?? 'Unassigned'}
+              Player: {player.name} - Team: {team ?? 'Unassigned'}
+              <View style={styles.fixToText}>
+                <Button
+                  title="red team"
+                  onPress={() => console.log('red team pressed')}
+                  color="red"
+                />
+                <Button
+                  title="blue team"
+                  onPress={() => console.log('blue team pressed')}
+                  color="blue"
+                />
+              </View>
             </ThemedText>
           ))}
         </>
@@ -47,3 +59,10 @@ export default function Route() {
     </ThemedView>
   );
 }
+
+const styles = StyleSheet.create({
+  fixToText: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  }
+});
