@@ -22,7 +22,7 @@ export default function Route() {
       {gameData === null ? (
         <ThemedText>Loading</ThemedText>
       ) : (
-        <ThemedText>{gameData}</ThemedText>
+        <ThemedText>{JSON.stringify(gameData)}</ThemedText>
       )}
       <ThemedText></ThemedText>
     </ThemedView>
