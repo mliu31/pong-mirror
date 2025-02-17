@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { createGame } from '@/api/games';
 import { useRouter } from 'expo-router';
 
-export default function TabTwoScreen() {
+export default function GameLandingScreen() {
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const router = useRouter();
 
