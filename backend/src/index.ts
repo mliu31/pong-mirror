@@ -5,7 +5,7 @@ import cors from 'cors';
 import Game from './models/Game';
 import Player from './models/Player';
 
-Player;
+void Player;
 
 mongoose.connect(env.MONGODB_URI);
 

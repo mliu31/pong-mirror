@@ -8,7 +8,7 @@ import { getGame } from '@/api/games';
 export default function Route() {
   const local = useLocalSearchParams();
 
-  type GameData = {
+  interface GameData {
     _id: string;
     players: {
       player: {
@@ -18,7 +18,7 @@ export default function Route() {
       }; // ObjectId as string
       team: 'RED' | 'BLUE' | null;
     }[];
-  };
+  }
 
   // const [gameData, setGameData] = useState(null);
   const [gameData, setGameData] = useState<GameData | null>(null);
