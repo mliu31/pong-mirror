@@ -3,6 +3,9 @@ import mongoose from 'mongoose';
 import env from './env';
 import cors from 'cors';
 import Game from './models/Game';
+import Player from './models/Player';
+
+void Player;
 
 mongoose.connect(env.MONGODB_URI);
 
@@ -21,6 +24,13 @@ app.get('/', async (_, res) => {
 app.post('/games', async (_, res) => {
   const game = await Game.create({ players: [] }); // TODO: the logged in user should be added to the players array
   res.json({ id: game._id });
+});
+
+app.get('/games/:gameid', async (req, res) => {
+  const game = await Game.findById(req.params.gameid).populate(
+    'players.player'
+  );
+  res.json(game);
 });
 
 app.listen(env.PORT, () => {

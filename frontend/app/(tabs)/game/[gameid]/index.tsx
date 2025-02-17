@@ -9,7 +9,7 @@ export default function Route() {
   return (
     <ThemedView>
       <ThemedText>
-        This page will display information for the game with ID: {local.game}
+        This page will display information for the game with ID: {local.gameid}
       </ThemedText>
     </ThemedView>
   );
