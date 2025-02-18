@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Image, Platform, Button, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import winnerScreen from './(tabs)/winner';
+import winnerScreen from './(tabs)/game/[gameid]/winner';
 import { ThemedText } from '@/components/ThemedText';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 

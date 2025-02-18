@@ -1,18 +1,13 @@
 import React from 'react';
-import {
-  StyleSheet,
-  Image,
-  Platform,
-  Button,
-  View,
-  TouchableHighlight,
-  Touchable
-} from 'react-native';
+import { StyleSheet, Button, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import winnerScreen from './winner';
 import { ThemedText } from '@/components/ThemedText';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Dimensions } from 'react-native';
+import { useRouter } from 'expo-router';
+
 
 const styles = StyleSheet.create({
   playerViews: {
@@ -30,34 +25,35 @@ const styles = StyleSheet.create({
   }
 });
 
-export default function WinnerScreen() {
+export default function InProgress() {
+  const router = useRouter();
   return (
     <SafeAreaProvider>
       <View>
         <View style={styles.fixedButton}></View>
         <Button
           title="Back"
-          onPress={() => navigation.navigate('inProgress')}
+          onPress={() => router.back()}
         ></Button>
+
         <View
           style={{ flexDirection: 'column', justifyContent: 'space-between' }}
         ></View>
-        // this has to: // change the screen // send an API request to call a
-        server-side function that updates: // both winner's ELO // both loser's
-        ELO
-        <TouchableHighlight onPress={() => navigation.navigate('')}>
-          <View style={[styles.playerViews, { backgroundColor: '#D2042D' }]}>
-            <ThemedText>Ethan and Jordan</ThemedText>
-          </View>
-        </TouchableHighlight>
-        <View style={{ flexDirection: 'column', alignItems: 'center' }}>
-          <ThemedText>Select Winner</ThemedText>
+
+        <View style={[styles.playerViews, { backgroundColor: '#D2042D' }]}>
+          <ThemedText>Ethan and Jordan</ThemedText>
         </View>
-        <TouchableHighlight onPress={() => navigation.navigate('')}>
-          <View style={[styles.playerViews, { backgroundColor: '#0000FF' }]}>
-            <ThemedText>Brian and Megan</ThemedText>
-          </View>
-        </TouchableHighlight>
+
+        <View style={{ flexDirection: 'column', alignItems: 'center' }}>
+          <Button
+            title="Finish Game"
+            onPress={() => router.push('./winner')}
+          ></Button>
+        </View>
+
+        <View style={[styles.playerViews, { backgroundColor: '#0000FF' }]}>
+          <ThemedText>Brian and Megan</ThemedText>
+        </View>
       </View>
     </SafeAreaProvider>
   );

@@ -15,7 +15,12 @@ const gameSchema = new mongoose.Schema({
         default: null
       }
     }
-  ]
+  ],
+  winner: {
+    type: String,
+    enum: ['RED', 'BlUE', null],
+    default: null
+  }
 });
 
 export default mongoose.model('Game', gameSchema);
