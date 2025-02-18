@@ -1,27 +1,39 @@
 import React, { useState } from 'react';
 import { View, Button, StyleSheet, Text } from 'react-native';
 
-const TeamChoiceButtons = () => {
-  const [team, setTeam] = useState<string | null>(null);
+const TeamChoiceButtons = (props: { pid: string; gameid: string }) => {
+  const pid = props.pid;
+  const gameid = props.gameid;
 
-  const handleRedTeamPress = () => {
-    // Handle red team selection
-    setTeam('Red');
-    console.log('Red team selected');
-  };
+  const [team, setTeam] = useState<string | string[] | null>(null);
 
-  const handleBlueTeamPress = () => {
-    // Handle blue team selection
-    setTeam('Blue');
-    console.log('Blue team selected');
+  const handleButtonPress = (buttonType: string) => {
+    // Handle team selection
+    setTeam(buttonType);
+    console.log(`${buttonType} team selected for user ${pid}`);
+
+    // call api to update player/pid/team in backend
+    // e.g. api.put(`/players/${pid}/team`, { team: buttonType });
   };
 
   return (
     <View style={styles.container}>
-      <Button title="Red Team" onPress={handleRedTeamPress} color="red" />
-      <Button title="Blue Team" onPress={handleBlueTeamPress} color="blue" />
+      <Button
+        title="Red Team"
+        onPress={() => handleButtonPress('RED')}
+        color={team === 'RED' ? 'red' : 'gray'}
+      />
+      <Button
+        title="Blue Team"
+        onPress={() => handleButtonPress('BLUE')}
+        color={team === 'BLUE' ? 'blue' : 'gray'}
+      />
 
-      {team && <Text>Selected Team: {team}</Text>}
+      {team && (
+        <Text>
+          Selected Team: {Array.isArray(team) ? team.join(', ') : team}
+        </Text>
+      )}
     </View>
   );
 };

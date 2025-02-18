@@ -1,5 +1,4 @@
-import { Button, Text, View } from 'react-native';
-import { router, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { useEffect, useState } from 'react';
@@ -40,7 +39,10 @@ export default function Route() {
           {gameData.players.map(({ player, team }) => (
             <ThemedText key={player._id}>
               Player: {player.name} - Team: {team ?? 'Unassigned'}
-              <TeamChoiceButtons />
+              <TeamChoiceButtons
+                pid={player._id}
+                gameid={local.gameid as string}
+              />
             </ThemedText>
           ))}
         </>
