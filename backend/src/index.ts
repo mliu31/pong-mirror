@@ -43,20 +43,27 @@ app.put('/games/:gameid/players/:pid/team/:team', async (req, res) => {
     const game = await Game.findById(gameid);
 
     if (!game) {
-      return res.status(404).json({ message: 'Game not found' });
+      res.status(404).send({ message: 'Game not found' });
+      return;
     }
-    const player = game.players.id(pid);
+
+    const player = game.players.find((playerTeamEntry) =>
+      playerTeamEntry.player._id.equals(pid)
+    );
     if (!player) {
-      return res.status(404).json({ message: 'Player not found' });
+      res.status(404).send({ message: 'Player not found' });
+      return;
     }
     if (team === 'RED' || team === 'BLUE' || team === null) {
       player.team = team;
     } else {
-      return res.status(400).json({ message: 'Invalid team value' });
+      res.status(400).send({ message: 'Invalid team value' });
+      return;
     }
     await game.save();
     res.json(game);
   } catch (error) {
     res.status(500).json({ message: 'Internal server error', error });
+    return;
   }
 });
