@@ -1,9 +1,10 @@
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { useEffect, useState } from 'react';
 import { getGame } from '@/api/games';
 import TeamChoiceButtons from './TeamChoiceButtons';
+import { Button } from 'react-native';
 
 export default function Route() {
   const local = useLocalSearchParams();
@@ -28,6 +29,10 @@ export default function Route() {
     );
   }, []);
 
+  const createTeamHandler = () => {
+    router.push(`./inProgress`);
+  };
+
   return (
     <ThemedView>
       {gameData === null ? (
@@ -45,6 +50,7 @@ export default function Route() {
               />
             </ThemedText>
           ))}
+          <Button title="Create Team" onPress={createTeamHandler} />
         </>
       )}
     </ThemedView>
