@@ -1,3 +1,5 @@
+import { updatePlayerTeam } from '@/api/games';
+import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { View, Button, StyleSheet, Text } from 'react-native';
 
@@ -12,8 +14,7 @@ const TeamChoiceButtons = (props: { pid: string; gameid: string }) => {
     setTeam(buttonType);
     console.log(`${buttonType} team selected for user ${pid}`);
 
-    // call api to update player/pid/team in backend
-    // e.g. api.put(`/players/${pid}/team`, { team: buttonType });
+    updatePlayerTeam(pid, buttonType, gameid);
   };
 
   return (

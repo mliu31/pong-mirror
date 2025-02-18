@@ -36,3 +36,27 @@ app.get('/games/:gameid', async (req, res) => {
 app.listen(env.PORT, () => {
   console.log(`Example app listening on port ${env.PORT}`);
 });
+
+app.put('/games/:gameid/players/:pid/team/:team', async (req, res) => {
+  const { gameid, pid, team } = req.params;
+  try {
+    const game = await Game.findById(gameid);
+
+    if (!game) {
+      return res.status(404).json({ message: 'Game not found' });
+    }
+    const player = game.players.id(pid);
+    if (!player) {
+      return res.status(404).json({ message: 'Player not found' });
+    }
+    if (team === 'RED' || team === 'BLUE' || team === null) {
+      player.team = team;
+    } else {
+      return res.status(400).json({ message: 'Invalid team value' });
+    }
+    await game.save();
+    res.json(game);
+  } catch (error) {
+    res.status(500).json({ message: 'Internal server error', error });
+  }
+});
