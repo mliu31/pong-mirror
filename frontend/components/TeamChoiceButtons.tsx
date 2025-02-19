@@ -42,7 +42,6 @@ const TeamChoiceButtons = (props: { pid: string; gameid: string }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between'
