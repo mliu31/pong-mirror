@@ -37,30 +37,33 @@ export default function WinnerScreen() {
   const router = useRouter();
 
   // clicking the winner needs to:
-    // set the winner
-    // THEN send the update elo request
-    // then navigate to the account screen
+  // set the winner
+  // THEN send the update elo request
+  // then navigate to the account screen
 
-    const clickWinner = ( teamName, gameId ) => {
-      const url = "" + gameId;
+  // we have the winning team
+  // send winner 1
+  // send winner 2
+  // send loser 1
+  // send loser 2
 
-      try{
-        
-      }
-      catch{
-
-      }
-    }
-
+  const getPlayerFromRedTeam = () => {
+    try{
+      // query the game schema for the players from the red team
+    }catch{
+      // return error
+    };
+  };
+  const clickWinner = (teamName: Number, gameId: Number) => {
+    try {
+    } catch {}
+  };
 
   return (
     <SafeAreaProvider>
       <View>
         <View style={styles.fixedButton}></View>
-        <Button
-          title="Back"
-          onPress={() => router.back()}
-        ></Button>
+        <Button title="Back" onPress={() => router.back()}></Button>
         <View
           style={{ flexDirection: 'column', justifyContent: 'space-between' }}
         ></View>
@@ -72,7 +75,7 @@ export default function WinnerScreen() {
         <View style={{ flexDirection: 'column', alignItems: 'center' }}>
           <ThemedText>Select Winner</ThemedText>
         </View>
-        
+
         <TouchableHighlight onPress={() => router.push('')}>
           <View style={[styles.playerViews, { backgroundColor: '#0000FF' }]}>
             <ThemedText>Blue Team</ThemedText>

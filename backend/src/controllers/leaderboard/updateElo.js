@@ -23,26 +23,39 @@ mongoose
     // eslint-disable-next-line no-undef
     console.error('MongoDB connection error:', err);
   });
-
-export const updateElo = async (playerId, gameId) => {
-  if (!playerId || !gameId) {
+// need to get color instead of playerId
+// get the winners from the players
+// get the losers from the players that didn't win
+export const updateElo = async (winningColor, gameId) => {
+  if (!winningColor || !gameId) {
     return { status: 400, message: 'Invalid parameters provided.' };
   }
-  const foundPlayer = await Player.findById(playerId);
-
   const foundGame = await Game.findbyId(gameId);
+  // array of winning players
+  const winningPlayers = foundGame.players.filter(
+    (player) => player.team === winningColor
+  );
+  // array of losing players
+  const losingPlayers = foundGame.players.filter(
+    (player) => player.team != winningColor
+  );
 
   try {
-    const eloUpdate =
-      foundPlayer.team === foundGame.winner
-        ? { $inc: { elo: 1 } }
-        : { $inc: { elo: -1 } };
-    const updatedPlayer = await Player.findByIdAndUpdate(playerId, eloUpdate, {
-      new: true
-    });
-    if (!updatedPlayer) {
-      return { status: 404, message: 'Player Not Found' };
+    const addElo = 
+      { $inc: {elo: 1} };
+    const subtractElo = 
+      { $inc: {elo: -1 }};
+
+    // iterate over winning players --> increment elo by 1
+    for (let i = 0; i < winningPlayers.length, i++){
+      const updatedWonPlayer = await Player.findByIdAndUpdate(winningPlayers[i].player.id, addElo);
     }
+
+    // iterate over losing players --> decrement elo by 1
+    for (let j = 0; i < winningPlayers.length, j++){
+      const updatedLostPlayer = await Player.findByIdAndUpdate(losingPlayers[i].player.id, subtractElo);
+    }
+  
     return { status: 200, updatedPlayer };
   } catch (error) {
     // eslint-disable-next-line no-undef
