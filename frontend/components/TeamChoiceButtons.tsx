@@ -11,8 +11,6 @@ const TeamChoiceButtons = (props: { pid: string; gameid: string }) => {
   const handleButtonPress = (buttonType: string) => {
     // Handle team selection
     setTeam(buttonType);
-    console.log(`${buttonType} team selected for user ${pid}`);
-
     updatePlayerTeam(pid, buttonType, gameid);
   };
 
