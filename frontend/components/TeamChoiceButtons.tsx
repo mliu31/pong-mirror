@@ -7,7 +7,7 @@ const TeamChoiceButtons = (props: { pid: string; gameid: string }) => {
   const pid = props.pid;
   const gameid = props.gameid;
 
-  const [team, setTeam] = useState<string | string[] | null>(null);
+  const [team, setTeam] = useState<string | null>(null);
 
   const handleButtonPress = (buttonType: string) => {
     // Handle team selection
@@ -32,7 +32,7 @@ const TeamChoiceButtons = (props: { pid: string; gameid: string }) => {
 
       {team && (
         <Text>
-          Selected Team: {Array.isArray(team) ? team.join(', ') : team}
+          Selected Team: {team}
         </Text>
       )}
     </View>
