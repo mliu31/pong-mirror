@@ -1,5 +1,4 @@
 import { updatePlayerTeam } from '@/api/games';
-import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { View, Button, StyleSheet, Text } from 'react-native';
 
@@ -30,11 +29,7 @@ const TeamChoiceButtons = (props: { pid: string; gameid: string }) => {
         color={team === 'BLUE' ? 'blue' : 'gray'}
       />
 
-      {team && (
-        <Text>
-          Selected Team: {team}
-        </Text>
-      )}
+      {team && <Text>Selected Team: {team}</Text>}
     </View>
   );
 };
