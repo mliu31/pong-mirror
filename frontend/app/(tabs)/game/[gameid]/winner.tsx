@@ -15,7 +15,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Dimensions } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Axios } from 'axios';
- 
+import updateElo from 'backend/src/controllers/leaderboard/updateElo.js';
 
 const styles = StyleSheet.create({
   playerViews: {
@@ -42,7 +42,7 @@ export default function WinnerScreen() {
     // then navigate to the account screen
 
     const clickWinner = ( teamName, gameId ) => {
-      const url = "game" + gameId;
+      const url = "" + gameId;
 
       try{
         
