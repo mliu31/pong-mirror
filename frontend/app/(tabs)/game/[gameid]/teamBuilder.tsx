@@ -3,7 +3,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { useEffect, useState } from 'react';
 import { getGame } from '@/api/games';
-import TeamChoiceButtons from './TeamChoiceButtons';
+import TeamChoiceButtons from '../../../../components/TeamChoiceButtons';
 import { Button } from 'react-native';
 
 export default function Route() {
