@@ -8,6 +8,7 @@ import {
   addPlayersToGame,
   createGame
 } from './controllers/game/gameController';
+import { getAllPlayers } from './controllers/player/playerController';
 
 void Player;
 
@@ -42,7 +43,7 @@ app.post('/games/:id/players/add', async (req, res) => {
   const { id: gameId } = req.params;
   const game = await Game.findById(gameId);
   if (!game) {
-    return res.status(404).json({ error: 'Game not found' });
+    return void res.status(404).json({ error: 'Game not found' });
   }
   let playerIds;
   if (typeof req.body === 'string') {
@@ -53,12 +54,16 @@ app.post('/games/:id/players/add', async (req, res) => {
   ) {
     playerIds = req.body;
   } else {
-    return res
+    return void res
       .status(400)
       .json({ error: 'Invalid request - expected an id or an array of ids' });
   }
   await addPlayersToGame(gameId, playerIds);
-  return res.sendStatus(200);
+  return void res.sendStatus(200);
+});
+
+app.get('/players', async (_, res) => {
+  res.json(await getAllPlayers());
 });
 
 app.listen(env.PORT, () => {
