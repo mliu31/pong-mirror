@@ -4,6 +4,10 @@ import env from './env';
 import cors from 'cors';
 import Game from './models/Game';
 import Player from './models/Player';
+import {
+  addPlayersToGame,
+  createGame
+} from './controllers/game/gameController';
 
 void Player;
 
@@ -12,6 +16,7 @@ mongoose.connect(env.MONGODB_URI);
 const app = express();
 
 app.use(cors());
+app.use(express.json());
 
 app.get('/', async (_, res) => {
   res.send(
@@ -22,7 +27,7 @@ app.get('/', async (_, res) => {
 });
 
 app.post('/games', async (_, res) => {
-  const game = await Game.create({ players: [] }); // TODO: the logged in user should be added to the players array
+  const game = await createGame();
   res.json({ id: game._id });
 });
 
@@ -31,6 +36,29 @@ app.get('/games/:gameid', async (req, res) => {
     'players.player'
   );
   res.json(game);
+});
+
+app.post('/games/:id/players/add', async (req, res) => {
+  const { id: gameId } = req.params;
+  const game = await Game.findById(gameId);
+  if (!game) {
+    return res.status(404).json({ error: 'Game not found' });
+  }
+  let playerIds;
+  if (typeof req.body === 'string') {
+    playerIds = [req.body];
+  } else if (
+    Array.isArray(req.body) &&
+    req.body.every((id) => typeof id === 'string')
+  ) {
+    playerIds = req.body;
+  } else {
+    return res
+      .status(400)
+      .json({ error: 'Invalid request - expected an id or an array of ids' });
+  }
+  await addPlayersToGame(gameId, playerIds);
+  return res.sendStatus(200);
 });
 
 app.listen(env.PORT, () => {
