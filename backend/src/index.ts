@@ -6,7 +6,8 @@ import Game from './models/Game';
 import Player from './models/Player';
 import {
   addPlayersToGame,
-  createGame
+  createGame,
+  setPlayerTeam
 } from './controllers/game/gameController';
 import { getAllPlayers } from './controllers/player/playerController';
 
@@ -72,31 +73,6 @@ app.listen(env.PORT, () => {
 
 app.put('/games/:gameid/players/:pid/team/:team', async (req, res) => {
   const { gameid, pid, team } = req.params;
-  try {
-    const game = await Game.findById(gameid);
-
-    if (!game) {
-      res.status(404).send({ message: 'Game not found' });
-      return;
-    }
-
-    const player = game.players.find((playerTeamEntry) =>
-      playerTeamEntry.player._id.equals(pid)
-    );
-    if (!player) {
-      res.status(404).send({ message: 'Player not found' });
-      return;
-    }
-    if (team === 'RED' || team === 'BLUE' || team === null) {
-      player.team = team;
-    } else {
-      res.status(400).send({ message: 'Invalid team value' });
-      return;
-    }
-    await game.save();
-    res.json(game);
-  } catch (error) {
-    res.status(500).json({ message: 'Internal server error', error });
-    return;
-  }
+  const game = await setPlayerTeam(gameid, pid, team);
+  res.json(game);
 });
