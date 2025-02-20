@@ -25,7 +25,7 @@ export default function Route() {
 
   useEffect(() => {
     getGame(local.gameid as string).then((res) =>
-      setGameData(res.data as GameData)
+      setGameData(res.data as Game)
     );
   }, []);
 
