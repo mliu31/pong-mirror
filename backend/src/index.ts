@@ -20,9 +20,15 @@ declare module 'express-session' {
   }
 }
 
+const key = process.env.SECRET_KEY;
+
+if (!key) {
+  throw new Error("SECRET_KEY is not set");
+}
+
 app.use(
   session({
-    secret: 'key',
+    secret: key,
     resave: false,
     saveUninitialized: true,
     cookie: {secure: false}
