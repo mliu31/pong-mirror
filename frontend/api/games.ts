@@ -11,3 +11,6 @@ export const updatePlayerTeam = async (
   team: TeamValue,
   gameid: string
 ) => await api.put(`/games/${gameid}/players/${pid}/team/${team}`);
+
+export const updateElo = async (winningColor: string, gameId: Number) =>
+  await api.patch(`/games/${gameId}/winningColor/${winningColor}`);

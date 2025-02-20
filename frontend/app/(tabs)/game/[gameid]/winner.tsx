@@ -47,14 +47,7 @@ export default function WinnerScreen() {
   // send loser 1
   // send loser 2
 
-  const getPlayerFromRedTeam = () => {
-    try{
-      // query the game schema for the players from the red team
-    }catch{
-      // return error
-    };
-  };
-  const clickWinner = (teamName: Number, gameId: Number) => {
+  const clickWinner = (teamColor: String, gameId: Number) => {
     try {
     } catch {}
   };
