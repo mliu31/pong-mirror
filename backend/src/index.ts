@@ -3,9 +3,7 @@ import mongoose from 'mongoose';
 import env from './env';
 import cors from 'cors';
 import gamesRouter from './routes/gamesRouter';
-import { getAllPlayers } from './controllers/player/playerController';
-
-void Player;
+import playersRouter from './routes/playersRouter';
 
 mongoose.connect(env.MONGODB_URI);
 
@@ -24,9 +22,7 @@ app.get('/', async (_, res) => {
 
 app.use('/games', gamesRouter);
 
-app.get('/players', async (_, res) => {
-  res.json(await getAllPlayers());
-});
+app.use('/players', playersRouter);
 
 app.listen(env.PORT, () => {
   console.log(`Example app listening on port ${env.PORT}`);
