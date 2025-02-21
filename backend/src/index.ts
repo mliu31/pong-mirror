@@ -12,7 +12,7 @@ import { getAllPlayers } from './controllers/player/playerController';
 
 void Player;
 
-mongoose.connect(env.MONGODB_URI);
+await mongoose.connect(env.MONGODB_URI);
 
 const app = express();
 
