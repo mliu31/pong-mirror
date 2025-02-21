@@ -25,5 +25,5 @@ app.use('/games', gamesRouter);
 app.use('/players', playersRouter);
 
 app.listen(env.PORT, () => {
-  console.log(`App listening on port ${env.PORT}`);
+  console.log(`Server listening on port ${env.PORT}`);
 });
