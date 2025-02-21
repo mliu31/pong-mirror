@@ -1,4 +1,4 @@
-import { Button, Text, View } from 'react-native';
+import { Button, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
