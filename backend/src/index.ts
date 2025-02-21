@@ -20,11 +20,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/', async (_, res) => {
-  res.send(
-    `Hello World!<br><br>Database connection status: ${
-      mongoose.connection.readyState === 1 ? 'successful' : 'unsuccessful'
-    }`
-  );
+  res.send(`Hello World!`);
 });
 
 app.post('/games', async (_, res) => {
