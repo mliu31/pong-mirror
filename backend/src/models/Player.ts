@@ -8,6 +8,9 @@ const playerSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true
+  },
+  friends: {
+    type: [String]
   }
 });
 
