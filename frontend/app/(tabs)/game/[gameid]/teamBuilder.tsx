@@ -35,6 +35,7 @@ export default function Route() {
               Player: {player.name} - Team: {team ?? 'Unassigned'}
               <TeamChoiceButtons
                 pid={player._id}
+                initialValue={team}
                 gameid={local.gameid as string}
               />
             </ThemedText>

@@ -1,3 +1,4 @@
+import { TeamValue } from '@/constants/TEAM';
 import api from '.';
 import { Game } from './types';
 
@@ -7,6 +8,6 @@ export const getGame = async (gameid: string) =>
 
 export const updatePlayerTeam = async (
   pid: string,
-  team: string,
+  team: TeamValue,
   gameid: string
 ) => await api.put(`/games/${gameid}/players/${pid}/team/${team}`);

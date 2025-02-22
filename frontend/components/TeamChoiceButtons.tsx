@@ -1,15 +1,20 @@
 import { updatePlayerTeam } from '@/api/games';
-import TEAM from '@/constants/TEAM';
+import TEAM, { TeamValue } from '@/constants/TEAM';
 import React, { useState } from 'react';
 import { View, Button, StyleSheet, Text } from 'react-native';
 
-const TeamChoiceButtons = (props: { pid: string; gameid: string }) => {
-  const pid = props.pid;
-  const gameid = props.gameid;
+const TeamChoiceButtons = ({
+  pid,
+  gameid,
+  initialValue = TEAM.UNASSIGNED
+}: {
+  pid: string;
+  gameid: string;
+  initialValue?: TeamValue;
+}) => {
+  const [team, setTeam] = useState<TeamValue>(initialValue);
 
-  const [team, setTeam] = useState<string | null>(null);
-
-  const handleButtonPress = (buttonType: string) => {
+  const handleButtonPress = (buttonType: TeamValue) => {
     // Handle team selection
     setTeam(buttonType);
     updatePlayerTeam(pid, buttonType, gameid);
