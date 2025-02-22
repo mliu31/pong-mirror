@@ -7,34 +7,38 @@ import api from '@/api';
 import { Game, Player } from '@/api/types';
 import { FlatList } from 'react-native-gesture-handler';
 import Checkbox from 'expo-checkbox';
+import { getAllPlayers } from '@/api/players';
+import { getGame } from '@/api/games';
 
 export default function Route() {
-  const { gameid } = useLocalSearchParams();
+  const { gameid } = useLocalSearchParams<{ gameid: string }>();
   const [allPlayers, setAllPlayers] = useState<Player[] | null>(null);
   const [playerUpdates, setPlayerUpdates] = useState<
     Record<Player['_id'], boolean>
   >({});
 
   useEffect(
-    () => void api.get(`/players`).then(({ data }) => setAllPlayers(data)),
+    () => void getAllPlayers().then(({ data }) => setAllPlayers(data)),
     []
   );
 
-  useEffect(() => {
-    void api.get(`/games/${gameid}`).then(({ data }) =>
-      setPlayerUpdates((prev) => ({
-        ...prev,
-        // update from game data without causing infinite loop
-        ...(data as Game).players.reduce(
-          (acc, { player }) => ({
-            ...acc,
-            [player._id]: true
-          }),
-          {}
-        )
-      }))
-    );
-  }, [gameid]);
+  useEffect(
+    () =>
+      void getGame(gameid).then(({ data }) =>
+        setPlayerUpdates((prev) => ({
+          ...prev,
+          // update from game data without causing infinite loop
+          ...(data as Game).players.reduce(
+            (acc, { player }) => ({
+              ...acc,
+              [player._id]: true
+            }),
+            {}
+          )
+        }))
+      ),
+    [gameid]
+  );
 
   const [continueButtonDisabled, setContinueButtonDisabled] = useState(false);
 
