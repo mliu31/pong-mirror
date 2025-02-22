@@ -1,3 +1,5 @@
+import { TeamValue } from '@/constants/TEAM';
+
 export interface Game {
   _id: string;
   players: {
@@ -6,6 +8,6 @@ export interface Game {
       name: string;
       email: string;
     };
-    team: 'RED' | 'BLUE' | null;
+    team: TeamValue;
   }[];
 }
