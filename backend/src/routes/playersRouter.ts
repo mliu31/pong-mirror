@@ -3,7 +3,7 @@ import { getAllPlayers } from '../controllers/player/playerController';
 
 const router = express.Router();
 
-router.get('/players', async (_, res) => {
+router.get('/', async (_, res) => {
   res.json(await getAllPlayers());
 });
 
