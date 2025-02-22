@@ -14,7 +14,14 @@ import { getAllPlayers } from './controllers/player/playerController';
 
 void Player;
 
-mongoose.connect(env.MONGODB_URI);
+// if we can't connect to the database, exit immediately - don't let Express start listening.
+// this handler must be registered before calling mongoose.connect.
+mongoose.connection.on('error', (error) => {
+  console.error(error);
+  process.exit(1);
+});
+
+await mongoose.connect(env.MONGODB_URI);
 
 const app = express();
 
@@ -22,11 +29,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/', async (_, res) => {
-  res.send(
-    `Hello World!<br><br>Database connection status: ${
-      mongoose.connection.readyState === 1 ? 'successful' : 'unsuccessful'
-    }`
-  );
+  res.send(`Hello World!`);
 });
 
 app.post('/games', async (_, res) => {
