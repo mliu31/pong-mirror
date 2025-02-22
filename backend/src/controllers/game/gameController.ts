@@ -16,3 +16,33 @@ export const addPlayersToGame = async (gameId: string, playerIds: string[]) => {
   game.players.push(players.map((player) => ({ player: player._id })));
   return await game.save();
 };
+
+export const setPlayerTeam = async (
+  gameid: string,
+  pid: string,
+  team: string
+) => {
+  try {
+    const game = await Game.findById(gameid);
+
+    if (!game) {
+      throw new Error('Game not found');
+    }
+
+    const player = game.players.find((playerTeamEntry) =>
+      playerTeamEntry.player._id.equals(pid)
+    );
+    if (!player) {
+      throw new Error('Player not found');
+    }
+    if (team === 'RED' || team === 'BLUE' || team === null) {
+      player.team = team;
+    } else {
+      throw new Error('Invalid team value');
+    }
+    await game.save();
+    return game;
+  } catch (e) {
+    throw new Error('Internal server error' + e);
+  }
+};

@@ -1,9 +1,10 @@
-import { Text } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { useEffect, useState } from 'react';
 import { getGame } from '@/api/games';
+import TeamChoiceButtons from '../../../../components/TeamChoiceButtons';
+import { Button } from 'react-native';
 
 export default function Route() {
   const local = useLocalSearchParams();
@@ -20,7 +21,6 @@ export default function Route() {
     }[];
   }
 
-  // const [gameData, setGameData] = useState(null);
   const [gameData, setGameData] = useState<GameData | null>(null);
 
   useEffect(() => {
@@ -28,6 +28,10 @@ export default function Route() {
       setGameData(res.data as GameData)
     );
   }, []);
+
+  const createTeamHandler = () => {
+    router.push(`./inProgress`);
+  };
 
   return (
     <ThemedView>
@@ -39,9 +43,14 @@ export default function Route() {
 
           {gameData.players.map(({ player, team }) => (
             <ThemedText key={player._id}>
-              Player ID: {player.name} - Team: {team ?? 'Unassigned'}
+              Player: {player.name} - Team: {team ?? 'Unassigned'}
+              <TeamChoiceButtons
+                pid={player._id}
+                gameid={local.gameid as string}
+              />
             </ThemedText>
           ))}
+          <Button title="Create Team" onPress={createTeamHandler} />
         </>
       )}
     </ThemedView>

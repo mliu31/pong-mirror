@@ -6,7 +6,8 @@ import Game from './models/Game';
 import Player from './models/Player';
 import {
   addPlayersToGame,
-  createGame
+  createGame,
+  setPlayerTeam
 } from './controllers/game/gameController';
 import { getAllPlayers } from './controllers/player/playerController';
 
@@ -68,4 +69,10 @@ app.get('/players', async (_, res) => {
 
 app.listen(env.PORT, () => {
   console.log(`Example app listening on port ${env.PORT}`);
+});
+
+app.put('/games/:gameid/players/:pid/team/:team', async (req, res) => {
+  const { gameid, pid, team } = req.params;
+  const game = await setPlayerTeam(gameid, pid, team);
+  res.json(game);
 });
