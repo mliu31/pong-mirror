@@ -15,7 +15,9 @@ router.post('/', async (_, res) => {
 });
 
 router.get('/:gameid', async (req, res) => {
-  res.json(await getGame(req.params.gameid));
+  const game = await getGame(req.params.gameid);
+  if (game === null) return void res.status(404).send('Game not found');
+  return void res.json(game);
 });
 
 const isPlayerUpdateRecord = (obj: unknown): obj is PlayerUpdateRecord =>
