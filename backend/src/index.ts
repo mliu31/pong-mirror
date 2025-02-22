@@ -12,6 +12,13 @@ import { getAllPlayers } from './controllers/player/playerController';
 
 void Player;
 
+// if we can't connect to the database, exit immediately - don't let Express start listening.
+// this handler must be registered before calling mongoose.connect.
+mongoose.connection.on('error', (error) => {
+  console.error(error);
+  process.exit(1);
+});
+
 await mongoose.connect(env.MONGODB_URI);
 
 const app = express();
