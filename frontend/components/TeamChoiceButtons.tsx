@@ -1,4 +1,5 @@
 import { updatePlayerTeam } from '@/api/games';
+import TEAM from '@/constants/TEAM';
 import React, { useState } from 'react';
 import { View, Button, StyleSheet, Text } from 'react-native';
 
@@ -18,13 +19,13 @@ const TeamChoiceButtons = (props: { pid: string; gameid: string }) => {
     <View style={styles.container}>
       <Button
         title="Red Team"
-        onPress={() => handleButtonPress('RED')}
-        color={team === 'RED' ? 'red' : 'gray'}
+        onPress={() => handleButtonPress(TEAM.RED)}
+        color={team === TEAM.RED ? 'red' : 'gray'}
       />
       <Button
         title="Blue Team"
-        onPress={() => handleButtonPress('BLUE')}
-        color={team === 'BLUE' ? 'blue' : 'gray'}
+        onPress={() => handleButtonPress(TEAM.BLUE)}
+        color={team === TEAM.BLUE ? 'blue' : 'gray'}
       />
 
       {team && <Text>Selected Team: {team}</Text>}
