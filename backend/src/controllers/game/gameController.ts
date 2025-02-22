@@ -4,17 +4,33 @@ import Player from '../../models/Player';
 // TODO: the logged-in user should be added to the players array
 export const createGame = () => Game.create({ players: [] });
 
-export const addPlayersToGame = async (gameId: string, playerIds: string[]) => {
+export type PlayerUpdateRecord = Record<string, boolean>;
+export const updatePlayersInGame = async (
+  gameId: string,
+  playerUpdates: PlayerUpdateRecord
+) => {
   const game = await Game.findById(gameId);
-  if (game === null) {
-    throw new Error('Game not found');
+  if (game === null) throw new Error('Game not found');
+
+  for (const [playerId, isPlaying] of Object.entries(playerUpdates)) {
+    const matchedPlayerIndex = game.players.findIndex(
+      (playerEntry) => playerEntry.player._id.toString() === playerId
+    );
+    if (matchedPlayerIndex === -1) {
+      if (isPlaying) {
+        // player is not in the game, but they should be.
+        const player = await Player.findById(playerId);
+        if (player === null)
+          throw new Error(`Could not find a player with id ${playerId}`);
+        game.players.push({ player, team: null });
+      }
+    } else if (!isPlaying) {
+      // player is in the game, but they should not be.
+      game.players.splice(matchedPlayerIndex, 1);
+    }
   }
-  const players = await Player.find({ _id: { $in: playerIds } });
-  if (playerIds.length !== playerIds.length) {
-    throw new Error('Some players were not found');
-  }
-  game.players.push(players.map((player) => ({ player: player._id })));
-  return await game.save();
+  await game.save();
+  return game.players;
 };
 
 export const setPlayerTeam = async (

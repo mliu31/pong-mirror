@@ -5,9 +5,10 @@ import cors from 'cors';
 import Game from './models/Game';
 import Player from './models/Player';
 import {
-  addPlayersToGame,
   createGame,
-  setPlayerTeam
+  PlayerUpdateRecord,
+  setPlayerTeam,
+  updatePlayersInGame
 } from './controllers/game/gameController';
 import { getAllPlayers } from './controllers/player/playerController';
 
@@ -40,27 +41,22 @@ app.get('/games/:gameid', async (req, res) => {
   res.json(game);
 });
 
-app.post('/games/:id/players/add', async (req, res) => {
+const isPlayerUpdateRecord = (obj: unknown): obj is PlayerUpdateRecord =>
+  typeof obj === 'object' &&
+  obj !== null &&
+  Object.values(obj).every((v) => typeof v === 'boolean');
+
+app.patch('/games/:id/players', async (req, res) => {
   const { id: gameId } = req.params;
-  const game = await Game.findById(gameId);
-  if (!game) {
-    return void res.status(404).json({ error: 'Game not found' });
-  }
-  let playerIds;
-  if (typeof req.body === 'string') {
-    playerIds = [req.body];
-  } else if (
-    Array.isArray(req.body) &&
-    req.body.every((id) => typeof id === 'string')
-  ) {
-    playerIds = req.body;
-  } else {
+
+  const playerUpdates = req.body;
+  if (!isPlayerUpdateRecord(playerUpdates)) {
     return void res
       .status(400)
-      .json({ error: 'Invalid request - expected an id or an array of ids' });
+      .send('Invalid request body, expected Record<string, boolean>');
   }
-  await addPlayersToGame(gameId, playerIds);
-  return void res.sendStatus(200);
+
+  return void res.json(await updatePlayersInGame(gameId, playerUpdates));
 });
 
 app.get('/players', async (_, res) => {
