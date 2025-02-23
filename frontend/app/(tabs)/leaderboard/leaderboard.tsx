@@ -1,8 +1,7 @@
-// added leaderboard wrapper component
 import React, { useState } from 'react';
-import { View, Text } from 'react-native';
-import LeaderboardNav from './LeaderboardNav';
-import LeaderboardRanking from '../components/LeaderboardRanking';
+import { SafeAreaView, View, Text, StyleSheet } from 'react-native';
+import LeaderboardNav from './leaderboard-nav';
+import LeaderboardRanking from './leaderboard-core';
 
 type Tab = 'Top' | 'League';
 
@@ -12,7 +11,7 @@ export interface LeaderboardItem {
   score: number;
 }
 
-// Dummy data for the "Top" tab
+// Hardcoded dummy data for the "Top"
 const topLeaderboardItems: LeaderboardItem[] = [
   { rank: 1, username: 'User1', score: 100 },
   { rank: 2, username: 'User2', score: 95 },
@@ -26,18 +25,14 @@ const topLeaderboardItems: LeaderboardItem[] = [
   { rank: 10, username: 'User10', score: 55 }
 ];
 
-// Dummy data for the "League" tab
+// Hardcoded dummy data for the "League"
 const leagueLeaderboardItems: LeaderboardItem[] = [
-  { rank: 1, username: 'LeagueUser1', score: 50 },
-  { rank: 2, username: 'LeagueUser2', score: 45 },
-  { rank: 3, username: 'LeagueUser3', score: 40 },
-  { rank: 4, username: 'LeagueUser4', score: 35 },
-  { rank: 5, username: 'LeagueUser5', score: 30 },
-  { rank: 6, username: 'LeagueUser6', score: 25 },
-  { rank: 7, username: 'LeagueUser7', score: 20 },
-  { rank: 8, username: 'LeagueUser8', score: 15 },
-  { rank: 9, username: 'LeagueUser9', score: 10 },
-  { rank: 10, username: 'LeagueUser10', score: 5 }
+  { rank: 20, username: 'User20', score: 40 },
+  { rank: 21, username: 'User21', score: 38 },
+  { rank: 22, username: 'User22', score: 36 },
+  { rank: 23, username: 'You', score: 34 }, // Assume current user
+  { rank: 24, username: 'User24', score: 32 },
+  { rank: 25, username: 'User25', score: 30 }
 ];
 
 const LeaderboardScreen: React.FC = () => {
@@ -47,22 +42,34 @@ const LeaderboardScreen: React.FC = () => {
     setCurrentTab(tab);
   };
 
-  // Choose the data based on the current tab
   const itemsToDisplay =
     currentTab === 'Top' ? topLeaderboardItems : leagueLeaderboardItems;
 
   return (
-    <View>
+    <SafeAreaView style={styles.container}>
       {/* Header */}
-      <Text>Leaderboard</Text>
+      <Text style={styles.header}>Leaderboard</Text>
 
       {/* Navigation Tabs */}
       <LeaderboardNav currentTab={currentTab} onTabChange={handleTabChange} />
 
       {/* Leaderboard Ranking List */}
       <LeaderboardRanking items={itemsToDisplay} />
-    </View>
+    </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: '#fff'
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 16
+  }
+});
 
 export default LeaderboardScreen;
