@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SafeAreaView, View, Text, StyleSheet } from 'react-native';
+import { SafeAreaView, Text, StyleSheet } from 'react-native';
 import LeaderboardNav from './leaderboard-nav';
 import LeaderboardRanking from './leaderboard-core';
 
