@@ -8,6 +8,13 @@ const playerSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true
+  },
+  score: {
+    type: Number,
+    default: 0
+  },
+  rank: {
+    type: Number
   }
 });
 
