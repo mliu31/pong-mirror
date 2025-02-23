@@ -10,7 +10,10 @@ interface LeaderboardNavProps {
   onTabChange: (tab: Tab) => void;
 }
 
-const LeaderboardNav: React.FC<LeaderboardNavProps> = ({ currentTab, onTabChange }) => {
+const LeaderboardNav: React.FC<LeaderboardNavProps> = ({
+  currentTab,
+  onTabChange
+}) => {
   return (
     <View>
       <TouchableOpacity onPress={() => onTabChange('Top')}>
