@@ -30,7 +30,7 @@ declare module 'express-session' {
 
 app.use(
   session({
-    secret: env.SESSION_SECRET,
+    secret: env.SECRET_KEY,
     resave: false,
     saveUninitialized: true,
     cookie: { secure: false }
