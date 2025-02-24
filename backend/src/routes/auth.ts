@@ -14,11 +14,12 @@ router.post('/login', async (req, res) => {
     }
 
     const player = await Player.findOne({ email, name });
+
     if (!player) {
       return void res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    // req.session.player = player;
+    req.session.player = player;
     res.json({
       message: 'Login successful',
       user: { id: player._id, email: player.email, name: player.name }
