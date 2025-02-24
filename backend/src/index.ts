@@ -3,7 +3,7 @@ import session from 'express-session';
 import mongoose from 'mongoose';
 import env from './env';
 import cors from 'cors';
-import authRoutes from './routes/auth.js';
+import authRoutes from './routes/authRouter.js';
 import { IPlayer } from './models/Player';
 import gamesRouter from './routes/gamesRouter';
 import playersRouter from './routes/playersRouter';

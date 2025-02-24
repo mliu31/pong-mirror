@@ -6,7 +6,7 @@ import {
   updatePlayersInGame
 } from '../controllers/game/gameController';
 import express from 'express';
-import { requireLoggedInHandler } from './auth';
+import { requireLoggedInHandler } from './authRouter';
 
 const router = express.Router();
 
