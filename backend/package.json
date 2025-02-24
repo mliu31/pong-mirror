@@ -10,10 +10,12 @@
     "preview": "bun run build && bun run dist/index.js"
   },
   "dependencies": {
+    "@types/express-session": "^1.18.1",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
     "eslint-config-prettier": "^10.0.1",
     "express": "^4.21.2",
-    "mongoose": "^8.10.0"
+    "mongoose": "^8.10.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
