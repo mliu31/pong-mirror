@@ -20,8 +20,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use(express.json());
-
 declare module 'express-session' {
   interface SessionData {
     player: { id: string; email: string; username: string };
