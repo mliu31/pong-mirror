@@ -1,10 +1,11 @@
 import express from 'express';
 import { getAllPlayers } from '../controllers/player/playerController';
-import { requireLoggedInHandler } from './authRouter';
+// import { requireLoggedInHandler } from './authRouter';
 
 const router = express.Router();
 
-router.use(requireLoggedInHandler);
+// TODO: Uncomment this once frontend login is implemented
+// router.use(requireLoggedInHandler);
 
 router.get('/', async (_, res) => {
   res.json(await getAllPlayers());
