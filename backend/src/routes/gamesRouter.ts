@@ -6,11 +6,22 @@ import {
   updatePlayersInGame
 } from '../controllers/game/gameController';
 import express from 'express';
+// import { requireLoggedInHandler } from './authRouter';
 
 const router = express.Router();
 
-router.post('/', async (_, res) => {
-  const game = await createGame();
+// TODO: Uncomment this once frontend login is implemented
+// router.use(requireLoggedInHandler);
+
+router.post('/', async (/*req*/ _, res) => {
+  // TODO: Uncomment this once frontend login is implemented
+  // const player = req.session.player;
+  // if (player === undefined) {
+  //   throw new Error(
+  //     'Logged-in player not found, this route should be protected!'
+  //   );
+  // }
+  const game = await createGame(/* player */);
   res.json({ id: game._id });
 });
 

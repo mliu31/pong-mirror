@@ -1,9 +1,14 @@
-import { isValidTeam } from '../../constants/team';
+import { isValidTeam } from '../../constants/TEAM';
 import Game from '../../models/Game';
-import Player from '../../models/Player';
+import Player /*, { IPlayer } */ from '../../models/Player';
 
-// TODO: the logged-in user should be added to the players array
-export const createGame = () => Game.create({ players: [] });
+export const createGame = (/*loggedInPlayer: IPlayer*/) =>
+  Game.create({
+    players: [
+      // TODO: Uncomment this once frontend login is implemented
+      // { player: loggedInPlayer, team: null }
+    ]
+  });
 
 export const getGame = async (gameId: string) =>
   Game.findById(gameId).populate('players.player');
