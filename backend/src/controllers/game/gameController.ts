@@ -4,6 +4,9 @@ import Player from '../../models/Player';
 // TODO: the logged-in user should be added to the players array
 export const createGame = () => Game.create({ players: [] });
 
+export const getGame = async (gameId: string) =>
+  Game.findById(gameId).populate('players.player');
+
 export type PlayerUpdateRecord = Record<string, boolean>;
 export const updatePlayersInGame = async (
   gameId: string,
