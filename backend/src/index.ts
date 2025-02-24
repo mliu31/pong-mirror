@@ -3,9 +3,10 @@ import session from 'express-session';
 import mongoose from 'mongoose';
 import env from './env';
 import cors from 'cors';
-import Game from './models/Game';
 import authRoutes from './routes/auth.js';
 import { IPlayer } from './models/Player';
+import gamesRouter from './routes/gamesRouter';
+import playersRouter from './routes/playersRouter';
 
 // if we can't connect to the database, exit immediately - don't let Express start listening.
 // this handler must be registered before calling mongoose.connect.
@@ -40,16 +41,11 @@ app.get('/', async (_, res) => {
   res.send(`Hello World!`);
 });
 
-app.use('./auth', authRoutes);
+app.use('/auth', authRoutes);
 
-app.post('/games', async (req, res) => {
-  if (!req.session.player) {
-    return void res.status(401).json({ message: 'Not authenticated' });
-  }
+app.use('/games', gamesRouter);
 
-  const game = await Game.create({ players: [req.session.player] }); // TODO: the logged in user should be added to the players array
-  res.json({ id: game._id });
-});
+app.use('/players', playersRouter);
 
 app.listen(env.PORT, () => {
   console.log(`Server listening on port ${env.PORT}`);
