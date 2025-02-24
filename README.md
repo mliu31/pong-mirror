@@ -12,14 +12,12 @@ This addresses the competitive needs of the sport (designing a ranking system to
 
 <!-- TODO: continue to update descriptions of code organization and tools and libraries used -->
 
-We are using a ~~MERN~~ MERB stack: MongoDB, Express, React, and Bun.
+We are using MongoDB, Express, Expo, and Bun.
 
 This repository contains a TypeScript monorepo which mirrors the structure of the application.
 
 ### Frontend
-The [frontend](./frontend) directory contains source code and instructions to build, run, and deploy a static site.
-
-This site is built with Vite (using Bun as a package manager) and React.
+The [frontend](./frontend) directory contains source code and instructions to build, run, and deploy a static site or mobile application using the Expo framework.
 
 ### Backend
 The [backend](./backend) directory contains source code and instructions to build, run, and deploy a server application.

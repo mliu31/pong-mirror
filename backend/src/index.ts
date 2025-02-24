@@ -6,11 +6,19 @@ import cors from 'cors';
 import Game from './models/Game';
 import authRoutes from './routes/auth.js';
 
-mongoose.connect(env.MONGODB_URI);
+// if we can't connect to the database, exit immediately - don't let Express start listening.
+// this handler must be registered before calling mongoose.connect.
+mongoose.connection.on('error', (error) => {
+  console.error(error);
+  process.exit(1);
+});
+
+await mongoose.connect(env.MONGODB_URI);
 
 const app = express();
 
 app.use(cors());
+app.use(express.json());
 
 app.use(express.json());
 
@@ -36,11 +44,7 @@ app.use(
 );
 
 app.get('/', async (_, res) => {
-  res.send(
-    `Hello World!<br><br>Database connection status: ${
-      mongoose.connection.readyState === 1 ? 'successful' : 'unsuccessful'
-    }`
-  );
+  res.send(`Hello World!`);
 });
 
 app.use('./auth', authRoutes);
@@ -55,5 +59,5 @@ app.post('/games', async (req, res) => {
 });
 
 app.listen(env.PORT, () => {
-  console.log(`Example app listening on port ${env.PORT}`);
+  console.log(`Server listening on port ${env.PORT}`);
 });
