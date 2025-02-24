@@ -7,6 +7,12 @@ router.post('/login', async (req, res) => {
   try {
     const { email, name } = req.body;
 
+    if (typeof email !== 'string' || typeof name !== 'string') {
+      return void res
+        .status(400)
+        .json({ message: 'Invalid request, expected email and name' });
+    }
+
     const player = await Player.findOne({ email, name });
     if (!player) {
       return void res.status(400).json({ message: 'Invalid credentials' });
