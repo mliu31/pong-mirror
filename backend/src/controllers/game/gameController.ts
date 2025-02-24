@@ -1,3 +1,4 @@
+import { isValidTeam } from '../../constants/team';
 import Game from '../../models/Game';
 import Player from '../../models/Player';
 
@@ -54,7 +55,7 @@ export const setPlayerTeam = async (
     if (!player) {
       throw new Error('Player not found');
     }
-    if (team === 'RED' || team === 'BLUE' || team === null) {
+    if (isValidTeam(team)) {
       player.team = team;
     } else {
       throw new Error('Invalid team value');

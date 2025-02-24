@@ -5,23 +5,12 @@ import { useEffect, useState } from 'react';
 import { getGame } from '@/api/games';
 import TeamChoiceButtons from '../../../../components/TeamChoiceButtons';
 import { Button } from 'react-native';
+import { Game } from '@/api/apiTypes';
 
 export default function Route() {
   const local = useLocalSearchParams();
 
-  interface GameData {
-    _id: string;
-    players: {
-      player: {
-        _id: string;
-        name: string;
-        email: string;
-      }; // ObjectId as string
-      team: 'RED' | 'BLUE' | null;
-    }[];
-  }
-
-  const [gameData, setGameData] = useState<GameData | null>(null);
+  const [gameData, setGameData] = useState<Game | null>(null);
 
   useEffect(() => {
     getGame(local.gameid as string).then((res) =>
@@ -46,6 +35,7 @@ export default function Route() {
               Player: {player.name} - Team: {team ?? 'Unassigned'}
               <TeamChoiceButtons
                 pid={player._id}
+                initialValue={team}
                 gameid={local.gameid as string}
               />
             </ThemedText>

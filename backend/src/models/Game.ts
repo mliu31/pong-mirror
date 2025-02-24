@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import TEAM from '../constants/team';
 
 const gameSchema = new mongoose.Schema({
   players: [
@@ -10,7 +11,7 @@ const gameSchema = new mongoose.Schema({
       },
       team: {
         type: String,
-        enum: ['RED', 'BLUE', null],
+        enum: Object.values(TEAM),
         default: null
       }
     }
