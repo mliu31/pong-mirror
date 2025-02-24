@@ -31,7 +31,7 @@ declare module 'express-session' {
 const key = process.env.SECRET_KEY;
 
 if (!key) {
-  throw new Error("SECRET_KEY is not set");
+  throw new Error('SECRET_KEY is not set');
 }
 
 app.use(
@@ -39,7 +39,7 @@ app.use(
     secret: key,
     resave: false,
     saveUninitialized: true,
-    cookie: {secure: false}
+    cookie: { secure: false }
   })
 );
 
@@ -51,7 +51,7 @@ app.use('./auth', authRoutes);
 
 app.post('/games', async (req, res) => {
   if (!req.session.player) {
-    return void res.status(401).json({ message: 'Not authenticated'});
+    return void res.status(401).json({ message: 'Not authenticated' });
   }
 
   const game = await Game.create({ players: [req.session.player] }); // TODO: the logged in user should be added to the players array
