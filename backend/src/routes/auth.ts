@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { RequestHandler } from 'express';
 import Player from '../models/Player';
 
 const router = express.Router();
@@ -29,5 +29,12 @@ router.post('/login', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
+export const requireLoggedInHandler: RequestHandler = (req, res, next) => {
+  if (req.session.player === undefined) {
+    return void res.status(401).json({ message: 'Unauthorized' });
+  }
+  next();
+};
 
 export default router;
