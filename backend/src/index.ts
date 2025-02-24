@@ -5,6 +5,7 @@ import env from './env';
 import cors from 'cors';
 import Game from './models/Game';
 import authRoutes from './routes/auth.js';
+import { IPlayer } from './models/Player';
 
 // if we can't connect to the database, exit immediately - don't let Express start listening.
 // this handler must be registered before calling mongoose.connect.
@@ -22,7 +23,7 @@ app.use(express.json());
 
 declare module 'express-session' {
   interface SessionData {
-    player: { id: string; email: string; username: string };
+    player: IPlayer;
   }
 }
 
