@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 export interface IPlayer extends Document {
+  userID: number;
   name: string;
   email: string;
   friends: string[];
@@ -9,6 +10,10 @@ export interface IPlayer extends Document {
 }
 
 const playerSchema = new mongoose.Schema<IPlayer>({
+  userID: {
+    type: Number,
+    required: true
+  },
   name: {
     type: String,
     required: true

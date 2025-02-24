@@ -1,50 +1,22 @@
 // Maintains current state of leaderboard
+// TO DO: Add functionality to show same ranked players
 
-// updateLeaderboard.js
-const mongoose = require('mongoose');
+import Player from '../../models/Player';
 
-mongoose.connect('mongodb://localhost:27017/leaderboard', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-});
-
-// Define the schema for leaderboard entries
-const leaderboardSchema = new mongoose.Schema({
-  userId: { type: String, required: true, unique: true },
-  username: { type: String, required: true },
-  score: { type: Number, required: true },
-  rank: { type: Number }
-});
-
-const Leaderboard = mongoose.model('Leaderboard', leaderboardSchema);
-
-// Function to recalculate ranks for all users
-async function updateRanks() {
-  // Get all users sorted by score descending
-  const users = await Leaderboard.find().sort({ score: -1 });
-  // Update each user's rank (1-indexed)
-  for (let i = 0; i < users.length; i++) {
-    users[i].rank = i + 1;
-    await users[i].save();
+/**
+ * Recalculates and updates the rank for all players based on score.
+ */
+export async function updateRanks(): Promise<void> {
+  try {
+    // Retrieve all players sorted by score in descending order
+    const players = await Player.find().sort({ score: -1 });
+    // Update each player's rank (starting at 1)
+    for (let i = 0; i < players.length; i++) {
+      players[i].rank = i + 1;
+      await players[i].save();
+    }
+    console.log('Leaderboard ranks updated.');
+  } catch (err) {
+    console.error('Error updating ranks:', err);
   }
-  console.log('Leaderboard ranks updated.');
 }
-
-// Function to add a new user or update an existing user's score
-async function upsertUser(userId, username, score) {
-  await Leaderboard.findOneAndUpdate(
-    { userId },
-    { username, score },
-    { new: true, upsert: true, setDefaultsOnInsert: true }
-  );
-  console.log(`User ${username} has been inserted/updated.`);
-  // Update ranks after each change
-  await updateRanks();
-}
-
-// Export the model and functions so they can be used elsewhere
-module.exports = {
-  Leaderboard,
-  upsertUser,
-  updateRanks
-};
