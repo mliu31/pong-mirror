@@ -1,5 +1,8 @@
 import express from 'express';
-import { getAllPlayers } from '../controllers/player/playerController';
+import {
+  getAllPlayers,
+  getPlayer
+} from '../controllers/player/playerController';
 // import { requireLoggedInHandler } from './authRouter';
 
 const router = express.Router();
@@ -9,6 +12,12 @@ const router = express.Router();
 
 router.get('/', async (_, res) => {
   res.json(await getAllPlayers());
+});
+
+router.get('/:pid', async (req, res) => {
+  const player = await getPlayer(req.params.pid);
+  if (player === null) return void res.status(404).send('Player not found');
+  return void res.json(player);
 });
 
 export default router;
