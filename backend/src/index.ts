@@ -7,6 +7,7 @@ import authRoutes from './routes/authRouter.js';
 import { IPlayer } from './models/Player';
 import gamesRouter from './routes/gamesRouter';
 import playersRouter from './routes/playersRouter';
+import updateElo from './controllers/leaderboard/updateElo';
 
 // if we can't connect to the database, exit immediately - don't let Express start listening.
 // this handler must be registered before calling mongoose.connect.
@@ -50,3 +51,7 @@ app.use('/players', playersRouter);
 app.listen(env.PORT, () => {
   console.log(`Server listening on port ${env.PORT}`);
 });
+
+// function for updating elo
+
+app.patch('/games/updateElo/:gameId/:winningColor', updateElo);

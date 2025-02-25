@@ -8,7 +8,6 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Dimensions } from 'react-native';
 import { useRouter } from 'expo-router';
 
-
 const styles = StyleSheet.create({
   playerViews: {
     flexDirection: 'column',
@@ -31,10 +30,7 @@ export default function InProgress() {
     <SafeAreaProvider>
       <View>
         <View style={styles.fixedButton}></View>
-        <Button
-          title="Back"
-          onPress={() => router.back()}
-        ></Button>
+        <Button title="Back" onPress={() => router.back()}></Button>
 
         <View
           style={{ flexDirection: 'column', justifyContent: 'space-between' }}

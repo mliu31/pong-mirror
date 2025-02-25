@@ -14,8 +14,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Dimensions } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Axios } from 'axios';
-import updateElo from 'backend/src/controllers/leaderboard/updateElo.js';
+import axios, { Axios } from 'axios';
 
 const styles = StyleSheet.create({
   playerViews: {
@@ -36,21 +35,22 @@ const styles = StyleSheet.create({
 export default function WinnerScreen() {
   const router = useRouter();
 
-  // clicking the winner needs to:
-  // set the winner
-  // THEN send the update elo request
-  // then navigate to the account screen
+  // const clickWinner = async (teamColor: String, gameId: Number) => {
+  //   try {
+  //     const response = await axios.post('http://localhost:3000/games/id', {
+  //       headers: {
+  //         'Content-Type': 'application/json'
+  //       }
+  //     });
 
-  // we have the winning team
-  // send winner 1
-  // send winner 2
-  // send loser 1
-  // send loser 2
-
-  const clickWinner = (teamColor: String, gameId: Number) => {
-    try {
-    } catch {}
-  };
+  //     return response.data.gameId;
+  //   } catch {
+  //     console.error(
+  //       'Error fetching game ID:',
+  //       Error.response.data || Error.message
+  //     );
+  //   }
+  // };
 
   return (
     <SafeAreaProvider>
