@@ -59,7 +59,7 @@ import Game from '../../models/Game.ts';
 
 const updateElo = async (req, res) => {
   try {
-    const { gameId, winningColor } = req.params;
+    const { gameId, winningColor } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(gameId)) {
       return res.status(404).json({ error: 'No such player' });

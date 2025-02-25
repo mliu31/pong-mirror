@@ -1,3 +1,5 @@
+/*
+
 import axios, { Axios } from 'axios';
 
 const sendElo = async (color: string, gameId: Number) => {
@@ -15,3 +17,4 @@ const sendElo = async (color: string, gameId: Number) => {
 };
 
 export default sendElo;
+*/

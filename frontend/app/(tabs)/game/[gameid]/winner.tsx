@@ -60,7 +60,7 @@ export default function WinnerScreen() {
         <View
           style={{ flexDirection: 'column', justifyContent: 'space-between' }}
         ></View>
-        <TouchableHighlight onPress={() => router.navigate('')}>
+        <TouchableHighlight onPress={() => router.navigate('/winner')}>
           <View style={[styles.playerViews, { backgroundColor: '#D2042D' }]}>
             <ThemedText>Red Team</ThemedText>
           </View>
@@ -69,7 +69,7 @@ export default function WinnerScreen() {
           <ThemedText>Select Winner</ThemedText>
         </View>
 
-        <TouchableHighlight onPress={() => router.push('')}>
+        <TouchableHighlight onPress={() => router.navigate('/inProgress')}>
           <View style={[styles.playerViews, { backgroundColor: '#0000FF' }]}>
             <ThemedText>Blue Team</ThemedText>
           </View>
