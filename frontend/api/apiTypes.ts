@@ -3,14 +3,11 @@ import { TeamValue } from '@/constants/TEAM';
 export interface Game {
   _id: string;
   players: {
-    player: Player;
+    player: {
+      _id: string;
+      name: string;
+      email: string;
+    };
     team: TeamValue;
   }[];
-}
-
-export interface Player {
-  _id: string;
-  name: string;
-  email: string;
-  friends: string[];
 }

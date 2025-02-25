@@ -1,5 +1,9 @@
 # Backend
 
+The frontend is built on [Expo](https://expo.dev/), a React Native application framework.
+
+We use Bun as our runtime and package manager.
+
 <!-- TODO: add sections and organize as in root README.md -->
 
 ### Getting started

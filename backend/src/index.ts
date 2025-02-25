@@ -1,74 +1,52 @@
 import express from 'express';
+import session from 'express-session';
 import mongoose from 'mongoose';
 import env from './env';
 import cors from 'cors';
-import Game from './models/Game';
-import Player from './models/Player';
-import {
-  createGame,
-  PlayerUpdateRecord,
-  setPlayerTeam,
-  updatePlayersInGame
-} from './controllers/game/gameController';
-import { getAllPlayers } from './controllers/player/playerController';
+import authRoutes from './routes/authRouter.js';
+import { IPlayer } from './models/Player';
+import gamesRouter from './routes/gamesRouter';
+import playersRouter from './routes/playersRouter';
 
-void Player;
+// if we can't connect to the database, exit immediately - don't let Express start listening.
+// this handler must be registered before calling mongoose.connect.
+mongoose.connection.on('error', (error) => {
+  console.error(error);
+  process.exit(1);
+});
 
-mongoose.connect(env.MONGODB_URI);
+await mongoose.connect(env.MONGODB_URI);
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-app.get('/', async (_, res) => {
-  res.send(
-    `Hello World!<br><br>Database connection status: ${
-      mongoose.connection.readyState === 1 ? 'successful' : 'unsuccessful'
-    }`
-  );
-});
-
-app.post('/games', async (_, res) => {
-  const game = await createGame();
-  res.json({ id: game._id });
-});
-
-app.get('/games/:gameid', async (req, res) => {
-  const game = await Game.findById(req.params.gameid).populate(
-    'players.player'
-  );
-  res.json(game);
-});
-
-const isPlayerUpdateRecord = (obj: unknown): obj is PlayerUpdateRecord =>
-  typeof obj === 'object' &&
-  obj !== null &&
-  Object.values(obj).every((v) => typeof v === 'boolean');
-
-app.patch('/games/:id/players', async (req, res) => {
-  const { id: gameId } = req.params;
-
-  const playerUpdates = req.body;
-  if (!isPlayerUpdateRecord(playerUpdates)) {
-    return void res
-      .status(400)
-      .send('Invalid request body, expected Record<string, boolean>');
+declare module 'express-session' {
+  interface SessionData {
+    player: IPlayer;
   }
+}
 
-  return void res.json(await updatePlayersInGame(gameId, playerUpdates));
+app.use(
+  session({
+    secret: env.SECRET_KEY,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }
+  })
+);
+
+app.get('/', async (_, res) => {
+  res.send(`Hello World!`);
 });
 
-app.get('/players', async (_, res) => {
-  res.json(await getAllPlayers());
-});
+app.use('/auth', authRoutes);
+
+app.use('/games', gamesRouter);
+
+app.use('/players', playersRouter);
 
 app.listen(env.PORT, () => {
-  console.log(`Example app listening on port ${env.PORT}`);
-});
-
-app.put('/games/:gameid/players/:pid/team/:team', async (req, res) => {
-  const { gameid, pid, team } = req.params;
-  const game = await setPlayerTeam(gameid, pid, team);
-  res.json(game);
+  console.log(`Server listening on port ${env.PORT}`);
 });
