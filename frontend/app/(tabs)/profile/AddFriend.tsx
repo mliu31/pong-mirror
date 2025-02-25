@@ -3,15 +3,7 @@ import { Player } from '@/api/types';
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, SafeAreaView, FlatList } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import Checkbox from 'expo-checkbox';
 // import { SafeAreaProvider } from 'react-native-safe-area-context';
-
-import { getNonFriends } from '@/api/friends';
-import { Player } from '@/api/types';
-import { useLocalSearchParams } from 'expo-router';
-import { useEffect, useState } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
 
 export default function AddFriend() {
   // get list of all users
