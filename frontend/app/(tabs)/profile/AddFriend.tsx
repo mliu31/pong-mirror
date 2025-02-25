@@ -3,30 +3,55 @@ import { Player } from '@/api/types';
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, SafeAreaView, FlatList } from 'react-native';
-// import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import Checkbox from 'expo-checkbox';
 
 export default function AddFriend() {
-  // get list of all users
-  // filter list for non-friends
-  // set nonfriends state
-  // dispaly nonfriends
-
   const [nonfriends, setNonfriends] = useState<Player[]>([]);
+  const [checkedList, updateCheckedList] = useState<Player[]>([]);
 
   const fids = useLocalSearchParams().fids; // friends in array
-  console.log('friends ADDFRIEND.TSX: ', fids);
 
   useEffect(() => {
     getNonFriends(fids as string[]).then((res) => setNonfriends(res));
   }, [fids]);
 
+  const checkHandler = (nf: Player, checked: boolean) => {
+    if (checked && !checkedList.some((e) => e.email === nf.email)) {
+      updateCheckedList([...checkedList, nf]);
+    } else if (!checked && checkedList.some((e) => e.email === nf.email)) {
+      updateCheckedList(checkedList.filter((e) => e.email !== nf.email));
+    }
+  };
+
+  useEffect(() => {
+    console.log(checkedList);
+  }, [checkedList]);
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Add Friends</Text>
 
-      {nonfriends.map((nf) => {
-        return <Text key={nf.name}>{nf.name} </Text>;
-      })}
+      <SafeAreaProvider>
+        <SafeAreaView style={styles.container}>
+          <FlatList
+            data={nonfriends}
+            keyExtractor={(nf) => nf.email}
+            renderItem={({ item: nf }) => (
+              <View>
+                <Text>{nf.name}</Text>
+                <Checkbox
+                  style={styles.checkbox}
+                  value={
+                    checkedList.some((e) => e.email === nf.email) ? true : false
+                  }
+                  onValueChange={(e) => checkHandler(nf, e)}
+                />
+              </View>
+            )}
+          />
+        </SafeAreaView>
+      </SafeAreaProvider>
     </View>
   );
 }
@@ -40,5 +65,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold'
+  },
+  checkbox: {
+    margin: 8
   }
 });
