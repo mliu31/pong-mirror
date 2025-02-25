@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Text, View } from 'react-native';
 import { Player } from '@/api/types';
 import { getFriends } from '@/api/friends';
 
@@ -10,9 +11,9 @@ const FriendList = ({ fids }: { fids: string[] }) => {
   }, [fids]);
 
   return friends.map((friend) => (
-    <div key={friend._id}>
-      <h3>{friend.name}</h3>
-    </div>
+    <View key={friend._id}>
+      <Text>{friend.name}</Text>
+    </View>
   ));
 };
 
