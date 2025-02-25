@@ -8,3 +8,8 @@ export const getFriends = async (friendIds: string[]) => {
 
   return friends.map((f) => f.data);
 };
+
+export const getNonFriends = async (friendIds: string[]) => {
+  const allPlayers = await api.get<Player[]>('/players');
+  return allPlayers.data.filter((p) => !friendIds.includes(p._id));
+};
