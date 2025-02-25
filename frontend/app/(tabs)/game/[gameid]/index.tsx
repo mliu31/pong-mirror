@@ -4,7 +4,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { useEffect, useState } from 'react';
 import api from '@/api';
-import { Game, Player } from '@/api/types';
+import { Player } from '@/api/types';
 import { FlatList } from 'react-native-gesture-handler';
 import Checkbox from 'expo-checkbox';
 import { getAllPlayers } from '@/api/players';
