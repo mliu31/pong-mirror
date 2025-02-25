@@ -25,6 +25,7 @@ import { IPlayer } from './models/Player';
 import gamesRouter from './routes/gamesRouter';
 import playersRouter from './routes/playersRouter';
 import MongoStore from 'connect-mongo';
+import leaderboardRouter from './routes/leaderboardRouter';
 
 // if we can't connect to the database, exit immediately - don't let Express start listening.
 // this handler must be registered before calling mongoose.connect.
@@ -99,51 +100,3 @@ app.get('/players', async (_, res) => {
 app.listen(env.PORT, () => {
   console.log(`Example app listening on port ${env.PORT}`);
 });
-
-app.put('/games/:gameid/players/:pid/team/:team', async (req, res) => {
-  const { gameid, pid, team } = req.params;
-  const game = await setPlayerTeam(gameid, pid, team);
-  res.json(game);
-});
-
-// Leaderboard and rank related routes
-
-/**
- * Recalculates and updates the ranks for all players.
- */
-app.post('/update-ranks', async (req, res) => {
-  try {
-    await updateRanks();
-    res.status(200).json({ message: 'Ranks updated successfully.' });
-  } catch (error) {
-    console.error('Error updating ranks:', error);
-    res.status(500).json({ error: 'Failed to update ranks.' });
-  }
-});
-
-/**
- * Fetches leaderboard data based on selected tab
- */
-app.get('/leaderboard', (async (req, res) => {
-  try {
-    const tab = req.query.tab as 'Top' | 'League';
-    const userIdParam = req.query.userId as string;
-    if (!tab || !userIdParam) {
-      return res
-        .status(400)
-        .json({ error: 'Missing required query parameters: tab, userId' });
-    }
-    const userId = parseInt(userIdParam, 10);
-    if (isNaN(userId)) {
-      return res
-        .status(400)
-        .json({ error: 'Invalid userId, must be a number.' });
-    }
-
-    const leaderboardData = await fetchLeaderboard(tab, userId);
-    res.json(leaderboardData);
-  } catch (error) {
-    console.error('Error fetching leaderboard:', error);
-    res.status(500).json({ error: 'Failed to fetch leaderboard.' });
-  }
-}) as RequestHandler);
