@@ -72,9 +72,9 @@ export const setPlayerTeam = async (
   }
 };
 
-export const updateElo = async (gameId: string, winningColor: string) => {
+export const updateElo = async (gameid: string, winningColor: string) => {
   try {
-    const foundGame = await Game.findById(gameId);
+    const foundGame = await Game.findById(gameid);
     if (!foundGame) {
       throw new Error('404 Game not found');
     }
@@ -90,15 +90,18 @@ export const updateElo = async (gameId: string, winningColor: string) => {
     // Update ELO scores in parallel
     await Promise.all(
       winningPlayers.map((player) =>
-        Player.findByIdAndUpdate(player.player.id, { $inc: { elo: 1 } })
+        Player.findByIdAndUpdate(player._id, { $inc: { elo: 1 } })
       )
     );
 
     await Promise.all(
       losingPlayers.map((player) =>
-        Player.findByIdAndUpdate(player.player.id, { $inc: { elo: -1 } })
+        Player.findByIdAndUpdate(player._id, { $inc: { elo: -1 } })
       )
     );
+
+    const allPlayers = foundGame.players.map((player) => player._id);
+    return Player.find({ _id: { $in: allPlayers } });
   } catch (error) {
     throw new Error('Internal server error: ' + error);
   }
