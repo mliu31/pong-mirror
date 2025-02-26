@@ -1,4 +1,5 @@
 import api from '.';
+import { Player } from './types';
 import { getAllPlayers } from './players';
 
 export const getFriends = async (friendIds: string[]) => {
