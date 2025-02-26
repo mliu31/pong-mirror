@@ -55,4 +55,12 @@ router.put('/:gameid/players/:pid/team/:team', async (req, res) => {
   res.json(game);
 });
 
+router.patch(':gameid/winningColor/:winningColor', async (req, res) => {
+  const { gameid, winningColor } = req.params;
+  res.json({
+    gameId: gameid,
+    winningColor: winningColor
+  });
+});
+
 export default router;
