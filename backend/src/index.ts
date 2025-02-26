@@ -27,6 +27,8 @@ import playersRouter from './routes/playersRouter';
 import MongoStore from 'connect-mongo';
 import leaderboardRouter from './routes/leaderboardRouter';
 
+// import updateElo from './controllers/game/leaderboard/updateElo';
+
 // if we can't connect to the database, exit immediately - don't let Express start listening.
 // this handler must be registered before calling mongoose.connect.
 mongoose.connection.on('error', (error) => {
