@@ -13,4 +13,5 @@ export interface Player {
   name: string;
   email: string;
   friends: string[];
+  elo: number;
 }
