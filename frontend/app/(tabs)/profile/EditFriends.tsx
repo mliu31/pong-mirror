@@ -1,80 +1,71 @@
-import { getAllPlayers } from '@/api/players';
+import { getNonFriends, getFriends } from '@/api/friends';
 import { Player } from '@/api/types';
-import { useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, SafeAreaView, FlatList } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Checkbox from 'expo-checkbox';
-import { addFriend, removeFriend } from '@/api/friends';
 
-export default function EditFriend() {
-  // read in params
-  const { friendIds, pid } = useLocalSearchParams<{
-    friendIds: string;
-    pid: string;
-  }>();
+export default function AddFriend() {
+  const [nonfriends, setNonfriends] = useState<Player[]>([]);
+  const [friends, setFriends] = useState<Player[]>([]);
 
-  // state for friend ids and sorted list of friends/nonfriends
-  const [fids, setFids] = useState<Set<string>>(new Set());
-  const [sortedPlayers, setSortedPlayers] = useState<Player[]>([]);
+  // const [checkedList, updateCheckedList] = useState<Player[]>([]);
 
-  // on page load
+  const { friendIds } = useLocalSearchParams<{ friendIds: string[] }>();
+
   useEffect(() => {
-    const newFids = new Set(JSON.parse(friendIds) as string[]);
+    getNonFriends(friendIds).then((res) => setNonfriends(res));
+    getFriends(friendIds).then((res) => setFriends(res));
+  }, [friendIds]);
 
-    // update state as set of friend ids
-    setFids(new Set(newFids));
+  useEffect(() => {
+    console.log('friends: ', friends);
+    console.log('nonfriends', nonfriends);
+  }, [friends, nonfriends]);
 
-    getAllPlayers().then((res) => {
-      const players = res.data;
-      //  sorts all players into friends and nonfriends
-      players.sort((a: Player, b: Player) => {
-        const aIsFriend = newFids.has(a._id);
-        const bIsFriend = newFids.has(b._id);
+  // const checkHandler = (nf: Player, checked: boolean) => {
+  // if person in friend list,
+  // remove from friend list db, state, & uncheck box
+  // if person in nonfriend list, add to friend list in db, state, and check box
+  // };
 
-        if (aIsFriend === bIsFriend) return 0;
-        else if (aIsFriend && !bIsFriend) return -1;
-        else return 1;
-      });
-      setSortedPlayers(players);
-    });
-  }, [friendIds, pid]);
-
-  const checkboxHandler = (isChecked: boolean, fid: string) => {
-    if (isChecked) {
-      setFids((prevFids) => new Set(prevFids.add(fid)));
-      addFriend(pid, fid);
-    } else {
-      setFids((prevFids) => {
-        const newFids = new Set(prevFids);
-        newFids.delete(fid);
-        return newFids;
-      });
-      removeFriend(pid, fid);
-    }
-  };
-
-  // friend item in flatlist
-  const Item = ({ name, _id }: { name: string; _id: string }) => (
-    <View style={styles.section}>
-      <Checkbox
-        style={styles.checkbox}
-        value={fids.has(_id)}
-        onValueChange={(isChecked) => checkboxHandler(isChecked, _id)}
-      />
-      <Text style={styles.paragraph}>{name}</Text>
+  const Item = ({ _id, name, email, friends, elo }: Player) => (
+    <View>
+      <Text>
+        {name} {elo}
+      </Text>
     </View>
   );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Edit Friends</Text>
+      <Text style={styles.title}>Add Friends</Text>
+
+      {friends.map((f) => (
+        <View key={f._id}>
+          <Text>{f.name}</Text>
+        </View>
+      ))}
+      {nonfriends.map((nf) => (
+        <View key={nf._id}>
+          <Text>{nf.name}</Text>
+        </View>
+      ))}
+
       <SafeAreaProvider>
         <SafeAreaView style={styles.container}>
           <FlatList
-            data={sortedPlayers}
-            renderItem={({ item }) => <Item name={item.name} _id={item._id} />}
-            keyExtractor={(item) => item._id}
+            data={friends}
+            renderItem={({ item }) => (
+              <Item
+                name={item.name}
+                email={item.email}
+                friends={item.friends}
+                elo={item.elo}
+              />
+            )}
+            keyExtractor={(item) => item.id}
           />
         </SafeAreaView>
       </SafeAreaProvider>
@@ -94,12 +85,5 @@ const styles = StyleSheet.create({
   },
   checkbox: {
     margin: 8
-  },
-  section: {
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  paragraph: {
-    fontSize: 15
   }
 });
