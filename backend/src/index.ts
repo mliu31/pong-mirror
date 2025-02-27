@@ -18,6 +18,11 @@ import {
 import { getAllPlayers } from './controllers/player/playerController';
 
 void Player;
+import authRoutes from './routes/authRouter.js';
+import { IPlayer } from './models/Player';
+import gamesRouter from './routes/gamesRouter';
+import playersRouter from './routes/playersRouter';
+import MongoStore from 'connect-mongo';
 
 // if we can't connect to the database, exit immediately - don't let Express start listening.
 // this handler must be registered before calling mongoose.connect.
@@ -44,7 +49,10 @@ app.use(
     secret: env.SECRET_KEY,
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false }
+    cookie: { secure: false },
+    store: MongoStore.create({
+      clientPromise: Promise.resolve(mongoose.connection.getClient())
+    })
   })
 );
 
