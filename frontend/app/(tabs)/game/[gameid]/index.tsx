@@ -28,7 +28,7 @@ export default function Route() {
         setPlayerUpdates((prev) => ({
           ...prev,
           // update from game data without causing infinite loop
-          ...(data as Game).players.reduce(
+          ...data.players.reduce(
             (acc, { player }) => ({
               ...acc,
               [player._id]: true

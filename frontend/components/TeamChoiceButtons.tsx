@@ -1,14 +1,20 @@
 import { updatePlayerTeam } from '@/api/games';
+import TEAM, { TeamValue } from '@/constants/TEAM';
 import React, { useState } from 'react';
 import { View, Button, StyleSheet, Text } from 'react-native';
 
-const TeamChoiceButtons = (props: { pid: string; gameid: string }) => {
-  const pid = props.pid;
-  const gameid = props.gameid;
+const TeamChoiceButtons = ({
+  pid,
+  gameid,
+  initialValue = TEAM.UNASSIGNED
+}: {
+  pid: string;
+  gameid: string;
+  initialValue?: TeamValue;
+}) => {
+  const [team, setTeam] = useState<TeamValue>(initialValue);
 
-  const [team, setTeam] = useState<string | null>(null);
-
-  const handleButtonPress = (buttonType: string) => {
+  const handleButtonPress = (buttonType: TeamValue) => {
     // Handle team selection
     setTeam(buttonType);
     updatePlayerTeam(pid, buttonType, gameid);
@@ -18,13 +24,13 @@ const TeamChoiceButtons = (props: { pid: string; gameid: string }) => {
     <View style={styles.container}>
       <Button
         title="Red Team"
-        onPress={() => handleButtonPress('RED')}
-        color={team === 'RED' ? 'red' : 'gray'}
+        onPress={() => handleButtonPress(TEAM.RED)}
+        color={team === TEAM.RED ? 'red' : 'gray'}
       />
       <Button
         title="Blue Team"
-        onPress={() => handleButtonPress('BLUE')}
-        color={team === 'BLUE' ? 'blue' : 'gray'}
+        onPress={() => handleButtonPress(TEAM.BLUE)}
+        color={team === TEAM.BLUE ? 'blue' : 'gray'}
       />
 
       {team && <Text>Selected Team: {team}</Text>}

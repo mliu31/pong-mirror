@@ -1,6 +1,16 @@
 import mongoose from 'mongoose';
 
-const playerSchema = new mongoose.Schema({
+export interface IPlayer extends Document {
+  userID: number;
+  name: string;
+  email: string;
+  friends: string[];
+  elo: number;
+  rank: number;
+  score: number;                         
+}
+
+const playerSchema = new mongoose.Schema<IPlayer>({
   userID: {
     type: Number,
     required: true
@@ -19,7 +29,15 @@ const playerSchema = new mongoose.Schema({
   },
   rank: {
     type: Number
+    required: true,
+    unique: true
+  },
+  elo: {
+    type: Number
+  },
+  friends: {
+    type: [String]
   }
 });
 
-export default mongoose.model('Player', playerSchema);
+export default mongoose.model<IPlayer>('Player', playerSchema);
