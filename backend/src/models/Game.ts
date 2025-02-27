@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import TEAM from '../constants/team';
+import TEAM from '../constants/TEAM';
 
 const gameSchema = new mongoose.Schema({
   players: [
