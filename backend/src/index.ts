@@ -1,4 +1,5 @@
 import express from 'express';
+import { RequestHandler } from 'express';
 import session from 'express-session';
 import mongoose from 'mongoose';
 import env from './env';
@@ -115,7 +116,7 @@ app.post('/update-ranks', async (req, res) => {
 /**
  * Fetches leaderboard data based on selected tab
  */
-app.get('/leaderboard', async (req, res) => {
+app.get('/leaderboard', (async (req, res) => {
   try {
     const tab = req.query.tab as 'Top' | 'League';
     const userIdParam = req.query.userId as string;
@@ -137,8 +138,4 @@ app.get('/leaderboard', async (req, res) => {
     console.error('Error fetching leaderboard:', error);
     res.status(500).json({ error: 'Failed to fetch leaderboard.' });
   }
-});
-
-// function for updating elo
-
-// app.patch('/games/updateElo/:gameId/:winningColor', updateElo);
+}) as RequestHandler);
