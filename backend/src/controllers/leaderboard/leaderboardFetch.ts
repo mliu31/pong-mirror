@@ -1,7 +1,7 @@
 // Fetches appropriate data for leaderboard depending on tab
 
 import Player from '../../models/Player';
-import mongoose from 'mongoose';
+//import mongoose from 'mongoose';
 
 export interface LeaderboardItem {
   userID: number;
