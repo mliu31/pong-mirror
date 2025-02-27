@@ -1,5 +1,6 @@
+import env from './env';
 import server from './server';
-import env from './util/env';
+import './io';
 
 server.listen(env.PORT, () => {
   console.log(`Server listening on port ${env.PORT}`);
