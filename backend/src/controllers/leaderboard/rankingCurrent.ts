@@ -9,7 +9,7 @@ import Player from '../../models/Player';
 export async function updateRanks(): Promise<void> {
   try {
     // Retrieve all players sorted by score in descending order
-    const players = await Player.find().sort({ score: -1 });
+    const players = await Player.find().sort({ elo: -1 });
     // Update each player's rank (starting at 1)
     for (let i = 0; i < players.length; i++) {
       players[i].rank = i + 1;
