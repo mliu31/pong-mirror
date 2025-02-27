@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 export interface IPlayer extends Document {
   name: string;
   email: string;
+  friends: string[];
   elo: number;
 }
 
@@ -20,6 +21,9 @@ const playerSchema = new mongoose.Schema<IPlayer>({
     type: Number,
     required: true,
     default: 1000
+  },
+  friends: {
+    type: [String]
   }
 });
 
