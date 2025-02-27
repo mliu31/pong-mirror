@@ -8,6 +8,7 @@ import { IPlayer } from './models/Player';
 import gamesRouter from './routes/gamesRouter';
 import playersRouter from './routes/playersRouter';
 import MongoStore from 'connect-mongo';
+import corsOptions from './util/corsOptions';
 import server from './server';
 
 // if we can't connect to the database, exit immediately - don't let Express start listening.
@@ -20,8 +21,6 @@ mongoose.connection.on('error', (error) => {
 await mongoose.connect(env.MONGODB_URI);
 
 const app = express();
-
-const corsOptions = {};
 
 app.use(cors(corsOptions));
 app.use(express.json());
