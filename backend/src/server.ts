@@ -2,7 +2,8 @@ import { createServer } from 'http';
 import app from './app';
 import io from './io';
 
-const server = createServer(app);
+const server = createServer();
+
 server.on('request', app);
 io.attach(server);
 
