@@ -6,7 +6,7 @@ import Player from '../../models/Player';
 export interface LeaderboardItem {
   userID: number;
   name: string;
-  score: number;
+  elo: number;
   rank: number;
 }
 
@@ -36,7 +36,7 @@ async function getPlayersInRankRange(
     rank: { $gte: startRank, $lte: endRank }
   })
     .sort({ rank: 1 })
-    .select('userID name score rank')
+    .select('userID name score elo')
     .lean();
   return players as LeaderboardItem[];
 }

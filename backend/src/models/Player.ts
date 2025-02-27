@@ -7,7 +7,6 @@ export interface IPlayer extends Document {
   friends: string[];
   elo: number;
   rank: number;
-  score: number;
 }
 
 const playerSchema = new mongoose.Schema<IPlayer>({
@@ -22,10 +21,6 @@ const playerSchema = new mongoose.Schema<IPlayer>({
   email: {
     type: String,
     required: true
-  },
-  score: {
-    type: Number,
-    default: 0
   },
   rank: {
     type: Number,
