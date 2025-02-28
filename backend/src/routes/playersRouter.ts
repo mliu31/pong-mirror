@@ -1,7 +1,9 @@
 import express from 'express';
 import {
   getAllPlayers,
-  getPlayer
+  getPlayer,
+  addPlayerFriend,
+  removePlayerFriend
 } from '../controllers/player/playerController';
 
 // import { requireLoggedInHandler } from './authRouter';
@@ -16,70 +18,25 @@ router.get('/', async (_, res) => {
 });
 
 router.get('/:pid', async (req, res) => {
-  try {
-    const player = await getPlayer(req.params.pid);
-    return void res.status(200).json(player);
-  } catch (error) {
-    if (error instanceof Error) {
-      res.status(500).json({ message: error.message });
-    } else {
-      return void res.status(404).json({ message: 'Error finding player' });
-    }
-  }
+  const player = await getPlayer(req.params.pid);
+  if (player === null) return void res.status(404).send('Player not found');
+
+  return void res.json(player);
 });
 
 router.put('/:pid/friend/:fid', async (req, res) => {
-  try {
-    const updatedPlayer = await addPlayerFriend(req.params.pid, req.params.fid);
-    res.status(200).json(updatedPlayer);
-  } catch (error) {
-    if (error instanceof Error) {
-      res.status(500).json({ message: error.message });
-    } else {
-      res.status(500).json({
-        message: 'An unknown error occurred when adding friend'
-      });
-    }
-  }
+  const updatedPlayer = await addPlayerFriend(req.params.pid, req.params.fid);
+
+  res.json(updatedPlayer);
 });
 
 router.delete('/:pid/friend/:fid', async (req, res) => {
-  try {
-    const updatedPlayer = await removePlayerFriend(
-      req.params.pid,
-      req.params.fid
-    );
+  const updatedPlayer = await removePlayerFriend(
+    req.params.pid,
+    req.params.fid
+  );
 
-    res.status(200).json(updatedPlayer);
-  } catch (error) {
-    if (error instanceof Error) {
-      res.status(500).json({ message: error.message });
-    } else {
-      res.status(500).json({
-        message: 'An unknown error occurred when removing friend'
-      });
-    }
-  }
-});
-
-router.post('/:pid/friends', async (req, res) => {
-  const { friendId } = req.body;
-  if (!friendId) {
-    return void res.status(400).json({ message: 'friendId is required' });
-  }
-  try {
-    const updatedPlayer = await addFriend(req.params.pid, friendId);
-    if (!updatedPlayer) {
-      return void res.status(404).json({ message: 'Player not found' });
-    }
-    res.json(updatedPlayer);
-  } catch (error) {
-    if (error instanceof Error && error.message === 'Friend not found') {
-      return void res.status(404).json({ message: error.message });
-    }
-    console.error('Error adding friend:', error);
-    res.status(500).json({ message: 'Error adding friend', error });
-  }
+  res.json(updatedPlayer);
 });
 
 export default router;

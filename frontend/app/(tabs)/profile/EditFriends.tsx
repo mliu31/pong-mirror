@@ -1,4 +1,5 @@
 import { getAllPlayers } from '@/api/players';
+// import { addFriend, removeFriend } from '@/api/friends';
 import { Player } from '@/api/types';
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -31,12 +32,14 @@ export default function EditFriend() {
     // update backend
   }, [fids]);
 
-  const checkboxHandler = (isChecked: boolean, _id: string) => {
-    console.log(isChecked, _id);
+  const checkboxHandler = (isChecked: boolean, fid: string) => {
+    console.log(isChecked, fid);
     if (isChecked) {
-      setFids((prevFids) => [...prevFids, _id]);
+      setFids((prevFids) => [...prevFids, fid]);
+      // addFriend(pid, fid); // need to read in pid from auth
     } else {
-      setFids((prevFids) => prevFids.filter((fid) => fid !== _id));
+      setFids((prevFids) => prevFids.filter((fid) => fid !== fid));
+      // removeFriend(pid, fid);
     }
   };
 
