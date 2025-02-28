@@ -9,14 +9,18 @@ import Checkbox from 'expo-checkbox';
 export default function EditFriend() {
   const [sortedPlayers, setSortedPlayers] = useState<Player[]>([]);
 
-  const { friendIds } = useLocalSearchParams<{ friendIds: string[] }>();
+  const [fids, setFids] = useState<string[]>(
+    useLocalSearchParams<{ friendIds: string[] }>().friendIds
+  );
+
+  const [isChecked, setChecked] = useState(false);
 
   useEffect(() => {
     getAllPlayers().then((res) => {
       const players = res.data;
       players.sort((a: Player, b: Player) => {
-        const aIsFriend = friendIds.includes(a._id);
-        const bIsFriend = friendIds.includes(b._id);
+        const aIsFriend = fids.includes(a._id);
+        const bIsFriend = fids.includes(b._id);
 
         if (aIsFriend === bIsFriend) return 0;
         else if (aIsFriend && !bIsFriend) return -1;
@@ -24,54 +28,49 @@ export default function EditFriend() {
       });
       setSortedPlayers(players);
     });
-  }, [friendIds]);
+  });
 
-  // const checkHandler = (player: Player, checked: boolean) => {
-  //   console.log(player, checked);
+  // useEffect(() => {
+  // update backend
+  // }, [friendIds]);
 
-  //   // if person in friend list,
-  //   // remove from friend list db, state, & uncheck box
-  //   // if person in nonfriend list, add to friend list in db, state, and check box
+  // const checkboxHandler = (isChecked: boolean, _id: string) => {
+  //   console.log('pressed');
+  //   console.log(isChecked, _id);
+
+  //   if (isChecked) setFids([...fids, _id]);
+  //   else setFids(fids.filter((pid) => pid !== _id));
   // };
 
-  // const Item = ({ _id, name, email, friends, elo }: Player) => (
-  //   <View>
-  //     <Text>
-  //       {name} {elo}
-  //     </Text>
-  //     <Checkbox
-  //       style={styles.checkbox}
-  //       value={friends.some((friend) => friend._id === _id)}
-  //       onValueChange={(checked) =>
-  //         checkHandler({ _id, name, email, friends, elo }, checked)
-  //       }
-  //       color={
-  //         friends.some((friend) => friend._id === _id) ? '#4630EB' : undefined
-  //       }
-  //     />
-  //   </View>
-  // );
+  // friend item in flatlist
+  const Item = ({ name, _id }: { name: string; _id: string }) => (
+    <View style={styles.section}>
+      <Checkbox
+        style={styles.checkbox}
+        // value={fids.includes(_id)}
+        value={isChecked}
+        // onValueChange={(isChecked) => {
+        //   console.log('value changing....');
+        //   checkboxHandler(isChecked, _id);
+        // }}
+        onValueChange={(val) => console.log(val)}
+      />
+      <Text style={styles.paragraph}>{name}</Text>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Edit Friends</Text>
-
-      {sortedPlayers.map((f) => (
-        <View key={f._id}>
-          <Text>{f.name}</Text>
-        </View>
-      ))}
-
-      {/* 
       <SafeAreaProvider>
         <SafeAreaView style={styles.container}>
           <FlatList
-            data={friends}
-            renderItem={({ item }) => <Item {...item} />}
-            keyExtractor={(f) => f._id}
+            data={sortedPlayers}
+            renderItem={({ item }) => <Item name={item.name} _id={item._id} />}
+            keyExtractor={(item) => item._id}
           />
         </SafeAreaView>
-      </SafeAreaProvider> */}
+      </SafeAreaProvider>
     </View>
   );
 }
@@ -88,5 +87,12 @@ const styles = StyleSheet.create({
   },
   checkbox: {
     margin: 8
+  },
+  section: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  paragraph: {
+    fontSize: 15
   }
 });
