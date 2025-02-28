@@ -8,12 +8,8 @@ import Checkbox from 'expo-checkbox';
 
 export default function EditFriend() {
   const [sortedPlayers, setSortedPlayers] = useState<Player[]>([]);
-
-  const [fids, setFids] = useState<string[]>(
-    useLocalSearchParams<{ friendIds: string[] }>().friendIds
-  );
-
-  const [isChecked, setChecked] = useState(false);
+  const { friendIds } = useLocalSearchParams<{ friendIds: string }>();
+  const [fids, setFids] = useState<string[]>(JSON.parse(friendIds));
 
   useEffect(() => {
     getAllPlayers().then((res) => {
@@ -28,32 +24,29 @@ export default function EditFriend() {
       });
       setSortedPlayers(players);
     });
-  });
+  }, []);
 
-  // useEffect(() => {
-  // update backend
-  // }, [friendIds]);
+  useEffect(() => {
+    console.log('fids: ', fids);
+    // update backend
+  }, [fids]);
 
-  // const checkboxHandler = (isChecked: boolean, _id: string) => {
-  //   console.log('pressed');
-  //   console.log(isChecked, _id);
-
-  //   if (isChecked) setFids([...fids, _id]);
-  //   else setFids(fids.filter((pid) => pid !== _id));
-  // };
+  const checkboxHandler = (isChecked: boolean, _id: string) => {
+    console.log(isChecked, _id);
+    if (isChecked) {
+      setFids((prevFids) => [...prevFids, _id]);
+    } else {
+      setFids((prevFids) => prevFids.filter((fid) => fid !== _id));
+    }
+  };
 
   // friend item in flatlist
   const Item = ({ name, _id }: { name: string; _id: string }) => (
     <View style={styles.section}>
       <Checkbox
         style={styles.checkbox}
-        // value={fids.includes(_id)}
-        value={isChecked}
-        // onValueChange={(isChecked) => {
-        //   console.log('value changing....');
-        //   checkboxHandler(isChecked, _id);
-        // }}
-        onValueChange={(val) => console.log(val)}
+        value={fids.includes(_id)}
+        onValueChange={(isChecked) => checkboxHandler(isChecked, _id)}
       />
       <Text style={styles.paragraph}>{name}</Text>
     </View>
