@@ -13,8 +13,10 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { ThemedText } from '@/components/ThemedText';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Dimensions } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import axios, { Axios } from 'axios';
+import { BackButton } from '../../../../components/BackButton';
+import ClickWinner from './clickWinner';
 
 const styles = StyleSheet.create({
   playerViews: {
@@ -33,47 +35,20 @@ const styles = StyleSheet.create({
 });
 
 export default function WinnerScreen() {
-  const router = useRouter();
-
-  // const clickWinner = async (teamColor: String, gameId: Number) => {
-  //   try {
-  //     const response = await axios.post('http://localhost:3000/games/id', {
-  //       headers: {
-  //         'Content-Type': 'application/json'
-  //       }
-  //     });
-
-  //     return response.data.gameId;
-  //   } catch {
-  //     console.error(
-  //       'Error fetching game ID:',
-  //       Error.response.data || Error.message
-  //     );
-  //   }
-  // };
+  const { thisGameId } = useLocalSearchParams<{ gameid: string }>();
 
   return (
     <SafeAreaProvider>
       <View>
-        <View style={styles.fixedButton}></View>
-        <Button title="Back" onPress={() => router.back()}></Button>
+        <BackButton></BackButton>
         <View
           style={{ flexDirection: 'column', justifyContent: 'space-between' }}
         ></View>
-        <TouchableHighlight onPress={() => router.navigate('/winner')}>
-          <View style={[styles.playerViews, { backgroundColor: '#D2042D' }]}>
-            <ThemedText>Red Team</ThemedText>
-          </View>
-        </TouchableHighlight>
+        <ClickWinner teamColor="RED" gameid={thisGameId} />
         <View style={{ flexDirection: 'column', alignItems: 'center' }}>
           <ThemedText>Select Winner</ThemedText>
         </View>
-
-        <TouchableHighlight onPress={() => router.navigate('/inProgress')}>
-          <View style={[styles.playerViews, { backgroundColor: '#0000FF' }]}>
-            <ThemedText>Blue Team</ThemedText>
-          </View>
-        </TouchableHighlight>
+        <ClickWinner teamColor="BLUE" gameid={thisGameId} />
       </View>
     </SafeAreaProvider>
   );

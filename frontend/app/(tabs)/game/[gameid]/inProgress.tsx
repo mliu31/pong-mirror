@@ -7,6 +7,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Dimensions } from 'react-native';
 import { useRouter } from 'expo-router';
+import { BackButton } from '../../../../components/BackButton';
 
 const styles = StyleSheet.create({
   playerViews: {
@@ -30,7 +31,7 @@ export default function InProgress() {
     <SafeAreaProvider>
       <View>
         <View style={styles.fixedButton}></View>
-        <Button title="Back" onPress={() => router.back()}></Button>
+        <BackButton></BackButton>
 
         <View
           style={{ flexDirection: 'column', justifyContent: 'space-between' }}
