@@ -65,6 +65,7 @@ export const addPlayerFriend = async (pid: string, fid: string) => {
 export const getAllPlayers = () => Player.find();
 
 export const getPlayer = (pid: string) => Player.findById(pid);
+u;
 export const addPlayerFriend = async (pid: string, fid: string) => {
   const player = await getPlayer(pid);
   const friend = await getPlayer(fid);
