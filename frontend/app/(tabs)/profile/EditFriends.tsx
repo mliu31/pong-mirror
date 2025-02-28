@@ -1,4 +1,4 @@
-import { getNonFriends, getFriends } from '@/api/friends';
+import { getAllPlayers } from '@/api/players';
 import { Player } from '@/api/types';
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -6,69 +6,72 @@ import { StyleSheet, View, Text, SafeAreaView, FlatList } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Checkbox from 'expo-checkbox';
 
-export default function AddFriend() {
-  const [nonfriends, setNonfriends] = useState<Player[]>([]);
-  const [friends, setFriends] = useState<Player[]>([]);
-
-  // const [checkedList, updateCheckedList] = useState<Player[]>([]);
+export default function EditFriend() {
+  const [sortedPlayers, setSortedPlayers] = useState<Player[]>([]);
 
   const { friendIds } = useLocalSearchParams<{ friendIds: string[] }>();
 
   useEffect(() => {
-    getNonFriends(friendIds).then((res) => setNonfriends(res));
-    getFriends(friendIds).then((res) => setFriends(res));
+    getAllPlayers().then((res) => {
+      const players = res.data;
+      players.sort((a: Player, b: Player) => {
+        const aIsFriend = friendIds.includes(a._id);
+        const bIsFriend = friendIds.includes(b._id);
+
+        if (aIsFriend === bIsFriend) return 0;
+        else if (aIsFriend && !bIsFriend) return -1;
+        else return 1;
+      });
+      setSortedPlayers(players);
+    });
   }, [friendIds]);
 
-  useEffect(() => {
-    console.log('friends: ', friends);
-    console.log('nonfriends', nonfriends);
-  }, [friends, nonfriends]);
+  // const checkHandler = (player: Player, checked: boolean) => {
+  //   console.log(player, checked);
 
-  // const checkHandler = (nf: Player, checked: boolean) => {
-  // if person in friend list,
-  // remove from friend list db, state, & uncheck box
-  // if person in nonfriend list, add to friend list in db, state, and check box
+  //   // if person in friend list,
+  //   // remove from friend list db, state, & uncheck box
+  //   // if person in nonfriend list, add to friend list in db, state, and check box
   // };
 
-  const Item = ({ _id, name, email, friends, elo }: Player) => (
-    <View>
-      <Text>
-        {name} {elo}
-      </Text>
-    </View>
-  );
+  // const Item = ({ _id, name, email, friends, elo }: Player) => (
+  //   <View>
+  //     <Text>
+  //       {name} {elo}
+  //     </Text>
+  //     <Checkbox
+  //       style={styles.checkbox}
+  //       value={friends.some((friend) => friend._id === _id)}
+  //       onValueChange={(checked) =>
+  //         checkHandler({ _id, name, email, friends, elo }, checked)
+  //       }
+  //       color={
+  //         friends.some((friend) => friend._id === _id) ? '#4630EB' : undefined
+  //       }
+  //     />
+  //   </View>
+  // );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Add Friends</Text>
+      <Text style={styles.title}>Edit Friends</Text>
 
-      {friends.map((f) => (
+      {sortedPlayers.map((f) => (
         <View key={f._id}>
           <Text>{f.name}</Text>
         </View>
       ))}
-      {nonfriends.map((nf) => (
-        <View key={nf._id}>
-          <Text>{nf.name}</Text>
-        </View>
-      ))}
 
+      {/* 
       <SafeAreaProvider>
         <SafeAreaView style={styles.container}>
           <FlatList
             data={friends}
-            renderItem={({ item }) => (
-              <Item
-                name={item.name}
-                email={item.email}
-                friends={item.friends}
-                elo={item.elo}
-              />
-            )}
-            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => <Item {...item} />}
+            keyExtractor={(f) => f._id}
           />
         </SafeAreaView>
-      </SafeAreaProvider>
+      </SafeAreaProvider> */}
     </View>
   );
 }
