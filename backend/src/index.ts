@@ -1,18 +1,14 @@
 import express from 'express';
-import { RequestHandler } from 'express';
 import session from 'express-session';
 import mongoose from 'mongoose';
 import env from './env';
 import cors from 'cors';
 import Game from './models/Game';
 import Player from './models/Player';
-import { updateRanks } from './controllers/leaderboard/rankingCurrent';
-import { fetchLeaderboard } from './controllers/leaderboard/leaderboardFetch';
 
 import {
   createGame,
   PlayerUpdateRecord,
-  setPlayerTeam,
   updatePlayersInGame
 } from './controllers/game/gameController';
 import { getAllPlayers } from './controllers/player/playerController';
@@ -20,10 +16,7 @@ import { getAllPlayers } from './controllers/player/playerController';
 void Player;
 
 // import updateElo from './controllers/game/leaderboard/updateElo';
-import authRoutes from './routes/authRouter.js';
 import { IPlayer } from './models/Player';
-import gamesRouter from './routes/gamesRouter';
-import playersRouter from './routes/playersRouter';
 import MongoStore from 'connect-mongo';
 import leaderboardRouter from './routes/leaderboardRouter';
 

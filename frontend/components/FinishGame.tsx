@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { StyleSheet, Button, View, Dimensions } from 'react-native';
+import { StyleSheet, Button, View } from 'react-native';
 
 const styles = StyleSheet.create({
   fixedButton: {
@@ -19,7 +19,3 @@ export default function BackButton() {
     </>
   );
 }
-
-<View style={{ flexDirection: 'column', alignItems: 'center' }}>
-  <Button title="Finish Game" onPress={() => router.push('./winner')}></Button>
-</View>;

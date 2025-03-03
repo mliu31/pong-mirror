@@ -12,5 +12,5 @@ export const updatePlayerTeam = async (
   gameid: string
 ) => await api.put(`/games/${gameid}/players/${pid}/team/${team}`);
 
-export const updateElo = async (gameId: String, winningColor: String) =>
+export const updateElo = async (gameId: string, winningColor: string) =>
   await api.patch(`/games/${gameId}/winningColor/${winningColor}`);

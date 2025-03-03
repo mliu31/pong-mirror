@@ -1,13 +1,8 @@
-import React from 'react';
 import { StyleSheet, Button, View } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import winnerScreen from './winner';
-import { ThemedText } from '@/components/ThemedText';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Dimensions } from 'react-native';
 import { useRouter } from 'expo-router';
-
+import { ThemedText } from '@/components/ThemedText';
 
 const styles = StyleSheet.create({
   playerViews: {
@@ -31,10 +26,7 @@ export default function InProgress() {
     <SafeAreaProvider>
       <View>
         <View style={styles.fixedButton}></View>
-        <Button
-          title="Back"
-          onPress={() => router.back()}
-        ></Button>
+        <Button title="Back" onPress={() => router.back()}></Button>
 
         <View
           style={{ flexDirection: 'column', justifyContent: 'space-between' }}
