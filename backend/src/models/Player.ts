@@ -34,7 +34,8 @@ const playerSchema = new mongoose.Schema<IPlayer>({
   },
   friends: {
     type: [String],
-    required: true
+    required: true,
+    default: []
   }
 });
 
