@@ -4,7 +4,6 @@ import {
   Image,
   Platform,
   Button,
-  View,
   TouchableHighlight,
   Touchable
 } from 'react-native';
@@ -25,3 +24,18 @@ const styles = StyleSheet.create({
     paddingRight: Dimensions.get('window').height / 20
   }
 });
+
+const AddGroup: React.FC<AddButtonProps> = ({ category }) => {
+  const router = useRouter();
+  if (category === 'Friends') {
+    return (
+      <Button title="+" onPress={() => router.push('./addFriends')}></Button>
+    );
+  } else if (category === 'Groups') {
+    return (
+      <Button title="+" onPress={() => router.push('./addGroup')}></Button>
+    );
+  }
+};
+
+export default AddGroup;
