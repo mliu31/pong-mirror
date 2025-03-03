@@ -4,6 +4,7 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import TitleDiv from './titleDiv';
 import { View, Text } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
+import AddButton from './addButton';
 
 export default function HomeView() {
   return (
@@ -11,9 +12,7 @@ export default function HomeView() {
       <View>
         <TitleDiv />
       </View>
-      <View>
-        <ThemedText>Friends</ThemedText>
-      </View>
+      <AddButton category={'Friends'} />
     </SafeAreaProvider>
   );
 }
