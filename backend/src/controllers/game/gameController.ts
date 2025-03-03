@@ -71,3 +71,38 @@ export const setPlayerTeam = async (
     throw new Error('Internal server error' + e);
   }
 };
+
+export const updateElo = async (gameid: string, winningColor: string) => {
+  try {
+    const foundGame = await Game.findById(gameid);
+    if (!foundGame) {
+      throw new Error('404 Game not found');
+    }
+
+    // Winning and losing players based on the winningColor
+    const winningPlayers = foundGame.players.filter(
+      (player) => player.team === winningColor
+    );
+    const losingPlayers = foundGame.players.filter(
+      (player) => player.team !== winningColor
+    );
+
+    // Update ELO scores in parallel
+    await Promise.all(
+      winningPlayers.map((player) =>
+        Player.findByIdAndUpdate(player._id, { $inc: { elo: 1 } })
+      )
+    );
+
+    await Promise.all(
+      losingPlayers.map((player) =>
+        Player.findByIdAndUpdate(player._id, { $inc: { elo: -1 } })
+      )
+    );
+
+    const allPlayers = foundGame.players.map((player) => player._id);
+    return Player.find({ _id: { $in: allPlayers } });
+  } catch (error) {
+    throw new Error('Internal server error: ' + error);
+  }
+};

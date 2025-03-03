@@ -3,10 +3,20 @@ import session from 'express-session';
 import mongoose from 'mongoose';
 import env from './env';
 import cors from 'cors';
-import authRoutes from './routes/authRouter.js';
+import Game from './models/Game';
+import Player from './models/Player';
+
+import {
+  createGame,
+  PlayerUpdateRecord,
+  updatePlayersInGame
+} from './controllers/game/gameController';
+import { getAllPlayers } from './controllers/player/playerController';
+
+void Player;
+
+// import updateElo from './controllers/game/leaderboard/updateElo';
 import { IPlayer } from './models/Player';
-import gamesRouter from './routes/gamesRouter';
-import playersRouter from './routes/playersRouter';
 import MongoStore from 'connect-mongo';
 import leaderboardRouter from './routes/leaderboardRouter';
 
@@ -46,14 +56,42 @@ app.get('/', async (_, res) => {
   res.send(`Hello World!`);
 });
 
-app.use('/auth', authRoutes);
+app.post('/games', async (_, res) => {
+  const game = await createGame();
+  res.json({ id: game._id });
+});
 
-app.use('/games', gamesRouter);
+app.get('/games/:gameid', async (req, res) => {
+  const game = await Game.findById(req.params.gameid).populate(
+    'players.player'
+  );
+  res.json(game);
+});
 
-app.use('/players', playersRouter);
+const isPlayerUpdateRecord = (obj: unknown): obj is PlayerUpdateRecord =>
+  typeof obj === 'object' &&
+  obj !== null &&
+  Object.values(obj).every((v) => typeof v === 'boolean');
+
+app.patch('/games/:id/players', async (req, res) => {
+  const { id: gameId } = req.params;
+
+  const playerUpdates = req.body;
+  if (!isPlayerUpdateRecord(playerUpdates)) {
+    return void res
+      .status(400)
+      .send('Invalid request body, expected Record<string, boolean>');
+  }
+
+  return void res.json(await updatePlayersInGame(gameId, playerUpdates));
+});
+
+app.get('/players', async (_, res) => {
+  res.json(await getAllPlayers());
+});
 
 app.use('/leaderboard', leaderboardRouter);
 
 app.listen(env.PORT, () => {
-  console.log(`Server listening on port ${env.PORT}`);
+  console.log(`Example app listening on port ${env.PORT}`);
 });

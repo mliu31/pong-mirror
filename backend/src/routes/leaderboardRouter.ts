@@ -1,8 +1,8 @@
 import express from 'express';
 import { RequestHandler } from 'express';
-import Player from './models/Player';
-import { updateRanks } from './controllers/leaderboard/rankingCurrent';
-import { fetchLeaderboard } from './controllers/leaderboard/leaderboardFetch';
+import Player from '../models/Player';
+import { updateRanks } from '../controllers/leaderboard/rankingCurrent';
+import { fetchLeaderboard } from '../controllers/leaderboard/leaderboardFetch';
 
 void Player;
 
