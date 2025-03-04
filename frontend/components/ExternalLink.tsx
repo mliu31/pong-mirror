@@ -10,7 +10,8 @@ export function ExternalLink({ href, ...rest }: Props) {
     <Link
       target="_blank"
       {...rest}
-      href={href as ExternalPathString}
+      // @ts-expect-error we are specifically ignoring the prop type here.
+      href={href}
       onPress={async (event) => {
         if (Platform.OS !== 'web') {
           // Prevent the default behavior of linking to the default browser on native.
