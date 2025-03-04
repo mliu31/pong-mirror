@@ -77,9 +77,6 @@ export const updateElo = async (gameid: string, winningColor: string) => {
       )
     );
 
-    // Update ranks after Elo changes
-    await updateRanks();
-
     const allPlayers = foundGame.players.map((player) => player._id);
     return Player.find({ _id: { $in: allPlayers } });
   } catch (error) {
