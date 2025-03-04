@@ -1,4 +1,5 @@
 import api from '.';
+import { LeaderboardItem } from '@/app/(tabs)/leaderboard';
 
 // Define the shape of the API response from the backend
 interface LeaderboardResponse {
