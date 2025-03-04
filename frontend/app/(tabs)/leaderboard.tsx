@@ -1,50 +1,60 @@
-import React, { useState } from 'react';
-import { SafeAreaView, Text, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  SafeAreaView,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  View
+} from 'react-native';
 import LeaderboardNav from '@/components/leaderboard/leaderboard-nav';
 import LeaderboardRanking from '@/components/leaderboard/leaderboard-core';
+import { fetchLeaderboard } from '@/api/leaderboard';
 
 type Tab = 'Top' | 'League';
 
 export interface LeaderboardItem {
   userID: number;
+  name: string;
+  elo: number;
   rank: number;
-  username: string;
-  score: number;
 }
 
-// Hardcoded dummy data for the "Top"
-const topLeaderboardItems: LeaderboardItem[] = [
-  { userID: 1, rank: 1, username: 'User1', score: 100 },
-  { userID: 1, rank: 2, username: 'User2', score: 95 },
-  { userID: 1, rank: 3, username: 'User3', score: 90 },
-  { userID: 1, rank: 4, username: 'User4', score: 85 },
-  { userID: 1, rank: 5, username: 'User5', score: 80 },
-  { userID: 1, rank: 6, username: 'User6', score: 75 },
-  { userID: 1, rank: 7, username: 'User7', score: 70 },
-  { userID: 1, rank: 8, username: 'User8', score: 65 },
-  { userID: 1, rank: 9, username: 'User9', score: 60 },
-  { userID: 1, rank: 10, username: 'User10', score: 55 }
-];
-
-// Hardcoded dummy data for the "League"
-const leagueLeaderboardItems: LeaderboardItem[] = [
-  { userID: 1, rank: 20, username: 'User20', score: 40 },
-  { userID: 1, rank: 21, username: 'User21', score: 38 },
-  { userID: 1, rank: 22, username: 'User22', score: 36 },
-  { userID: 1, rank: 23, username: 'You', score: 34 }, // Assume current user
-  { userID: 1, rank: 24, username: 'User24', score: 32 },
-  { userID: 1, rank: 25, username: 'User25', score: 30 }
-];
-
 const LeaderboardScreen: React.FC = () => {
+  // State management for tab selection
   const [currentTab, setCurrentTab] = useState<Tab>('Top');
+  // State to store leaderboard data from API
+  const [items, setItems] = useState<LeaderboardItem[]>([]);
+  // Loading state for API calls
+  const [isLoading, setIsLoading] = useState(true);
+  // Error state for API failures
+  const [error, setError] = useState<string | null>(null);
+
+  // TODO: Get actual user ID from auth context
+  const currentUserId = 1; // Temporary hardcoded user ID
+
+  // Effect hook to fetch leaderboard data whenever tab changes
+  useEffect(() => {
+    const loadLeaderboard = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const response = await fetchLeaderboard(currentTab, currentUserId);
+        // No transformation needed, use the data directly
+        setItems(response.players);
+      } catch (err) {
+        setError('Failed to load leaderboard data');
+        console.error('Error loading leaderboard:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadLeaderboard();
+  }, [currentTab, currentUserId]);
 
   const handleTabChange = (tab: Tab) => {
     setCurrentTab(tab);
   };
-
-  const itemsToDisplay =
-    currentTab === 'Top' ? topLeaderboardItems : leagueLeaderboardItems;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -54,8 +64,23 @@ const LeaderboardScreen: React.FC = () => {
       {/* Navigation Tabs */}
       <LeaderboardNav currentTab={currentTab} onTabChange={handleTabChange} />
 
-      {/* Leaderboard Ranking List */}
-      <LeaderboardRanking items={itemsToDisplay} />
+      {/* Conditional rendering based on loading/error states */}
+      {/* Show loading spinner while fetching data */}
+      {isLoading && (
+        <View style={styles.centerContent}>
+          <ActivityIndicator size="large" />
+        </View>
+      )}
+
+      {/* Show error message if API call fails */}
+      {error && (
+        <View style={styles.centerContent}>
+          <Text style={styles.errorText}>{error}</Text>
+        </View>
+      )}
+
+      {/* Show leaderboard only when data is loaded successfully */}
+      {!isLoading && !error && <LeaderboardRanking items={items} />}
     </SafeAreaView>
   );
 };
@@ -70,6 +95,16 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 16
+  },
+  // New styles for loading and error states
+  centerContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  errorText: {
+    color: 'red',
+    textAlign: 'center'
   }
 });
 
