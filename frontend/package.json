@@ -8,6 +8,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
     "start": "expo start",
     "test": "jest --watchAll",
     "web": "expo start --web"
