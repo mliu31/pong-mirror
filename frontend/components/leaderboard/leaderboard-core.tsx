@@ -1,27 +1,25 @@
 import React from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
-
-interface LeaderboardItem {
-  rank: number;
-  username: string;
-  score: number;
-}
+import { LeaderboardItem } from '@/app/(tabs)/leaderboard';
 
 interface LeaderboardRankingProps {
   items: LeaderboardItem[];
 }
 
 const LeaderboardRanking: React.FC<LeaderboardRankingProps> = ({ items }) => {
+  // Render individual leaderboard row
   const renderItem = ({ item }: { item: LeaderboardItem }) => (
     <View style={styles.rowContainer}>
+      {/* Rank column */}
       <View style={styles.rankContainer}>
         <Text>{item.rank}</Text>
       </View>
+      {/* Username column (takes up most space) */}
       <View style={styles.usernameContainer}>
-        <Text>{item.username}</Text>
+        <Text>{item.name}</Text>
       </View>
       <View style={styles.scoreContainer}>
-        <Text>{item.score}</Text>
+        <Text>{item.elo}</Text>
       </View>
     </View>
   );
@@ -30,7 +28,7 @@ const LeaderboardRanking: React.FC<LeaderboardRankingProps> = ({ items }) => {
     <FlatList
       contentContainerStyle={styles.container}
       data={items}
-      keyExtractor={(item) => item.rank.toString()}
+      keyExtractor={(item) => `${item.userID}-${item.rank}`}
       renderItem={renderItem}
     />
   );
@@ -41,6 +39,7 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: '#fff'
   },
+  // Row styling for 3-column layout
   rowContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -48,15 +47,16 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ccc'
   },
+  // Column styles with flex distribution
   rankContainer: {
-    flex: 1
+    flex: 1 // Takes up 1/5 of the space
   },
   usernameContainer: {
-    flex: 3
+    flex: 3 // Takes up 3/5 of the space
   },
   scoreContainer: {
-    flex: 1,
-    alignItems: 'flex-end'
+    flex: 1, // Takes up 1/5 of the space
+    alignItems: 'flex-end' // Right align the score
   }
 });
 
