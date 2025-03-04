@@ -9,10 +9,8 @@
     "backend"
   ],
   "scripts": {
-    "check": "bun -F '*' $(bun elide) check",
-    "elide": "if [[ ! $TERM == 'dumb' ]]; then echo '--elide-lines 0'; fi",
-    "lint": "bun lint:root && bun -F '*' $(bun elide) lint",
-    "lint:fix": "bun lint:root:fix && bun -F '*' $(bun elide) lint:fix",
+    "lint": "bun lint:root && bun -F '*' --elide-lines 0 lint",
+    "lint:fix": "bun lint:root:fix && bun -F '*' --elide-lines 0 lint:fix",
     "lint:root": "eslint .",
     "lint:root:fix": "eslint --fix ."
   },
