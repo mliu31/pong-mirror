@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc -b",
+    "check": "tsc --noEmit",
     "dev": "bun run --watch src/index.ts",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
