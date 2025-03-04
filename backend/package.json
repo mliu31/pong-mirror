@@ -7,6 +7,7 @@
     "build": "tsc -b",
     "dev": "bun run --watch src/index.ts",
     "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
     "preview": "bun run build && bun run dist/index.js"
   },
   "dependencies": {

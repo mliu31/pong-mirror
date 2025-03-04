@@ -9,8 +9,10 @@
     "backend"
   ],
   "scripts": {
-    "lint": "bun lint:root && bun -F '*' $([[ $- == *i* ]] && echo '--elide-lines 0') lint",
-    "lint:root": "eslint ."
+    "lint": "bun lint:root && bun -F '*' --elide-lines 0 lint",
+    "lint:fix": "bun lint:root:fix && bun -F '*' --elide-lines 0 lint:fix",
+    "lint:root": "eslint .",
+    "lint:root:fix": "eslint --fix ."
   },
   "dependencies": {
     "connect-mongo": "^5.1.0"
