@@ -6,6 +6,7 @@
   "main": "expo-router/entry",
   "scripts": {
     "android": "expo start --android",
+    "check": "tsc --noEmit",
     "ios": "expo start --ios",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
