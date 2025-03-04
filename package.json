@@ -9,6 +9,7 @@
     "backend"
   ],
   "scripts": {
+    "check": "bun -F '*' --elide-lines 0 check",
     "lint": "bun lint:root && bun -F '*' --elide-lines 0 lint",
     "lint:fix": "bun lint:root:fix && bun -F '*' --elide-lines 0 lint:fix",
     "lint:root": "eslint .",
