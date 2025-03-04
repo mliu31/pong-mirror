@@ -1,5 +1,4 @@
 import { getAllPlayers } from '@/api/players';
-// import { addFriend, removeFriend } from '@/api/friends';
 import { Player } from '@/api/types';
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -10,14 +9,15 @@ import Checkbox from 'expo-checkbox';
 export default function EditFriend() {
   const [sortedPlayers, setSortedPlayers] = useState<Player[]>([]);
   const { friendIds } = useLocalSearchParams<{ friendIds: string }>();
-  const [fids, setFids] = useState<string[]>(JSON.parse(friendIds));
+  const [fids, setFids] = useState<Set<string>>(new Set(JSON.parse(friendIds)));
 
   useEffect(() => {
     getAllPlayers().then((res) => {
+      //  sorts all players into friends and nonfriends
       const players = res.data;
       players.sort((a: Player, b: Player) => {
-        const aIsFriend = fids.includes(a._id);
-        const bIsFriend = fids.includes(b._id);
+        const aIsFriend = fids.has(a._id);
+        const bIsFriend = fids.has(b._id);
 
         if (aIsFriend === bIsFriend) return 0;
         else if (aIsFriend && !bIsFriend) return -1;
@@ -27,18 +27,18 @@ export default function EditFriend() {
     });
   }, []);
 
-  useEffect(() => {
-    console.log('fids: ', fids);
-    // update backend
-  }, [fids]);
-
   const checkboxHandler = (isChecked: boolean, fid: string) => {
     console.log(isChecked, fid);
+
     if (isChecked) {
-      setFids((prevFids) => [...prevFids, fid]);
+      setFids((prevFids) => new Set(prevFids.add(fid)));
       // addFriend(pid, fid); // need to read in pid from auth
     } else {
-      setFids((prevFids) => prevFids.filter((fid) => fid !== fid));
+      setFids((prevFids) => {
+        const newFids = new Set(prevFids);
+        newFids.delete(fid);
+        return newFids;
+      });
       // removeFriend(pid, fid);
     }
   };
@@ -48,7 +48,7 @@ export default function EditFriend() {
     <View style={styles.section}>
       <Checkbox
         style={styles.checkbox}
-        value={fids.includes(_id)}
+        value={fids.has(_id)}
         onValueChange={(isChecked) => checkboxHandler(isChecked, _id)}
       />
       <Text style={styles.paragraph}>{name}</Text>
