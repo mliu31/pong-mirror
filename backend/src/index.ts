@@ -1,4 +1,4 @@
-import express from 'express';
+import * as express from 'express';
 import session from 'express-session';
 import mongoose from 'mongoose';
 import env from './env';
@@ -9,19 +9,16 @@ import Player from './models/Player';
 import {
   createGame,
   PlayerUpdateRecord,
-  updatePlayersInGame
+  updatePlayersInGame,
 } from './controllers/game/gameController';
 import { getAllPlayers } from './controllers/player/playerController';
 
-void Player;
-
-// import updateElo from './controllers/game/leaderboard/updateElo';
 import { IPlayer } from './models/Player';
 import MongoStore from 'connect-mongo';
 import leaderboardRouter from './routes/leaderboardRouter';
 
-// if we can't connect to the database, exit immediately - don't let Express start listening.
-// this handler must be registered before calling mongoose.connect.
+// Exit immediately if unable to connect to the database.
+// This must be registered before calling mongoose.connect.
 mongoose.connection.on('error', (error) => {
   console.error(error);
   process.exit(1);
@@ -47,8 +44,8 @@ app.use(
     saveUninitialized: true,
     cookie: { secure: false },
     store: MongoStore.create({
-      clientPromise: Promise.resolve(mongoose.connection.getClient())
-    })
+      clientPromise: Promise.resolve(mongoose.connection.getClient()),
+    }),
   })
 );
 
@@ -62,9 +59,7 @@ app.post('/games', async (_, res) => {
 });
 
 app.get('/games/:gameid', async (req, res) => {
-  const game = await Game.findById(req.params.gameid).populate(
-    'players.player'
-  );
+  const game = await Game.findById(req.params.gameid).populate('players.player');
   res.json(game);
 });
 
@@ -75,23 +70,40 @@ const isPlayerUpdateRecord = (obj: unknown): obj is PlayerUpdateRecord =>
 
 app.patch('/games/:id/players', async (req, res) => {
   const { id: gameId } = req.params;
-
   const playerUpdates = req.body;
+
   if (!isPlayerUpdateRecord(playerUpdates)) {
-    return void res
+    return res
       .status(400)
       .send('Invalid request body, expected Record<string, boolean>');
   }
 
-  return void res.json(await updatePlayersInGame(gameId, playerUpdates));
+  const updatedGame = await updatePlayersInGame(gameId, playerUpdates);
+  return res.json(updatedGame);
 });
 
 app.get('/players', async (_, res) => {
-  res.json(await getAllPlayers());
+  const players = await getAllPlayers();
+  res.json(players);
 });
 
 app.use('/leaderboard', leaderboardRouter);
 
+app.get('/profile/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const player = await Player.findById(id);
+    if (!player) {
+      return res.status(404).json({ error: 'Player not found' });
+    }
+    res.json(player);
+  } catch (error) {
+    console.error('Error fetching player profile:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Ensure app.listen is the final call in your file (or has a semicolon after it) so that subsequent route calls aren’t chained to its return value.
 app.listen(env.PORT, () => {
   console.log(`Example app listening on port ${env.PORT}`);
 });
