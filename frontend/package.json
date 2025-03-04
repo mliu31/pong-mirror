@@ -5,9 +5,9 @@
   "type": "module",
   "main": "expo-router/entry",
   "scripts": {
-    "android": "DARK_MODE=media expo start --android",
+    "android": "expo start --android",
     "check": "tsc --noEmit",
-    "ios": "DARK_MODE=media expo start --ios",
+    "ios": "expo start --ios",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "start": "expo start",
