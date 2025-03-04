@@ -5,6 +5,7 @@ import TitleDiv from './titleDiv';
 import { View, Text } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import AddButton from './addButton';
+import FriendBox from './friendBox';
 
 export default function HomeView() {
   return (
@@ -13,6 +14,8 @@ export default function HomeView() {
         <TitleDiv />
       </View>
       <AddButton category={'Friends'} />
+      <FriendBox />
+      <AddButton category={'Groups'} />
     </SafeAreaProvider>
   );
 }
