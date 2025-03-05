@@ -1,12 +1,11 @@
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { getPlayer } from '@/api/players';
 import { Player } from '@/api/types';
-import { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
-import Friends from '@/components/Friends/Friends';
 
 export default function Profile() {
   // For now, using a hardcoded player ID.
-  // TODO: Replace this with the logged-in user's ID when authentication is implemented.
+  // Replace this with the logged-in user's ID when authentication is implemented.
   const playerId = '67b3935b7cf6fef618ed4891';
 
   const [player, setPlayer] = useState<Player | null>(null);
@@ -43,12 +42,24 @@ export default function Profile() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{player?.name}</Text>
+      <Text style={styles.title}>Profile</Text>
       {/* Display Player Information */}
+      <Text style={styles.info}>Name: {player?.name}</Text>
       <Text style={styles.info}>Email: {player?.email}</Text>
-      <Text style={styles.info}>ELO: {player?.elo}</Text>
 
-      {player && <Friends pid={player._id} />}
+      {/* Display Friends List */}
+      <Text style={styles.subTitle}>Friends:</Text>
+      <View style={styles.friendsList}>
+        {player?.friends.length ? (
+          player.friends.map((friend, index) => (
+            <Text key={index} style={styles.friend}>
+              {friend}
+            </Text>
+          ))
+        ) : (
+          <Text style={styles.info}>No friends added yet.</Text>
+        )}
+      </View>
     </View>
   );
 }
