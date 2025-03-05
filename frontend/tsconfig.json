@@ -4,8 +4,7 @@
     "jsx": "react-jsx",
     "strict": true,
     "paths": {
-      "@/*": ["./*"],
-      "tailwind.config": ["./tailwind.config.js"]
+      "@/*": ["./*"]
     },
     "esModuleInterop": true
   },
