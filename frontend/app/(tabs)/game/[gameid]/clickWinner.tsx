@@ -29,7 +29,7 @@ const ClickWinner: React.FC<ClickWinnerProps> = ({ teamColor, gameid }) => {
   }
   const sendWinner = async (teamColor: string, gameid: string) => {
     try {
-      const response = await axios.patch(
+      await axios.patch(
         'http://localhost:3000/games/' + gameid + '/winningColor/' + teamColor
       );
       router.navigate('/leaderboard');
