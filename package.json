@@ -19,8 +19,6 @@
     "connect-mongo": "^5.1.0"
   },
   "devDependencies": {
-    "@types/react": "^19.0.10",
-    "@types/react-dom": "^19.0.4",
     "eslint-plugin-package-json": "^0.26.0",
     "typescript": "^5.7.3"
   }
