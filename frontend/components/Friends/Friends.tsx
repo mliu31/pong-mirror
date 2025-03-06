@@ -3,10 +3,10 @@ import { router } from 'expo-router';
 import { Button, StyleSheet, View, Text } from 'react-native';
 
 const Friends = ({ fids }: { fids: string[] }) => {
-  const addFriendHandler = (fids: string[]) => {
+  const EditFriendHandler = (fids: string[]) => {
     router.push({
-      pathname: '/profile/AddFriend',
-      params: { fids: JSON.stringify(fids) }
+      pathname: '/profile/EditFriends',
+      params: { friendIds: JSON.stringify(fids) }
     });
   };
 
@@ -14,7 +14,7 @@ const Friends = ({ fids }: { fids: string[] }) => {
     <View style={styles.container}>
       <Text style={styles.title}>Friends</Text>
       <FriendList fids={fids} />
-      <Button onPress={() => addFriendHandler(fids)} title="Add Friend" />
+      <Button onPress={() => EditFriendHandler(fids)} title="Edit Friends" />
     </View>
   );
 };

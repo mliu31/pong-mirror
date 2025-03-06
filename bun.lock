@@ -43,6 +43,7 @@
       "name": "carpooling-frontend",
       "version": "1.0.0",
       "dependencies": {
+        "@expo/metro-runtime": "~4.0.1",
         "@expo/vector-icons": "^14.0.2",
         "@react-native-community/masked-view": "^0.1.11",
         "@react-navigation/bottom-tabs": "^7.2.0",
