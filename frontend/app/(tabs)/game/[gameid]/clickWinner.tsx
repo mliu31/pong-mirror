@@ -32,7 +32,7 @@ const ClickWinner: React.FC<ClickWinnerProps> = ({ teamColor, gameid }) => {
       const response = await axios.patch(
         'http://localhost:3000/games/' + gameid + '/winningColor/' + teamColor
       );
-      router.navigate(['../leaderboard/leaderboard-core']);
+      router.navigate('/leaderboard');
     } catch (error) {
       console.error('Error fetching game ID:', error);
     }
