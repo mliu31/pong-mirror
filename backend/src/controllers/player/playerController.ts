@@ -64,8 +64,13 @@ export const addPlayerFriend = async (pid: string, fid: string) => {
 
 export const getAllPlayers = () => Player.find();
 
-export const getPlayer = (pid: string) => Player.findById(pid);
-u;
+export const getPlayer = async (pid: string) => {
+  const player = await Player.findById(pid);
+  if (!player) {
+    throw new Error(`Player with ID ${pid} not found`);
+  }
+  return player;
+};
 export const addPlayerFriend = async (pid: string, fid: string) => {
   const player = await getPlayer(pid);
   const friend = await getPlayer(fid);
