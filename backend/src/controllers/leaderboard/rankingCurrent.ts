@@ -1,6 +1,3 @@
-// Maintains current state of leaderboard
-// TO DO: Add functionality to show same ranked players
-
 import Player from '../../models/Player';
 
 /**
