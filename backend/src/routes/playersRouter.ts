@@ -2,7 +2,6 @@ import express from 'express';
 import {
   getAllPlayers,
   getPlayer,
-  addFriend
 } from '../controllers/player/playerController';
 
 // import { requireLoggedInHandler } from './authRouter';
@@ -60,26 +59,6 @@ router.delete('/:pid/friend/:fid', async (req, res) => {
         message: 'An unknown error occurred when removing friend'
       });
     }
-  }
-});
-
-router.post('/:pid/friends', async (req, res) => {
-  const { friendId } = req.body;
-  if (!friendId) {
-    return void res.status(400).json({ message: 'friendId is required' });
-  }
-  try {
-    const updatedPlayer = await addFriend(req.params.pid, friendId);
-    if (!updatedPlayer) {
-      return void res.status(404).json({ message: 'Player not found' });
-    }
-    res.json(updatedPlayer);
-  } catch (error) {
-    if (error instanceof Error && error.message === 'Friend not found') {
-      return void res.status(404).json({ message: error.message });
-    }
-    console.error('Error adding friend:', error);
-    res.status(500).json({ message: 'Error adding friend', error });
   }
 });
 
