@@ -1,0 +1,41 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Start frontend web development server",
+      "type": "shell",
+      "command": "bun web",
+      "options": {
+        "cwd": "${workspaceFolder}/frontend"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "devGroup"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Start backend development server",
+      "type": "shell",
+      "command": "bun dev",
+      "options": {
+        "cwd": "${workspaceFolder}/backend"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "devGroup"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Start full stack in development",
+      "dependsOn": [
+        "Start frontend web development server",
+        "Start backend development server"
+      ],
+      "problemMatcher": []
+    }
+  ]
+}
