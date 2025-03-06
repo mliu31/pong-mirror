@@ -46,20 +46,6 @@ export default function Profile() {
       {/* Display Player Information */}
       <Text style={styles.info}>Email: {player?.email}</Text>
       <Text style={styles.info}>ELO: {player?.elo}</Text>
-
-      {/* Display Friends List */}
-      <Text style={styles.subTitle}>Friends:</Text>
-      <View style={styles.friendsList}>
-        {player?.friends.length ? (
-          player.friends.map((friend, index) => (
-            <Text key={index} style={styles.friend}>
-              {friend}
-            </Text>
-          ))
-        ) : (
-          <Text style={styles.info}>No friends added yet.</Text>
-        )}
-      </View>
     </View>
   );
 }
