@@ -64,51 +64,16 @@ export const addPlayerFriend = async (pid: string, fid: string) => {
 
 export const getAllPlayers = () => Player.find();
 
-export const getPlayer = async (pid: string) => {
-  const player = await Player.findById(pid);
-  if (!player) {
-    throw new Error(`Player with ID ${pid} not found`);
-  }
-  return player;
-};
-export const addPlayerFriend = async (pid: string, fid: string) => {
-  const player = await getPlayer(pid);
-  const friend = await getPlayer(fid);
+export const getPlayer = (pid: string) => Player.findById(pid);
 
-  if (!player) {
-    throw new Error(`Player with ID ${pid} not found`);
-  }
-
+export const addFriend = async (playerId: string, friendId: string) => {
+  const friend = await Player.findById(friendId);
   if (!friend) {
-    throw new Error(`Friend with ID ${fid} not found`);
+    throw new Error('Friend not found');
   }
-
-  const updatedPlayer = await Player.findByIdAndUpdate(
-    pid,
-    { $addToSet: { friends: fid } },
-    { new: true }
+  return Player.findByIdAndUpdate(
+    playerId,
+    { $push: { friends: friendId } },
+    { new: true } // Return the updated document
   );
-
-  return updatedPlayer;
-};
-
-export const removePlayerFriend = async (pid: string, fid: string) => {
-  const player = await getPlayer(pid);
-  const friend = await getPlayer(fid);
-
-  if (!player) {
-    throw new Error(`Player with ID ${pid} not found`);
-  }
-
-  if (!friend) {
-    throw new Error(`Friend with ID ${fid} not found`);
-  }
-
-  const updatedPlayer = await Player.findByIdAndUpdate(
-    pid,
-    { $pull: { friends: fid } },
-    { new: true }
-  );
-
-  return updatedPlayer;
 };
