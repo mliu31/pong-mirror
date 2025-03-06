@@ -8,15 +8,24 @@ import Player from '../../models/Player';
  */
 export async function updateRanks(): Promise<void> {
   try {
-    // Retrieve all players sorted by score in descending order
+    // Get all players sorted by elo in descending order
     const players = await Player.find().sort({ elo: -1 });
-    // Update each player's rank (starting at 1)
-    for (let i = 0; i < players.length; i++) {
-      players[i].rank = i + 1;
-      await players[i].save();
+
+    // Simply assign ranks 1,2,3... based on sorted elo
+    const updates = players.map((player, index) => ({
+      updateOne: {
+        filter: { _id: player._id },
+        update: { $set: { rank: index + 1 } }
+      }
+    }));
+
+    if (updates.length > 0) {
+      await Player.bulkWrite(updates);
     }
-    console.log('Leaderboard ranks updated.');
+
+    console.log('Rankings updated successfully');
   } catch (err) {
     console.error('Error updating ranks:', err);
+    throw err;
   }
 }

@@ -1,5 +1,6 @@
 import express, { RequestHandler } from 'express';
 import Player from '../models/Player';
+import { registerPlayer } from '../controllers/player/authController';
 
 const router = express.Router();
 
@@ -36,5 +37,7 @@ export const requireLoggedInHandler: RequestHandler = (req, res, next) => {
   }
   next();
 };
+
+router.post('/register', registerPlayer);
 
 export default router;
