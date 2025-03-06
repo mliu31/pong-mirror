@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
 });
 
 export default function WinnerScreen() {
-  const local = useLocalSearchParams();
+  const { gameid } = useLocalSearchParams() as { gameid: string };
 
   return (
     <SafeAreaProvider>
@@ -44,11 +44,11 @@ export default function WinnerScreen() {
         <View
           style={{ flexDirection: 'column', justifyContent: 'space-between' }}
         ></View>
-        <ClickWinner teamColor="RED" gameid={local.gameid} />
+        <ClickWinner teamColor="RED" gameid={gameid} />
         <View style={{ flexDirection: 'column', alignItems: 'center' }}>
           <ThemedText>Select Winner</ThemedText>
         </View>
-        <ClickWinner teamColor="BLUE" gameid={local.gameid} />
+        <ClickWinner teamColor="BLUE" gameid={gameid} />
       </View>
     </SafeAreaProvider>
   );
