@@ -23,8 +23,11 @@ const playerSchema = new mongoose.Schema<IPlayer>({
   },
   email: {
     type: String,
-    required: true,
-    unique: true
+    required: true
+  },
+  rank: {
+    type: Number,
+    required: true
   },
   rank: {
     type: Number,
