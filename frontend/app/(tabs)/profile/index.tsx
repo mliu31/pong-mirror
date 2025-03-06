@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
-import { getPlayer } from '@/api/players';
+import { getPlayer, addFriend } from '@/api/players';
 import { Player } from '@/api/types';
 
 export default function Profile() {
