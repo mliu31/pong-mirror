@@ -3,6 +3,7 @@ import {
   getAllPlayers,
   getPlayer
 } from '../controllers/player/playerController';
+
 // import { requireLoggedInHandler } from './authRouter';
 
 const router = express.Router();
