@@ -1,7 +1,7 @@
 import express from 'express';
 import {
   getAllPlayers,
-  getPlayer,
+  getPlayer
 } from '../controllers/player/playerController';
 
 // import { requireLoggedInHandler } from './authRouter';
