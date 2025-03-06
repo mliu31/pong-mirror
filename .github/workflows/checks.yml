@@ -1,4 +1,4 @@
-name: Lint with Bun
+name: Check for lint/build problems
 on:
   push:
     branches:
@@ -8,10 +8,11 @@ on:
       - main
 jobs:
   lint:
-    name: lint
+    name: lint and check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
       - run: bun install
       - run: bun lint
+      - run: bun check
