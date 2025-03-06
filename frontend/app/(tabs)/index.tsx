@@ -24,7 +24,7 @@ export default function HomeScreen() {
       <Friends fids={friendList} />
 
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
+        <ThemedText type="title">TEST!</ThemedText>
         <HelloWave />
       </ThemedView>
       <ThemedView style={styles.stepContainer}>

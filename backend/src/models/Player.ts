@@ -28,10 +28,14 @@ const playerSchema = new mongoose.Schema<IPlayer>({
     unique: true
   },
   elo: {
-    type: Number
+    type: Number,
+    required: true,
+    default: 1000
   },
   friends: {
-    type: [String]
+    type: [String],
+    required: true,
+    default: []
   }
 });
 

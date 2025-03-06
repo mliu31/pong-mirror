@@ -3,6 +3,7 @@ import {
   getGame,
   PlayerUpdateRecord,
   setPlayerTeam,
+  updateElo,
   updatePlayersInGame
 } from '../controllers/game/gameController';
 import express from 'express';
@@ -53,6 +54,11 @@ router.put('/:gameid/players/:pid/team/:team', async (req, res) => {
   const { gameid, pid, team } = req.params;
   const game = await setPlayerTeam(gameid, pid, team);
   res.json(game);
+});
+
+router.patch('/:gameid/winningColor/:winningColor', async (req, res) => {
+  const { gameid, winningColor } = req.params;
+  return void res.json(await updateElo(gameid, winningColor));
 });
 
 export default router;

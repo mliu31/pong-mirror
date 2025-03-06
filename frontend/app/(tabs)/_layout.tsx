@@ -37,9 +37,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="inProgress"
         options={{
-          title: 'Explore',
+          title: 'inProgress',
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="paperplane.fill" color={color} />
           )
@@ -60,6 +60,15 @@ export default function TabLayout() {
           title: 'Leaderboard',
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="rosette" color={color} />
+          )
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profile',
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={28} name="person.circle.fill" color={color} />
           )
         }}
       />

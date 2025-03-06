@@ -5,6 +5,7 @@ import {
   addPlayerFriend,
   removePlayerFriend
 } from '../controllers/player/playerController';
+
 // import { requireLoggedInHandler } from './authRouter';
 
 const router = express.Router();
