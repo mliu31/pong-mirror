@@ -30,5 +30,3 @@ export const newPlayer = async (name: string, email: string) => {
 export const getAllPlayers = () => Player.find();
 
 export const getPlayer = (pid: string) => Player.findById(pid);
-
-};
