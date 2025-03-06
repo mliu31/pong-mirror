@@ -4,24 +4,13 @@ import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-
-import Friends from '@/components/Friends/Friends';
-
 import logo from '@/assets/images/partial-react-logo.png';
 export default function HomeScreen() {
-  const friendList = [
-    '67b3935b7cf6fef618ed4890',
-    '67b3935b7cf6fef618ed488f',
-    '67b3935b7cf6fef618ed488e'
-  ];
-
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
       headerImage={<Image source={logo} style={styles.reactLogo} />}
     >
-      <Friends fids={friendList} />
-
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">TEST!</ThemedText>
         <HelloWave />
