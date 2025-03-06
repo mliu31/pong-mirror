@@ -5,7 +5,7 @@ import { Player } from '@/api/types';
 
 export default function Profile() {
   // For now, using a hardcoded player ID.
-  // Replace this with the logged-in user's ID when authentication is implemented.
+  // TODO: Replace this with the logged-in user's ID when authentication is implemented.
   const playerId = '67b3935b7cf6fef618ed4891';
 
   const [player, setPlayer] = useState<Player | null>(null);
@@ -42,10 +42,10 @@ export default function Profile() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Profile</Text>
+      <Text style={styles.title}>{player?.name}</Text>
       {/* Display Player Information */}
-      <Text style={styles.info}>Name: {player?.name}</Text>
       <Text style={styles.info}>Email: {player?.email}</Text>
+      <Text style={styles.info}>ELO: {player?.elo}</Text>
 
       {/* Display Friends List */}
       <Text style={styles.subTitle}>Friends:</Text>
