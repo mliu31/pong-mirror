@@ -1,6 +1,5 @@
 import Game from '../../models/Game';
 import Player /*, { IPlayer } */ from '../../models/Player';
-import { updateRanks } from '../leaderboard/rankingCurrent';
 
 const getKFactor = (playerElo: number): number => {
   if (playerElo < 1500) {
