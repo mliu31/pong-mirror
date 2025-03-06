@@ -3,10 +3,8 @@ import { StyleSheet, View } from 'react-native';
 import { Dimensions } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 
-interface FriendBoxProps {
-  rank: number;
-  name: string;
-  elo: number;
+interface GroupBoxProps {
+  groupName: string;
 }
 
 const styles = StyleSheet.create({
@@ -37,16 +35,14 @@ const styles = StyleSheet.create({
   }
 });
 
-const FriendBox: React.FC<FriendBoxProps> = ({ rank, name, elo }) => {
+const GroupBox: React.FC<GroupBoxProps> = ({ groupName }) => {
   return (
     <View style={styles.macroView}>
       <View style={styles.rankAndName}>
-        <ThemedText style={styles.rankView}>{rank}</ThemedText>
-        <ThemedText style={styles.nameView}>{name}</ThemedText>
+        <ThemedText style={styles.rankView}>{groupName}</ThemedText>
       </View>
-      <ThemedText style={styles.eloView}>{elo}</ThemedText>
     </View>
   );
 };
 
-export default FriendBox;
+export default GroupBox;

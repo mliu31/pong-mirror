@@ -1,9 +1,8 @@
 import React from 'react';
-import { StyleSheet, Button, View, TouchableHighlight } from 'react-native';
+import { StyleSheet, View, TouchableHighlight } from 'react-native';
 import { Dimensions } from 'react-native';
 import { useRouter } from 'expo-router';
 import { ThemedText } from '@/components/ThemedText';
-import FriendBox from './friendBox';
 
 interface AddButtonProps {
   category: string;
@@ -23,11 +22,12 @@ const styles = StyleSheet.create({
   },
   titleStyling: {
     alignSelf: 'flex-start',
-    fontSize: 20,
+    fontSize: 25,
     paddingLeft: Dimensions.get('window').height / 20,
     paddingRight: Dimensions.get('window').height / 20,
     flex: 1,
-    textAlign: 'left'
+    textAlign: 'left',
+    textAlignVertical: 'center'
   },
   viewStyling: {
     marginTop: Dimensions.get('window').height / 20,
