@@ -18,7 +18,7 @@ async function getTopPlayers(limit: number): Promise<LeaderboardItem[]> {
   const players = await Player.find({})
     .sort({ rank: 1 })
     .limit(limit)
-    .select('userID name score rank')
+    .select('userID name elo rank')
     .lean();
   return players as LeaderboardItem[];
 }
@@ -36,7 +36,7 @@ async function getPlayersInRankRange(
     rank: { $gte: startRank, $lte: endRank }
   })
     .sort({ rank: 1 })
-    .select('userID name score elo')
+    .select('userID name elo rank')
     .lean();
   return players as LeaderboardItem[];
 }
@@ -87,8 +87,8 @@ export async function fetchLeagueLeaderboard(userId: number): Promise<{
  */
 export async function fetchLeaderboard(tab: 'Top' | 'League', userId: number) {
   if (tab === 'Top') {
-    return fetchTopLeaderboard;
+    return await fetchTopLeaderboard();
   } else {
-    return fetchLeagueLeaderboard(userId);
+    return await fetchLeagueLeaderboard(userId);
   }
 }
