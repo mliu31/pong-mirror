@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Octicons } from '@expo/vector-icons';
 import { TextInput } from 'react-native-gesture-handler';
 
-import { Link } from 'expo-router';
+import { useRouter } from 'expo-router';
 
 const styles = StyleSheet.create({
   container: {
@@ -45,6 +45,8 @@ const styles = StyleSheet.create({
 });
 
 export default function SignUp() {
+  const router = useRouter();
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
 
@@ -87,7 +89,7 @@ export default function SignUp() {
         <Text style={styles.buttonText}>Already have an account?</Text>
         <Button
           title="Login"
-          //   onPress={() => console.log('Navigate to Login')}   TO DO: integrete router
+          // onPress={() => router.push('/login')} // TO DO: integrete router
         />
       </View>
     </View>
