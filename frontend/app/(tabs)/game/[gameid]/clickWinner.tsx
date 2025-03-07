@@ -1,20 +1,9 @@
 import React from 'react';
-import {
-  StyleSheet,
-  Image,
-  Platform,
-  Button,
-  View,
-  TouchableHighlight,
-  Touchable
-} from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { StyleSheet, View, TouchableHighlight } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Dimensions } from 'react-native';
-import { router, useLocalSearchParams, useRouter } from 'expo-router';
-import axios, { Axios } from 'axios';
+import { useRouter } from 'expo-router';
+import axios from 'axios';
 
 interface ClickWinnerProps {
   teamColor: string;

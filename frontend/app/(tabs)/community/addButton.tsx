@@ -1,27 +1,70 @@
 import React from 'react';
-import {
-  StyleSheet,
-  Image,
-  Platform,
-  Button,
-  View,
-  TouchableHighlight,
-  Touchable
-} from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { StyleSheet, View, TouchableHighlight } from 'react-native';
 import { Dimensions } from 'react-native';
-import { router, useLocalSearchParams, useRouter } from 'expo-router';
-import axios, { Axios } from 'axios';
+import { useRouter } from 'expo-router';
+import { ThemedText } from '@/components/ThemedText';
+
 interface AddButtonProps {
   category: string;
 }
 
 const styles = StyleSheet.create({
   buttonStyling: {
-    alignItems: 'flex-end',
+    alignSelf: 'flex-end',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: Dimensions.get('window').width / 10,
+    marginLeft: Dimensions.get('window').width / 10,
+    width: Dimensions.get('window').width / 20,
+    height: Dimensions.get('window').height / 20,
+    backgroundColor: 'blue',
+    borderRadius: 5
+  },
+  titleStyling: {
+    alignSelf: 'flex-start',
+    fontSize: 25,
     paddingLeft: Dimensions.get('window').height / 20,
-    paddingRight: Dimensions.get('window').height / 20
+    paddingRight: Dimensions.get('window').height / 20,
+    flex: 1,
+    textAlign: 'left',
+    textAlignVertical: 'center'
+  },
+  viewStyling: {
+    marginTop: Dimensions.get('window').height / 20,
+    flexDirection: 'row'
   }
 });
+
+const AddButton: React.FC<AddButtonProps> = ({ category }) => {
+  const router = useRouter();
+  if (category === 'Friends') {
+    return (
+      <>
+        <View style={styles.viewStyling}>
+          <ThemedText style={styles.titleStyling}>Friends</ThemedText>
+          <TouchableHighlight
+            style={styles.buttonStyling}
+            onPress={() => router.push('./addFriends')}
+          >
+            <ThemedText>+</ThemedText>
+          </TouchableHighlight>
+        </View>
+        <View></View>
+      </>
+    );
+  } else if (category === 'Groups') {
+    return (
+      <View style={styles.viewStyling}>
+        <ThemedText style={styles.titleStyling}>Groups</ThemedText>
+        <TouchableHighlight
+          style={styles.buttonStyling}
+          onPress={() => router.push('./addGroup')}
+        >
+          <ThemedText>+</ThemedText>
+        </TouchableHighlight>
+      </View>
+    );
+  }
+};
+
+export default AddButton;
