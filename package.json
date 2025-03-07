@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "check": "bun -F '*' $(bun elide) check",
-    "elide": "[[ $- == *i* ]] && echo '--elide-lines 0' || :",
+    "elide": "if [[ ! $TERM == 'dumb' ]]; then echo '--elide-lines 0'; fi",
     "lint": "bun lint:root && bun -F '*' $(bun elide) lint",
     "lint:fix": "bun lint:root:fix && bun -F '*' $(bun elide) lint:fix",
     "lint:root": "eslint .",
