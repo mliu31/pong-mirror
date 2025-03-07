@@ -4,9 +4,6 @@ import { Octicons } from '@expo/vector-icons';
 import { TextInput } from 'react-native-gesture-handler';
 
 import { useRouter } from 'expo-router';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../redux/store';
-import { login } from '../redux/slices/authSlice';
 
 const styles = StyleSheet.create({
   container: {
@@ -47,35 +44,10 @@ const styles = StyleSheet.create({
   }
 });
 
-export default function Login() {
+export default function LogIn() {
   const router = useRouter();
-  const dispatch = useDispatch<AppDispatch>();
 
   const [email, setEmail] = useState('');
-
-  const handleLogin = async () => {
-    if (email) {
-      console.log('Attempting to login with:', { email });
-      try {
-        await dispatch(
-          login({
-            email,
-            _id: '',
-            name: '',
-            friends: [],
-            elo: 0
-          })
-        ).unwrap();
-        console.log('Login successful');
-
-        router.push('/profile');
-      } catch (err) {
-        console.error('Login failed:', err);
-      }
-    } else {
-      console.error('Email is required');
-    }
-  };
 
   return (
     <View style={styles.container}>
@@ -95,7 +67,7 @@ export default function Login() {
 
       {/* log in button */}
       <View style={styles.buttonWrapper}>
-        <Button title="Log in" onPress={handleLogin} />
+        <Button title="Log in" />
       </View>
 
       {/* Don't have an account? sign up button */}
