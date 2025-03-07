@@ -9,15 +9,17 @@ import Checkbox from 'expo-checkbox';
 export default function EditFriend() {
   const [sortedPlayers, setSortedPlayers] = useState<Player[]>([]);
   const { friendIds } = useLocalSearchParams<{ friendIds: string }>();
-  const [fids, setFids] = useState<Set<string>>(new Set(JSON.parse(friendIds)));
+  const [fids, setFids] = useState<Set<string>>(new Set());
 
   useEffect(() => {
+    const newFids = new Set(JSON.parse(friendIds) as string[]);
+    setFids(newFids);
     getAllPlayers().then((res) => {
       //  sorts all players into friends and nonfriends
       const players = res.data;
       players.sort((a: Player, b: Player) => {
-        const aIsFriend = fids.has(a._id);
-        const bIsFriend = fids.has(b._id);
+        const aIsFriend = newFids.has(a._id);
+        const bIsFriend = newFids.has(b._id);
 
         if (aIsFriend === bIsFriend) return 0;
         else if (aIsFriend && !bIsFriend) return -1;
@@ -25,7 +27,7 @@ export default function EditFriend() {
       });
       setSortedPlayers(players);
     });
-  }, []);
+  }, [friendIds]);
 
   const checkboxHandler = (isChecked: boolean, fid: string) => {
     console.log(isChecked, fid);
