@@ -75,7 +75,7 @@ export default function LogIn() {
         <Text style={styles.buttonText}>Don't have an account?</Text>
         <Button
           title="Sign up"
-          // onPress={() => router.push('/signup')} // TO DO: integrete router
+          onPress={() => router.push('/signup')} // TO DO: integrete router
         />
       </View>
     </View>
