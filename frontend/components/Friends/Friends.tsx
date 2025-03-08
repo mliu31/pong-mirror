@@ -1,12 +1,20 @@
+import { Player } from '@/api/types';
 import FriendList from './FriendList';
 import { router } from 'expo-router';
+import { useState } from 'react';
 import { Button, StyleSheet, View, Text } from 'react-native';
 
-const Friends = ({ fids }: { fids: string[] }) => {
-  const EditFriendHandler = (fids: string[]) => {
+const Friends = ({ fids, pid }: { fids: string[]; pid: string }) => {
+  const [friends, setFriends] = useState<Player[]>();
+
+  // useEffect = () => {
+
+  // } []
+
+  const EditFriendHandler = (fids: string[], pid: string) => {
     router.push({
       pathname: '/profile/EditFriends',
-      params: { friendIds: JSON.stringify(fids) }
+      params: { friendIds: JSON.stringify(fids), pid: pid }
     });
   };
 
@@ -14,7 +22,10 @@ const Friends = ({ fids }: { fids: string[] }) => {
     <View style={styles.container}>
       <Text style={styles.title}>Friends</Text>
       <FriendList fids={fids} />
-      <Button onPress={() => EditFriendHandler(fids)} title="Edit Friends" />
+      <Button
+        onPress={() => EditFriendHandler(fids, pid)}
+        title="Edit Friends"
+      />
     </View>
   );
 };
