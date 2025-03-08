@@ -1,7 +1,6 @@
 import { getAllPlayers } from '@/api/players';
 import { Player } from '@/api/types';
 import { useFocusEffect, useLocalSearchParams } from 'expo-router';
-import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, SafeAreaView, FlatList } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -14,8 +13,6 @@ export default function EditFriend() {
     friendIds: string;
     pid: string;
   }>();
-
-  // state for friend ids and sorted list of friends/nonfriends
 
   // state for friend ids and sorted list of friends/nonfriends
   const [fids, setFids] = useState<Set<string>>(new Set());
