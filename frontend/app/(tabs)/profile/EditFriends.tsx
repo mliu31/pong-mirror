@@ -22,12 +22,12 @@ export default function EditFriend() {
   useEffect(() => {
     const newFids = new Set(JSON.parse(friendIds) as string[]);
 
-    // update state as set of friend ids
+    // update state of friend ids set
     setFids(newFids);
 
+    //  sorts all players into friends and nonfriends
     getAllPlayers().then((res) => {
       const players = res.data;
-      //  sorts all players into friends and nonfriends
       players.sort((a: Player, b: Player) => {
         const aIsFriend = newFids.has(a._id);
         const bIsFriend = newFids.has(b._id);
