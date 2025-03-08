@@ -5,11 +5,17 @@ import { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, SafeAreaView, FlatList } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Checkbox from 'expo-checkbox';
+import { addFriend, removeFriend } from '@/api/friends';
 
 export default function EditFriend() {
-  const [sortedPlayers, setSortedPlayers] = useState<Player[]>([]);
-  const { friendIds } = useLocalSearchParams<{ friendIds: string }>();
+  // read in params
+  const { friendIds, pid } = useLocalSearchParams<{
+    friendIds: string;
+    pid: string;
+  }>();
+  // state for friends and sorted list of friends/nonfriends
   const [fids, setFids] = useState<Set<string>>(new Set());
+  const [sortedPlayers, setSortedPlayers] = useState<Player[]>([]);
 
   useEffect(() => {
     const newFids = new Set(JSON.parse(friendIds) as string[]);
@@ -30,18 +36,16 @@ export default function EditFriend() {
   }, [friendIds]);
 
   const checkboxHandler = (isChecked: boolean, fid: string) => {
-    console.log(isChecked, fid);
-
     if (isChecked) {
       setFids((prevFids) => new Set(prevFids.add(fid)));
-      // addFriend(pid, fid); // need to read in pid from auth
+      addFriend(pid, fid);
     } else {
       setFids((prevFids) => {
         const newFids = new Set(prevFids);
         newFids.delete(fid);
         return newFids;
       });
-      // removeFriend(pid, fid);
+      removeFriend(pid, fid);
     }
   };
 
