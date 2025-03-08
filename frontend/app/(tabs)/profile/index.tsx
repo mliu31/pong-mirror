@@ -48,7 +48,7 @@ export default function Profile() {
       <Text style={styles.info}>Email: {player?.email}</Text>
       <Text style={styles.info}>ELO: {player?.elo}</Text>
 
-      {player?.friends && <Friends fids={player.friends} pid={player._id} />}
+      {player && <Friends fids={player.friends} pid={player._id} />}
     </View>
   );
 }
