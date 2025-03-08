@@ -8,11 +8,6 @@ export default function Profile() {
   // For now, using a hardcoded player ID.
   // TODO: Replace this with the logged-in user's ID when authentication is implemented.
   const playerId = '67b3935b7cf6fef618ed4891';
-  const friendList = [
-    '67b3935b7cf6fef618ed4890',
-    '67b3935b7cf6fef618ed488f',
-    '67b3935b7cf6fef618ed488e'
-  ];
 
   const [player, setPlayer] = useState<Player | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -53,7 +48,7 @@ export default function Profile() {
       <Text style={styles.info}>Email: {player?.email}</Text>
       <Text style={styles.info}>ELO: {player?.elo}</Text>
 
-      <Friends fids={friendList} />
+      {player?.friends && <Friends fids={player.friends} pid={player._id} />}
     </View>
   );
 }
