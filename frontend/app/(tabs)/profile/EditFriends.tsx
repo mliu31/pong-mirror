@@ -23,7 +23,7 @@ export default function EditFriend() {
     const newFids = new Set(JSON.parse(friendIds) as string[]);
 
     // update state as set of friend ids
-    setFids(new Set(newFids));
+    setFids(newFids);
 
     getAllPlayers().then((res) => {
       const players = res.data;
