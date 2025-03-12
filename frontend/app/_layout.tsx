@@ -16,6 +16,8 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 
 import spaceMono from '../assets/fonts/SpaceMono-Regular.ttf';
 import { IoProvider } from '@/context/IoContext';
+import { Provider as ReduxProvider } from 'react-redux';
+import store from '../redux/store';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -37,7 +39,7 @@ export default function RootLayout() {
   }
 
   return (
-    <GluestackUIProvider mode={colorScheme === 'dark' ? 'dark' : 'light'}>
+    <ReduxProvider store={store}>
       <IoProvider>
         <ThemeProvider
           value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
@@ -49,6 +51,6 @@ export default function RootLayout() {
           <StatusBar style="auto" />
         </ThemeProvider>
       </IoProvider>
-    </GluestackUIProvider>
+    </ReduxProvider>
   );
 }
