@@ -14,6 +14,8 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 
 import spaceMono from '../assets/fonts/SpaceMono-Regular.ttf';
 import { IoProvider } from '@/context/IoContext';
+import { Provider as ReduxProvider } from 'react-redux';
+import store from '../redux/store';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -35,14 +37,18 @@ export default function RootLayout() {
   }
 
   return (
-    <IoProvider>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-        <StatusBar style="auto" />
-      </ThemeProvider>
-    </IoProvider>
+    <ReduxProvider store={store}>
+      <IoProvider>
+        <ThemeProvider
+          value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
+        >
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="+not-found" />
+          </Stack>
+          <StatusBar style="auto" />
+        </ThemeProvider>
+      </IoProvider>
+    </ReduxProvider>
   );
 }
