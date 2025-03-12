@@ -1,12 +1,22 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../../api';
-import { Player } from '@/api/types';
+
+interface Player {
+  name: string;
+  email: string;
+}
 
 type NewPlayer = Player;
 
+interface PlayerInfo {
+  id: string;
+  name: string;
+  email: string;
+}
+
 interface AuthApiState {
-  basicPlayerInfo?: Player | null;
+  basicPlayerInfo?: PlayerInfo | null;
   status: 'idle' | 'loading' | 'failed';
   error: string | null;
 }
@@ -17,15 +27,15 @@ const initialState: AuthApiState = {
   error: null
 };
 
-const loadPlayer = async (): Promise<Player | null> => {
-  const storedData = await AsyncStorage.getItem('player');
+const loadPlayerInfo = async (): Promise<PlayerInfo | null> => {
+  const storedData = await AsyncStorage.getItem('playerInfo');
   return storedData ? JSON.parse(storedData) : null;
 };
 
 export const loadAuthState = createAsyncThunk(
   'auth/loadAuthState',
   async () => {
-    return await loadPlayer();
+    return await loadPlayerInfo();
   }
 );
 
@@ -33,20 +43,13 @@ export const loadAuthState = createAsyncThunk(
 export const signup = createAsyncThunk(
   'auth/signup',
   async (data: NewPlayer) => {
-    const response = await api.post('/auth/signup', data);
+    const response = await api.post('/signup', data);
     const resData = response.data;
-    await AsyncStorage.setItem('player', JSON.stringify(resData));
+
+    await AsyncStorage.setItem('playerInfo', JSON.stringify(resData));
     return resData;
   }
 );
-
-// login
-export const login = createAsyncThunk('auth/login', async (data: NewPlayer) => {
-  const response = await api.post('/auth/login', data);
-  const resData = response.data;
-  await AsyncStorage.setItem('player', JSON.stringify(resData));
-  return resData;
-});
 
 const authSlice = createSlice({
   name: 'auth',
@@ -58,25 +61,12 @@ const authSlice = createSlice({
         state.status = 'loading';
         state.error = null;
       })
-      .addCase(signup.fulfilled, (state, action: PayloadAction<NewPlayer>) => {
+      .addCase(signup.fulfilled, (state, action: PayloadAction<PlayerInfo>) => {
         state.basicPlayerInfo = action.payload;
         state.status = 'idle';
         state.error = null;
       })
       .addCase(signup.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.payload as string;
-      })
-      .addCase(login.pending, (state) => {
-        state.status = 'loading';
-        state.error = null;
-      })
-      .addCase(login.fulfilled, (state, action: PayloadAction<NewPlayer>) => {
-        state.basicPlayerInfo = action.payload;
-        state.status = 'idle';
-        state.error = null;
-      })
-      .addCase(login.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload as string;
       });
