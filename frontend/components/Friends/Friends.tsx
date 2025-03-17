@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button, StyleSheet, View, Text } from 'react-native';
 import { getPlayer } from '@/api/players';
 
-const Friends = ({ pid }: { fids: string[]; pid: string }) => {
+const Friends = ({ pid }: { pid: string }) => {
   // friend ids state
   const [friends, setFriends] = useState<string[]>([]);
 
