@@ -3,7 +3,6 @@ import tseslint from 'typescript-eslint';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import { FlatCompat } from '@eslint/eslintrc';
 import packageJson from 'eslint-plugin-package-json';
-import packageJson from 'eslint-plugin-package-json';
 
 const compat = new FlatCompat();
 
@@ -13,6 +12,5 @@ export default tseslint.config(
   tseslint.configs.stylistic,
   eslintPluginPrettierRecommended,
   compat.extends('eslint-config-expo'),
-  packageJson.configs.recommended,
-  { ignores: ['dist'] }
+  packageJson.configs.recommended
 );
