@@ -1,4 +1,4 @@
-import { Button, View } from 'react-native';
+import { Button, SafeAreaView, View, StyleSheet } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
@@ -9,6 +9,7 @@ import { FlatList } from 'react-native-gesture-handler';
 import Checkbox from 'expo-checkbox';
 import { getAllPlayers } from '@/api/players';
 import { getGame } from '@/api/games';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 export default function Route() {
   const { gameid } = useLocalSearchParams<{ gameid: string }>();
@@ -59,30 +60,60 @@ export default function Route() {
   }
 
   return (
-    <ThemedView>
-      <FlatList
-        data={allPlayers}
-        renderItem={({ item: player }) => (
-          <View style={{ flexDirection: 'row', gap: '1em' }}>
-            <Checkbox
-              value={playerUpdates[player._id]}
-              onValueChange={(value) => {
-                setPlayerUpdates({
-                  ...playerUpdates,
-                  [player._id]: value
-                });
-              }}
-            />
-            <ThemedText>{player.name}</ThemedText>
-          </View>
-        )}
-        keyExtractor={(item) => item._id}
-      />
-      <Button
-        disabled={continueButtonDisabled}
-        onPress={handleContinueButtonPress}
-        title="Save and continue"
-      />
-    </ThemedView>
+    <View style={styles.container}>
+      <ThemedText style={styles.title}>Edit Friends</ThemedText>
+      <SafeAreaProvider>
+        <SafeAreaView style={styles.container}>
+          <FlatList
+            data={allPlayers}
+            renderItem={({ item: player }) => (
+              <View style={{ flexDirection: 'row', gap: '1em' }}>
+                <Checkbox
+                  value={playerUpdates[player._id]}
+                  onValueChange={(value) => {
+                    setPlayerUpdates({
+                      ...playerUpdates,
+                      [player._id]: value
+                    });
+                  }}
+                />
+                <ThemedText>{player.name}</ThemedText>
+              </View>
+            )}
+            keyExtractor={(item) => item._id}
+          />
+          <Button
+            disabled={continueButtonDisabled}
+            onPress={handleContinueButtonPress}
+            title="Save and continue"
+          />
+        </SafeAreaView>
+      </SafeAreaProvider>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16
+    // backgroundColor: '#fff'
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold'
+  },
+  checkbox: {
+    margin: 8
+  },
+  section: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  paragraph: {
+    fontSize: 15
+  },
+  indicatorStyle: {
+    backgroundColor: '#000'
+  }
+});
