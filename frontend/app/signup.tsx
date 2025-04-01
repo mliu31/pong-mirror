@@ -3,10 +3,6 @@ import { useState } from 'react';
 import { Octicons } from '@expo/vector-icons';
 import { TextInput } from 'react-native-gesture-handler';
 
-import { useDispatch, useSelector } from 'react-redux';
-import { signup } from '../redux/slices/authSlice';
-import { AppDispatch, RootState } from '../redux/store';
-
 import { useRouter } from 'expo-router';
 
 const styles = StyleSheet.create({
@@ -50,23 +46,9 @@ const styles = StyleSheet.create({
 
 export default function SignUp() {
   const router = useRouter();
-  const dispatch = useDispatch<AppDispatch>();
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-
-  // Get the auth state from Redux
-  const { status, error } = useSelector((state: RootState) => state.auth);
-
-  // Handle Signup
-  const handleSignup = () => {
-    dispatch(signup({ name, email }))
-      .unwrap()
-      .then(() => {
-        router.push('/home'); // Navigate to home page on success
-      })
-      .catch((err) => console.error('Signup error:', err));
-  };
 
   return (
     <View style={styles.container}>
@@ -99,13 +81,7 @@ export default function SignUp() {
 
       {/* sign up button */}
       <View style={styles.buttonWrapper}>
-        <Button
-          title="Sign up"
-          onPress={handleSignup}
-          disabled={status === 'loading'}
-        />
-        {status === 'loading' && <Text>Loading...</Text>}
-        {status === 'failed' && <Text style={{ color: 'red' }}>{error}</Text>}
+        <Button title="Sign up" />
       </View>
 
       {/* Already have an account? login button */}

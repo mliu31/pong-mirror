@@ -11,7 +11,7 @@ const router = express.Router();
 /**
  * Recalculates and updates the ranks for all players.
  */
-router.post('/update-ranks', async (req, res) => {
+router.post('/update-ranks', async (_, res) => {
   try {
     await updateRanks();
     res.status(200).json({ message: 'Ranks updated successfully.' });
