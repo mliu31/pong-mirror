@@ -1,11 +1,11 @@
 import gluestackPlugin from '@gluestack-ui/nativewind-utils/tailwind-plugin';
-import nativewindPreset from 'nativewind/preset';
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: 'media',
   content: ['app/**/*.{tsx,jsx,ts,js}', 'components/**/*.{tsx,jsx,ts,js}'],
-  presets: [nativewindPreset],
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  presets: [require('nativewind/preset')],
   safelist: [
     {
       pattern:
