@@ -1,22 +1,35 @@
 import { getAllPlayers } from '@/api/players';
 import { Player } from '@/api/types';
-import { useLocalSearchParams } from 'expo-router';
+import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, SafeAreaView, FlatList } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Checkbox from 'expo-checkbox';
+import { addFriend, removeFriend } from '@/api/friends';
 
 export default function EditFriend() {
-  const [sortedPlayers, setSortedPlayers] = useState<Player[]>([]);
-  const { friendIds } = useLocalSearchParams<{ friendIds: string }>();
-  const [fids, setFids] = useState<Set<string>>(new Set());
+  // read in params
+  const { friendIds, pid } = useLocalSearchParams<{
+    friendIds: string;
+    pid: string;
+  }>();
 
+  // state for friend ids and sorted list of friends/nonfriends
+  const [fids, setFids] = useState<Set<string>>(new Set());
+  const [sortedPlayers, setSortedPlayers] = useState<Player[]>([]);
+
+  // on page load
   useEffect(() => {
     const newFids = new Set(JSON.parse(friendIds) as string[]);
+
+    // update state of friend ids set
     setFids(newFids);
+
+    //  sorts all players into friends and nonfriends
     getAllPlayers().then((res) => {
-      //  sorts all players into friends and nonfriends
-      const players = res.data;
+      // remove current user
+      const players = res.data.filter((player: Player) => player._id !== pid);
+
       players.sort((a: Player, b: Player) => {
         const aIsFriend = newFids.has(a._id);
         const bIsFriend = newFids.has(b._id);
@@ -27,21 +40,19 @@ export default function EditFriend() {
       });
       setSortedPlayers(players);
     });
-  }, [friendIds]);
+  }, [friendIds, pid]);
 
   const checkboxHandler = (isChecked: boolean, fid: string) => {
-    console.log(isChecked, fid);
-
     if (isChecked) {
       setFids((prevFids) => new Set(prevFids.add(fid)));
-      // addFriend(pid, fid); // need to read in pid from auth
+      addFriend(pid, fid);
     } else {
       setFids((prevFids) => {
         const newFids = new Set(prevFids);
         newFids.delete(fid);
         return newFids;
       });
-      // removeFriend(pid, fid);
+      removeFriend(pid, fid);
     }
   };
 
