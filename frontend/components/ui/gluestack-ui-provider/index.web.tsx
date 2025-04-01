@@ -84,7 +84,7 @@ export function GluestackUIProvider({
       <script
         suppressHydrationWarning
         dangerouslySetInnerHTML={{
-          __html: `(${script.toString()})('${mode}')`
+          __html: `(${script.toString()})('${mode}')`,
         }}
       />
       <OverlayProvider>
