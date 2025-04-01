@@ -69,8 +69,17 @@ export default function Route() {
             renderItem={({ item: player }) => (
               <View style={{ flexDirection: 'row', gap: '1em' }}>
                 <Checkbox
-                  value={playerUpdates[player._id]}
+                  value={playerUpdates[player._id] ?? false}
                   onValueChange={(value) => {
+                    const trueCount =
+                      Object.values(playerUpdates).filter((v) => v).length +
+                      (value ? 1 : -1);
+
+                    if (trueCount > 4) {
+                      // cap of 4 players/game
+                      return;
+                    }
+
                     setPlayerUpdates({
                       ...playerUpdates,
                       [player._id]: value
