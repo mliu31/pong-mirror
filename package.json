@@ -20,7 +20,7 @@
     "connect-mongo": "^5.1.0"
   },
   "devDependencies": {
-    "eslint-plugin-package-json": "^0.26.0",
-    "typescript": "^5.7.3"
+    "eslint-plugin-package-json": "^0.26.4",
+    "typescript": "^5.8.2"
   }
 }
