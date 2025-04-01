@@ -4,7 +4,6 @@ import gluestackPlugin from '@gluestack-ui/nativewind-utils/tailwind-plugin';
 module.exports = {
   darkMode: 'media',
   content: ['app/**/*.{tsx,jsx,ts,js}', 'components/**/*.{tsx,jsx,ts,js}'],
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
   presets: [require('nativewind/preset')],
   safelist: [
     {
