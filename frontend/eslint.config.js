@@ -12,5 +12,6 @@ export default tseslint.config(
   tseslint.configs.stylistic,
   eslintPluginPrettierRecommended,
   compat.extends('eslint-config-expo'),
-  packageJson.configs.recommended
+  packageJson.configs.recommended,
+  { ignores: ['dist'] }
 );
