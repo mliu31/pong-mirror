@@ -13,7 +13,6 @@ export default function GameLandingScreen() {
     <ThemedView>
       <VStack style={{ flex: 1 }} space="md">
         <Button
-          className="p-3"
           isDisabled={buttonDisabled}
           onPress={async () => {
             setButtonDisabled(true);
@@ -22,9 +21,7 @@ export default function GameLandingScreen() {
             setButtonDisabled(false);
           }}
         >
-          <ButtonText className="font-medium text-sm ml-2">
-            Create game
-          </ButtonText>
+          <ButtonText>Create game</ButtonText>
         </Button>
       </VStack>
     </ThemedView>
