@@ -24,9 +24,9 @@ export function GluestackUIProvider({
   return (
     <View
       style={[
-        config[colorScheme ?? 'light'],
+        config[colorScheme!],
         { flex: 1, height: '100%', width: '100%' },
-        props.style
+        props.style,
       ]}
     >
       <OverlayProvider>
