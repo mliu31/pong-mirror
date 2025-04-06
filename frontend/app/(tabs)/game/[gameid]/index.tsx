@@ -1,4 +1,4 @@
-import { Button, SafeAreaView, View, StyleSheet } from 'react-native';
+import { Button, SafeAreaView, View, StyleSheet, Modal } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
@@ -17,6 +17,7 @@ export default function Route() {
   const [playerUpdates, setPlayerUpdates] = useState<
     Record<Player['_id'], boolean>
   >({});
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(
     () => void getAllPlayers().then(({ data }) => setAllPlayers(data)),
@@ -61,7 +62,21 @@ export default function Route() {
 
   return (
     <View style={styles.container}>
-      <ThemedText style={styles.title}>Edit Friends</ThemedText>
+      <ThemedText style={styles.title}>Add Players</ThemedText>
+
+      {/* max 4 players popup if try to add >4 */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View>
+          <ThemedText>Max 4 players in a game</ThemedText>
+          <Button title="Close modal" onPress={() => setModalVisible(false)} />
+        </View>
+      </Modal>
+
       <SafeAreaProvider>
         <SafeAreaView style={styles.container}>
           <FlatList
@@ -77,6 +92,7 @@ export default function Route() {
 
                     if (trueCount > 4) {
                       // cap of 4 players/game
+                      setModalVisible(true);
                       return;
                     }
 
