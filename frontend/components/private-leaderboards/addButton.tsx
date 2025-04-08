@@ -44,7 +44,7 @@ const AddButton: React.FC<AddButtonProps> = ({ category }) => {
           <ThemedText style={styles.titleStyling}>Friends</ThemedText>
           <TouchableHighlight
             style={styles.buttonStyling}
-            onPress={() => router.push('./addFriends')}
+            onPress={() => router.push('./')}
           >
             <ThemedText>+</ThemedText>
           </TouchableHighlight>
