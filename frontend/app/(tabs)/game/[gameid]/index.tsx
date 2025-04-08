@@ -124,7 +124,6 @@ export default function Route() {
             keyExtractor={(player) => player._id}
             renderItem={({ item: player }) => (
               <Checkbox
-                key={player._id}
                 value={player._id}
                 isChecked={playerUpdates[player._id]}
                 onChange={(isSelected) => {
