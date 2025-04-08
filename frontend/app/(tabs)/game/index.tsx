@@ -10,20 +10,19 @@ export default function GameLandingScreen() {
   const router = useRouter();
 
   return (
-    <ThemedView>
-      <VStack style={{ flex: 1 }} space="md">
-        <Button
-          isDisabled={buttonDisabled}
-          onPress={async () => {
-            setButtonDisabled(true);
-            const gameResponse = await createGame();
-            router.push(`/game/${gameResponse.data.id}`);
-            setButtonDisabled(false);
-          }}
-        >
-          <ButtonText>Create game</ButtonText>
-        </Button>
-      </VStack>
+    <ThemedView className="flex-1 items-center justify-center">
+      <Button
+        className="w-fit"
+        isDisabled={buttonDisabled}
+        onPress={async () => {
+          setButtonDisabled(true);
+          const gameResponse = await createGame();
+          router.push(`/game/${gameResponse.data.id}`);
+          setButtonDisabled(false);
+        }}
+      >
+        <ButtonText>Create game</ButtonText>
+      </Button>
     </ThemedView>
   );
 }
