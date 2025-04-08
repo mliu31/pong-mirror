@@ -57,7 +57,15 @@ export default function Login() {
     if (email) {
       console.log('Attempting to login with:', { email });
       try {
-        await dispatch(login({ email })).unwrap();
+        await dispatch(
+          login({
+            email,
+            _id: '',
+            name: '',
+            friends: [],
+            elo: 0
+          })
+        ).unwrap();
         console.log('Login successful');
 
         router.push('/profile');
