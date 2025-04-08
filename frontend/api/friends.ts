@@ -1,15 +1,15 @@
 import api from '.';
-import { Player } from './types';
+import { getAllPlayers } from './players';
 
 export const getFriends = async (friendIds: string[]) => {
-  const friends = await Promise.all(
-    friendIds.map((id) => api.get<Player>(`/players/${id}`))
-  );
-
-  return friends.map((f) => f.data);
+  const allPlayers = await getAllPlayers();
+  return allPlayers.data.filter((p) => friendIds.includes(p._id));
 };
 
-export const getNonFriends = async (friendIds: string[]) => {
-  const allPlayers = await api.get<Player[]>('/players');
-  return allPlayers.data.filter((p) => !friendIds.includes(p._id));
+export const addFriend = async (playerid: string, friendId: string) => {
+  api.put(`/players/${playerid}/friend/${friendId}`);
+};
+
+export const removeFriend = async (playerid: string, friendId: string) => {
+  api.delete(`/players/${playerid}/friend/${friendId}`);
 };

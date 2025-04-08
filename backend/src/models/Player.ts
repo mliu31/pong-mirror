@@ -24,8 +24,7 @@ const playerSchema = new mongoose.Schema<IPlayer>({
   },
   rank: {
     type: Number,
-    required: true,
-    unique: true
+    required: true
   },
   elo: {
     type: Number,

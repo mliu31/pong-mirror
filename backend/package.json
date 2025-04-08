@@ -5,8 +5,10 @@
   "type": "module",
   "scripts": {
     "build": "tsc -b",
+    "check": "tsc --noEmit",
     "dev": "bun run --watch src/index.ts",
     "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
     "preview": "bun run build && bun run dist/index.js"
   },
   "dependencies": {
@@ -17,7 +19,8 @@
     "eslint-config-prettier": "^10.0.1",
     "express": "^4.21.2",
     "express-session": "^1.18.1",
-    "mongoose": "^8.10.1"
+    "mongoose": "^8.10.1",
+    "socket.io": "^4.8.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",

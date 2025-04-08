@@ -1,17 +1,23 @@
 import { ThemedText } from '@/components/ThemedText';
-import { View, Text, Dimensions } from 'react-native';
+import {
+  View,
+  Dimensions,
+  StyleProp,
+  ViewStyle,
+  TextStyle
+} from 'react-native';
 
 const styles = {
   titleStyling: {
-    dislay: 'flex',
+    display: 'flex',
     alignItems: 'center',
     justifyContent: 'center'
-  },
+  } as StyleProp<ViewStyle>,
   titleText: {
-    fontSize: '24px',
+    fontSize: 24,
     paddingTop: Dimensions.get('window').height / 25,
     paddingBottom: Dimensions.get('window').height / 25
-  }
+  } as StyleProp<TextStyle>
 };
 
 export default function TitleDiv() {
