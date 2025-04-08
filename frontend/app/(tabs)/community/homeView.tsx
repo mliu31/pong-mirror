@@ -1,10 +1,10 @@
 import React from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import TitleDiv from './titleDiv';
+import TitleDiv from './[playerid]/titleDiv';
 import { View } from 'react-native';
-import AddButton from './addButton';
-import FriendBox from './friendBox';
-import GroupBox from './groupBox';
+import AddButton from '../../../components/private-leaderboards/addButton';
+import FriendBox from './[playerid]/friendBox';
+import GroupBox from './[playerid]/groupBox';
 
 export default function HomeView() {
   return (
