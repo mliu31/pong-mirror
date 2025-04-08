@@ -1,4 +1,4 @@
-import { Button, View } from 'react-native';
+import { View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
@@ -9,6 +9,7 @@ import { FlatList } from 'react-native-gesture-handler';
 import Checkbox from 'expo-checkbox';
 import { getAllPlayers } from '@/api/players';
 import { getGame } from '@/api/games';
+import { Button, ButtonText } from '@/components/ui/button';
 
 export default function Route() {
   const { gameid } = useLocalSearchParams<{ gameid: string }>();
@@ -59,7 +60,10 @@ export default function Route() {
   }
 
   return (
-    <ThemedView>
+    <ThemedView className="flex-1 justify-center p-4 space-y-4">
+      <Button className="w-fit">
+        <ButtonText>need 1</ButtonText>
+      </Button>
       <FlatList
         data={allPlayers}
         renderItem={({ item: player }) => (
@@ -81,8 +85,9 @@ export default function Route() {
       <Button
         disabled={continueButtonDisabled}
         onPress={handleContinueButtonPress}
-        title="Save and continue"
-      />
+      >
+        <ButtonText>Continue</ButtonText>
+      </Button>
     </ThemedView>
   );
 }
