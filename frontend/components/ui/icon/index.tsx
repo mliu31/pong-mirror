@@ -8,7 +8,7 @@ import { VariantProps } from '@gluestack-ui/nativewind-utils';
 import { PrimitiveIcon, IPrimitiveIcon, Svg } from '@gluestack-ui/icon';
 
 export const UIIcon = createIcon({
-  Root: PrimitiveIcon
+  Root: PrimitiveIcon,
 }) as React.ForwardRefExoticComponent<
   React.ComponentPropsWithoutRef<typeof PrimitiveIcon> &
     React.RefAttributes<React.ComponentRef<typeof Svg>>
@@ -19,13 +19,13 @@ const iconStyle = tva({
   variants: {
     size: {
       '2xs': 'h-3 w-3',
-      xs: 'h-3.5 w-3.5',
-      sm: 'h-4 w-4',
-      md: 'h-[18px] w-[18px]',
-      lg: 'h-5 w-5',
-      xl: 'h-6 w-6'
-    }
-  }
+      'xs': 'h-3.5 w-3.5',
+      'sm': 'h-4 w-4',
+      'md': 'h-[18px] w-[18px]',
+      'lg': 'h-5 w-5',
+      'xl': 'h-6 w-6',
+    },
+  },
 });
 
 cssInterop(UIIcon, {
@@ -36,9 +36,9 @@ cssInterop(UIIcon, {
       width: true,
       fill: true,
       color: 'classNameColor',
-      stroke: true
-    }
-  }
+      stroke: true,
+    },
+  },
 });
 
 type IIConProps = IPrimitiveIcon &
@@ -85,7 +85,7 @@ type ParameterTypes = Omit<Parameters<typeof createIcon>[0], 'Root'>;
 const createIconUI = ({ ...props }: ParameterTypes) => {
   const UIIconCreateIcon = createIcon({
     Root: Svg,
-    ...props
+    ...props,
   }) as React.ForwardRefExoticComponent<
     React.ComponentPropsWithoutRef<typeof PrimitiveIcon> &
       React.RefAttributes<React.ComponentRef<typeof Svg>>
@@ -129,7 +129,7 @@ const AddIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 AddIcon.displayName = 'AddIcon';
@@ -159,7 +159,7 @@ const AlertCircleIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 AlertCircleIcon.displayName = 'AlertCircleIcon';
@@ -183,7 +183,7 @@ const ArrowUpIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 const ArrowDownIcon = createIcon({
@@ -205,7 +205,7 @@ const ArrowDownIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 const ArrowRightIcon = createIcon({
@@ -227,7 +227,7 @@ const ArrowRightIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 const ArrowLeftIcon = createIcon({
@@ -248,7 +248,7 @@ const ArrowLeftIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 ArrowUpIcon.displayName = 'ArrowUpIcon';
@@ -278,7 +278,7 @@ const AtSignIcon = createIcon({
         />
       </>
     </>
-  )
+  ),
 });
 
 AtSignIcon.displayName = 'AtSignIcon';
@@ -303,7 +303,7 @@ const BellIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 BellIcon.displayName = 'BellIcon';
@@ -376,7 +376,7 @@ const CalendarDaysIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 CalendarDaysIcon.displayName = 'CalendarDaysIcon';
@@ -395,7 +395,7 @@ const CheckIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 const CheckCircleIcon = createIcon({
@@ -416,7 +416,7 @@ const CheckCircleIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 CheckIcon.displayName = 'CheckIcon';
@@ -437,7 +437,7 @@ const ChevronUpIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 const ChevronDownIcon = createIcon({
@@ -452,7 +452,7 @@ const ChevronDownIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 const ChevronLeftIcon = createIcon({
@@ -467,7 +467,7 @@ const ChevronLeftIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 const ChevronRightIcon = createIcon({
@@ -483,7 +483,7 @@ const ChevronRightIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 const ChevronsLeftIcon = createIcon({
@@ -505,7 +505,7 @@ const ChevronsLeftIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 const ChevronsRightIcon = createIcon({
@@ -527,7 +527,7 @@ const ChevronsRightIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 const ChevronsUpDownIcon = createIcon({
@@ -549,7 +549,7 @@ const ChevronsUpDownIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 ChevronUpIcon.displayName = 'ChevronUpIcon';
@@ -567,7 +567,7 @@ export {
   ChevronRightIcon,
   ChevronsLeftIcon,
   ChevronsRightIcon,
-  ChevronsUpDownIcon
+  ChevronsUpDownIcon,
 };
 
 const CircleIcon = createIcon({
@@ -582,7 +582,7 @@ const CircleIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 CircleIcon.displayName = 'CircleIcon';
@@ -607,7 +607,7 @@ const ClockIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 ClockIcon.displayName = 'ClockIcon';
@@ -632,7 +632,7 @@ const CloseIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 const CloseCircleIcon = createIcon({
@@ -659,7 +659,7 @@ const CloseCircleIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 CloseIcon.displayName = 'CloseIcon';
@@ -685,7 +685,7 @@ const CopyIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 CopyIcon.displayName = 'CopyIcon';
@@ -716,7 +716,7 @@ const DownloadIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 DownloadIcon.displayName = 'DownloadIcon';
@@ -740,7 +740,7 @@ const EditIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 EditIcon.displayName = 'EditIcon';
@@ -764,7 +764,7 @@ const EyeIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 EyeIcon.displayName = 'EyeIcon';
@@ -799,7 +799,7 @@ const EyeOffIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 EyeOffIcon.displayName = 'EyeOffIcon';
@@ -817,7 +817,7 @@ const FavouriteIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 FavouriteIcon.displayName = 'FavouriteIcon';
@@ -847,7 +847,7 @@ const GlobeIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 GlobeIcon.displayName = 'GlobeIcon';
@@ -895,7 +895,7 @@ const GripVerticalIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 GripVerticalIcon.displayName = 'GripVerticalIcon';
@@ -925,7 +925,7 @@ const HelpCircleIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 HelpCircleIcon.displayName = 'HelpCircleIcon';
@@ -955,7 +955,7 @@ const InfoIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 InfoIcon.displayName = 'InfoIcon';
@@ -979,7 +979,7 @@ const LinkIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 LinkIcon.displayName = 'LinkIcon';
@@ -1008,7 +1008,7 @@ const ExternalLinkIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 ExternalLinkIcon.displayName = 'ExternalLinkIcon';
@@ -1026,7 +1026,7 @@ const LoaderIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 LoaderIcon.displayName = 'LoaderIcon';
@@ -1050,7 +1050,7 @@ const LockIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 LockIcon.displayName = 'LockIcon';
@@ -1074,7 +1074,7 @@ const MailIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 MailIcon.displayName = 'MailIcon';
@@ -1104,7 +1104,7 @@ const MenuIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 MenuIcon.displayName = 'MenuIcon';
@@ -1122,7 +1122,7 @@ const MessageCircleIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 MessageCircleIcon.displayName = 'MessageCircleIcon';
@@ -1141,7 +1141,7 @@ const MoonIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 MoonIcon.displayName = 'MoonIcon';
@@ -1159,7 +1159,7 @@ const PaperclipIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 PaperclipIcon.displayName = 'PaperclipIcon';
@@ -1177,7 +1177,7 @@ const PhoneIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 PhoneIcon.displayName = 'PhoneIcon';
@@ -1201,7 +1201,7 @@ const PlayIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 PlayIcon.displayName = 'PlayIcon';
@@ -1219,7 +1219,7 @@ const RemoveIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 RemoveIcon.displayName = 'RemoveIcon';
@@ -1255,7 +1255,7 @@ const RepeatIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 RepeatIcon.displayName = 'RepeatIcon';
@@ -1296,7 +1296,7 @@ const Repeat1Icon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 Repeat1Icon.displayName = 'Repeat1Icon';
@@ -1320,7 +1320,7 @@ const SearchIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 SearchIcon.displayName = 'SearchIcon';
@@ -1344,7 +1344,7 @@ const SettingsIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 SettingsIcon.displayName = 'SettingsIcon';
@@ -1386,7 +1386,7 @@ const ShareIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 ShareIcon.displayName = 'ShareIcon';
@@ -1410,7 +1410,7 @@ const SlashIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 SlashIcon.displayName = 'SlashIcon';
@@ -1428,7 +1428,7 @@ const StarIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 StarIcon.displayName = 'StarIcon';
@@ -1494,7 +1494,7 @@ const SunIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 SunIcon.displayName = 'SunIcon';
@@ -1524,7 +1524,7 @@ const ThreeDotsIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 ThreeDotsIcon.displayName = 'ThreeDotsIcon';
@@ -1554,7 +1554,7 @@ const TrashIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 TrashIcon.displayName = 'TrashIcon';
@@ -1578,7 +1578,7 @@ const UnlockIcon = createIcon({
         strokeLinejoin="round"
       />
     </>
-  )
+  ),
 });
 
 UnlockIcon.displayName = 'UnlockIcon';
