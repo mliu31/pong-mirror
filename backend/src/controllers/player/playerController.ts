@@ -6,8 +6,6 @@ export const newPlayer = async (name: string, email: string) => {
   if (existingPlayer) {
     throw new Error('Player already exists');
   }
-
-  // TODO: switch to using Mongo ids
   const lastPlayer = await Player.findOne().sort({ userID: -1 });
   let newPlayerID = 1;
   if (lastPlayer) {
@@ -19,7 +17,7 @@ export const newPlayer = async (name: string, email: string) => {
     name: name,
     email: email,
     friends: [],
-    elo: 1000, // default TODO: default? read from playe rmodel
+    elo: 1000, // default
     rank: 0 // start
   });
 
