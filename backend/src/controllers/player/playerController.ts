@@ -16,3 +16,7 @@ export const getPlayerGroup = async (pid: string): Promise<string[]> => {
   }
   return player.groups;
 };
+// export const getFriends = (pid: string) => {
+//   const toReturn = Player.findById(pid);
+//   return toReturn.friends;
+// };
