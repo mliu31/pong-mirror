@@ -1,22 +1,27 @@
-import { View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { useEffect, useState } from 'react';
 import api from '@/api';
 import { Player } from '@/api/types';
-import { FlatList } from 'react-native-gesture-handler';
-import Checkbox from 'expo-checkbox';
 import { getAllPlayers } from '@/api/players';
 import { getGame } from '@/api/games';
 import { Button, ButtonText } from '@/components/ui/button';
+import {
+  Checkbox,
+  CheckboxIndicator,
+  CheckboxLabel,
+  CheckboxIcon,
+  CheckboxGroup
+} from '@/components/ui/checkbox';
+import { VStack } from '@/components/ui/vstack';
+import { CheckIcon } from '@/components/ui/icon';
+import { View, FlatList, ScrollView } from 'react-native';
 
 export default function Route() {
   const { gameid } = useLocalSearchParams<{ gameid: string }>();
   const [allPlayers, setAllPlayers] = useState<Player[] | null>(null);
-  const [playerUpdates, setPlayerUpdates] = useState<
-    Record<Player['_id'], boolean>
-  >({});
+  const [selectedPlayers, setSelectedPlayers] = useState<string[]>([]);
 
   useEffect(
     () => void getAllPlayers().then(({ data }) => setAllPlayers(data)),
@@ -25,19 +30,11 @@ export default function Route() {
 
   useEffect(
     () =>
-      void getGame(gameid).then(({ data }) =>
-        setPlayerUpdates((prev) => ({
-          ...prev,
-          // update from game data without causing infinite loop
-          ...data.players.reduce(
-            (acc, { player }) => ({
-              ...acc,
-              [player._id]: true
-            }),
-            {}
-          )
-        }))
-      ),
+      void getGame(gameid).then(({ data }) => {
+        // Extract player IDs from game data
+        const playerIds = data.players.map(({ player }) => player._id);
+        setSelectedPlayers(playerIds);
+      }),
     [gameid]
   );
 
@@ -45,6 +42,15 @@ export default function Route() {
 
   const handleContinueButtonPress = () => {
     setContinueButtonDisabled(true);
+    // Convert selected player IDs to the format the API expects
+    const playerUpdates = allPlayers?.reduce(
+      (acc, player) => ({
+        ...acc,
+        [player._id]: selectedPlayers.includes(player._id)
+      }),
+      {}
+    );
+
     api.patch(`/games/${gameid}/players`, playerUpdates).then(() => {
       setContinueButtonDisabled(false);
       router.push(`/game/${gameid}/teamBuilder`);
@@ -64,24 +70,29 @@ export default function Route() {
       <Button className="w-fit">
         <ButtonText>need 1</ButtonText>
       </Button>
-      <FlatList
-        data={allPlayers}
-        renderItem={({ item: player }) => (
-          <View style={{ flexDirection: 'row', gap: '1em' }}>
-            <Checkbox
-              value={playerUpdates[player._id]}
-              onValueChange={(value) => {
-                setPlayerUpdates({
-                  ...playerUpdates,
-                  [player._id]: value
-                });
-              }}
+
+      <ScrollView className="flex-1">
+        <CheckboxGroup value={selectedPlayers} onChange={setSelectedPlayers}>
+          <VStack space="md" className="flex-1">
+            <FlatList
+              data={allPlayers}
+              className="flex-1"
+              keyExtractor={(player) => player._id}
+              renderItem={({ item: player }) => (
+                <Checkbox key={player._id} value={player._id}>
+                  <CheckboxIndicator>
+                    <CheckboxIcon as={CheckIcon} />
+                  </CheckboxIndicator>
+                  <CheckboxLabel>
+                    <ThemedText>{player.name}</ThemedText>
+                  </CheckboxLabel>
+                </Checkbox>
+              )}
             />
-            <ThemedText>{player.name}</ThemedText>
-          </View>
-        )}
-        keyExtractor={(item) => item._id}
-      />
+          </VStack>
+        </CheckboxGroup>
+      </ScrollView>
+
       <Button
         disabled={continueButtonDisabled}
         onPress={handleContinueButtonPress}
