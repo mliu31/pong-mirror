@@ -58,7 +58,7 @@ const authSlice = createSlice({
         state.status = 'loading';
         state.error = null;
       })
-      .addCase(signup.fulfilled, (state, action: PayloadAction<PlayerInfo>) => {
+      .addCase(signup.fulfilled, (state, action: PayloadAction<NewPlayer>) => {
         state.basicPlayerInfo = action.payload;
         state.status = 'idle';
         state.error = null;
@@ -71,7 +71,7 @@ const authSlice = createSlice({
         state.status = 'loading';
         state.error = null;
       })
-      .addCase(login.fulfilled, (state, action: PayloadAction<PlayerInfo>) => {
+      .addCase(login.fulfilled, (state, action: PayloadAction<NewPlayer>) => {
         state.basicPlayerInfo = action.payload;
         state.status = 'idle';
         state.error = null;
