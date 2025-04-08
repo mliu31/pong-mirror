@@ -1,28 +1,60 @@
 import express, { RequestHandler } from 'express';
 import Player from '../models/Player';
+import { newPlayer } from '../controllers/player/playerController';
 
 const router = express.Router();
 
-router.post('/login', async (req, res) => {
+router.post('/signup', async (req, res) => {
   try {
-    const { email, name } = req.body;
+    const { name, email } = req.body;
 
-    if (typeof email !== 'string' || typeof name !== 'string') {
+    if (typeof name !== 'string' || typeof email !== 'string') {
       return void res
         .status(400)
         .json({ message: 'Invalid request, expected email and name' });
     }
 
-    const player = await Player.findOne({ email, name });
+    const player = await newPlayer(name, email);
+    req.session.player = player;
 
+    res.json({
+      message: 'Sign up successful',
+      player: {
+        userID: player.userID,
+        name: player.name,
+        email: player.email
+      }
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+router.post('/login', async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (typeof email !== 'string') {
+      return void res
+        .status(400)
+        .json({ message: 'Invalid request, expected email' });
+    }
+
+    const player = await Player.findOne({ email });
     if (!player) {
       return void res.status(400).json({ message: 'Invalid credentials' });
     }
 
+    Player.findOne();
     req.session.player = player;
     res.json({
       message: 'Login successful',
-      user: { id: player._id, email: player.email, name: player.name }
+      player: {
+        userID: player.userID,
+        name: player.name,
+        email: player.email
+      }
     });
   } catch (err) {
     console.error(err);
