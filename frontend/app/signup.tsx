@@ -58,7 +58,15 @@ export default function SignUp() {
     if (name && email) {
       console.log('Attempting to sign up with:', { name, email });
       try {
-        await dispatch(signup({ name, email })).unwrap();
+        await dispatch(
+          signup({
+            name,
+            email,
+            _id: '',
+            friends: [],
+            elo: 0
+          })
+        ).unwrap();
         console.log('Sign up successful');
 
         router.push('/profile');
