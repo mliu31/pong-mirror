@@ -60,6 +60,33 @@ export default function Route() {
     );
   }
 
+  // player item in list
+  const renderItem = ({ item: player }: { item: Player }) => (
+    <View style={{ flexDirection: 'row', gap: '1em' }}>
+      <Checkbox
+        value={playerUpdates[player._id] ?? false}
+        onValueChange={(value) => {
+          const trueCount =
+            Object.values(playerUpdates).filter((v) => v).length +
+            (value ? 1 : -1);
+
+          if (trueCount > 4) {
+            // cap of 4 players/game
+            setModalVisible(true);
+            return;
+          }
+
+          setPlayerUpdates({
+            ...playerUpdates,
+            [player._id]: value
+          });
+        }}
+      />
+      <ThemedText>{player.name}</ThemedText>
+      {/* make each player a button instead of text/checkbox */}
+    </View>
+  );
+
   return (
     <View style={styles.container}>
       <ThemedText style={styles.title}>Add Players</ThemedText>
@@ -81,30 +108,7 @@ export default function Route() {
         <SafeAreaView style={styles.container}>
           <FlatList
             data={allPlayers}
-            renderItem={({ item: player }) => (
-              <View style={{ flexDirection: 'row', gap: '1em' }}>
-                <Checkbox
-                  value={playerUpdates[player._id] ?? false}
-                  onValueChange={(value) => {
-                    const trueCount =
-                      Object.values(playerUpdates).filter((v) => v).length +
-                      (value ? 1 : -1);
-
-                    if (trueCount > 4) {
-                      // cap of 4 players/game
-                      setModalVisible(true);
-                      return;
-                    }
-
-                    setPlayerUpdates({
-                      ...playerUpdates,
-                      [player._id]: value
-                    });
-                  }}
-                />
-                <ThemedText>{player.name}</ThemedText>
-              </View>
-            )}
+            renderItem={renderItem}
             keyExtractor={(item) => item._id}
           />
           <Button
