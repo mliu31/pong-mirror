@@ -1,10 +1,10 @@
 import { View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import AddButton from './addButton';
-import FriendBox from './friendBox';
-import GroupBox from './groupBox';
+import AddButton from '../../../components/private-leaderboards/addButton';
 import HomeView from './homeView';
-import TitleDiv from './titleDiv';
+import TitleDiv from './[playerid]/titleDiv';
+import FriendBox from './[playerid]/friendBox';
+import GroupBox from './[playerid]/groupBox';
 
 // frontend layout
 // span with friends
@@ -37,7 +37,6 @@ export default function CommunityLandingScreen() {
       <GroupBox groupName="COSC 98!" />
       <GroupBox groupName="COSC 98!" />
       <GroupBox groupName="COSC 98!" />
-
     </SafeAreaProvider>
   );
 }
