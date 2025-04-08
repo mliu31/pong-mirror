@@ -11,17 +11,18 @@ import {
   Checkbox,
   CheckboxIndicator,
   CheckboxLabel,
-  CheckboxIcon,
-  CheckboxGroup
+  CheckboxIcon
 } from '@/components/ui/checkbox';
 import { VStack } from '@/components/ui/vstack';
 import { CheckIcon } from '@/components/ui/icon';
-import { View, FlatList, ScrollView } from 'react-native';
+import { FlatList, ScrollView } from 'react-native';
 
 export default function Route() {
   const { gameid } = useLocalSearchParams<{ gameid: string }>();
   const [allPlayers, setAllPlayers] = useState<Player[] | null>(null);
-  const [selectedPlayers, setSelectedPlayers] = useState<string[]>([]);
+  const [playerUpdates, setPlayerUpdates] = useState<
+    Record<Player['_id'], boolean>
+  >({});
 
   useEffect(
     () => void getAllPlayers().then(({ data }) => setAllPlayers(data)),
@@ -30,11 +31,18 @@ export default function Route() {
 
   useEffect(
     () =>
-      void getGame(gameid).then(({ data }) => {
-        // Extract player IDs from game data
-        const playerIds = data.players.map(({ player }) => player._id);
-        setSelectedPlayers(playerIds);
-      }),
+      void getGame(gameid).then(({ data }) =>
+        setPlayerUpdates((prev) => ({
+          ...data.players.reduce(
+            (acc, { player }) => ({
+              ...acc,
+              [player._id]: true
+            }),
+            {}
+          ),
+          ...prev
+        }))
+      ),
     [gameid]
   );
 
@@ -42,15 +50,6 @@ export default function Route() {
 
   const handleContinueButtonPress = () => {
     setContinueButtonDisabled(true);
-    // Convert selected player IDs to the format the API expects
-    const playerUpdates = allPlayers?.reduce(
-      (acc, player) => ({
-        ...acc,
-        [player._id]: selectedPlayers.includes(player._id)
-      }),
-      {}
-    );
-
     api.patch(`/games/${gameid}/players`, playerUpdates).then(() => {
       setContinueButtonDisabled(false);
       router.push(`/game/${gameid}/teamBuilder`);
@@ -67,37 +66,41 @@ export default function Route() {
 
   return (
     <ThemedView className="flex-1 justify-center p-4 space-y-4">
-      <Button className="w-fit">
-        <ButtonText>need 1</ButtonText>
-      </Button>
-
       <ScrollView className="flex-1">
-        <CheckboxGroup value={selectedPlayers} onChange={setSelectedPlayers}>
-          <VStack space="md" className="flex-1">
-            <FlatList
-              data={allPlayers}
-              className="flex-1"
-              keyExtractor={(player) => player._id}
-              renderItem={({ item: player }) => (
-                <Checkbox key={player._id} value={player._id}>
-                  <CheckboxIndicator>
-                    <CheckboxIcon as={CheckIcon} />
-                  </CheckboxIndicator>
-                  <CheckboxLabel>
-                    <ThemedText>{player.name}</ThemedText>
-                  </CheckboxLabel>
-                </Checkbox>
-              )}
-            />
-          </VStack>
-        </CheckboxGroup>
+        <VStack space="md" className="flex-1">
+          <FlatList
+            data={allPlayers}
+            className="flex-1"
+            keyExtractor={(player) => player._id}
+            renderItem={({ item: player }) => (
+              <Checkbox
+                key={player._id}
+                value={player._id}
+                isChecked={playerUpdates[player._id]}
+                onChange={(isSelected) => {
+                  setPlayerUpdates((prev) => ({
+                    ...prev,
+                    [player._id]: isSelected
+                  }));
+                }}
+              >
+                <CheckboxIndicator>
+                  <CheckboxIcon as={CheckIcon} />
+                </CheckboxIndicator>
+                <CheckboxLabel>
+                  <ThemedText>{player.name}</ThemedText>
+                </CheckboxLabel>
+              </Checkbox>
+            )}
+          />
+        </VStack>
       </ScrollView>
 
       <Button
         disabled={continueButtonDisabled}
         onPress={handleContinueButtonPress}
       >
-        <ButtonText>Continue</ButtonText>
+        <ButtonText>Save and continue</ButtonText>
       </Button>
     </ThemedView>
   );
