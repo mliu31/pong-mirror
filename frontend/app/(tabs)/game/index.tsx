@@ -1,5 +1,4 @@
-import { StyleSheet, Button } from 'react-native';
-
+import { Button, ButtonText } from '@/components/ui/button';
 import { ThemedView } from '@/components/ThemedView';
 import { useState } from 'react';
 import { createGame } from '@/api/games';
@@ -10,27 +9,19 @@ export default function GameLandingScreen() {
   const router = useRouter();
 
   return (
-    <ThemedView style={styles.container}>
+    <ThemedView className="flex-1 items-center justify-center">
       <Button
-        title="Start Game"
-        disabled={buttonDisabled}
-        onPress={async (ev) => {
+        className="w-fit"
+        isDisabled={buttonDisabled}
+        onPress={async () => {
           setButtonDisabled(true);
           const gameResponse = await createGame();
           router.push(`/game/${gameResponse.data.id}`);
           setButtonDisabled(false);
         }}
-      />
+      >
+        <ButtonText>Create game</ButtonText>
+      </Button>
     </ThemedView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flex: 1,
-    gap: '1rem'
-  }
-});
