@@ -22,8 +22,5 @@
   "devDependencies": {
     "eslint-plugin-package-json": "^0.26.4",
     "typescript": "^5.8.2"
-  },
-  "engines": {
-    "node": ">=23.11.0"
   }
 }
