@@ -7,7 +7,7 @@ import { tva } from '@gluestack-ui/nativewind-utils/tva';
 import { PrimitiveIcon, IPrimitiveIcon, UIIcon } from '@gluestack-ui/icon';
 import {
   withStyleContext,
-  useStyleContext
+  useStyleContext,
 } from '@gluestack-ui/nativewind-utils/withStyleContext';
 import { cssInterop } from 'nativewind';
 import type { VariantProps } from '@gluestack-ui/nativewind-utils';
@@ -43,7 +43,7 @@ const UICheckbox = createCheckbox({
   Group: View,
   Icon: IconWrapper,
   Label: LabelWrapper,
-  Indicator: IndicatorWrapper
+  Indicator: IndicatorWrapper,
 });
 
 cssInterop(PrimitiveIcon, {
@@ -54,9 +54,9 @@ cssInterop(PrimitiveIcon, {
       width: true,
       fill: true,
       color: 'classNameColor',
-      stroke: true
-    }
-  }
+      stroke: true,
+    },
+  },
 });
 
 const checkboxStyle = tva({
@@ -65,9 +65,9 @@ const checkboxStyle = tva({
     size: {
       lg: 'gap-2',
       md: 'gap-2',
-      sm: 'gap-1.5'
-    }
-  }
+      sm: 'gap-1.5',
+    },
+  },
 });
 
 const checkboxIndicatorStyle = tva({
@@ -76,9 +76,9 @@ const checkboxIndicatorStyle = tva({
     size: {
       lg: 'w-6 h-6 border-[3px]',
       md: 'w-5 h-5 border-2',
-      sm: 'w-4 h-4 border-2'
-    }
-  }
+      sm: 'w-4 h-4 border-2',
+    },
+  },
 });
 
 const checkboxLabelStyle = tva({
@@ -87,9 +87,9 @@ const checkboxLabelStyle = tva({
     size: {
       lg: 'text-lg',
       md: 'text-base',
-      sm: 'text-sm'
-    }
-  }
+      sm: 'text-sm',
+    },
+  },
 });
 
 const checkboxIconStyle = tva({
@@ -99,9 +99,9 @@ const checkboxIconStyle = tva({
     size: {
       sm: 'h-3 w-3',
       md: 'h-4 w-4',
-      lg: 'h-5 w-5'
-    }
-  }
+      lg: 'h-5 w-5',
+    },
+  },
 });
 
 const CheckboxGroup = UICheckbox.Group;
@@ -117,11 +117,11 @@ const Checkbox = React.forwardRef<
     <UICheckbox
       className={checkboxStyle({
         class: className,
-        size
+        size,
       })}
       {...props}
       context={{
-        size
+        size,
       }}
       ref={ref}
     />
@@ -143,9 +143,9 @@ const CheckboxIndicator = React.forwardRef<
     <UICheckbox.Indicator
       className={checkboxIndicatorStyle({
         parentVariants: {
-          size: parentSize
+          size: parentSize,
         },
-        class: className
+        class: className,
       })}
       {...props}
       ref={ref}
@@ -166,9 +166,9 @@ const CheckboxLabel = React.forwardRef<
     <UICheckbox.Label
       className={checkboxLabelStyle({
         parentVariants: {
-          size: parentSize
+          size: parentSize,
         },
-        class: className
+        class: className,
       })}
       {...props}
       ref={ref}
@@ -213,10 +213,10 @@ const CheckboxIcon = React.forwardRef<
     <UICheckbox.Icon
       className={checkboxIconStyle({
         parentVariants: {
-          size: parentSize
+          size: parentSize,
         },
         class: className,
-        size
+        size,
       })}
       {...props}
       ref={ref}
@@ -234,5 +234,5 @@ export {
   CheckboxIndicator,
   CheckboxLabel,
   CheckboxIcon,
-  CheckboxGroup
+  CheckboxGroup,
 };
