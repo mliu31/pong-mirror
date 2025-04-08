@@ -1,4 +1,5 @@
-import { router, useLocalSearchParams, useNavigation } from 'expo-router';
+import { View } from 'react-native';
+import { router, useLocalSearchParams } from 'expo-router';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { useEffect, useState } from 'react';
@@ -7,25 +8,6 @@ import { Player } from '@/api/types';
 import { getAllPlayers } from '@/api/players';
 import { getGame } from '@/api/games';
 import { Button, ButtonText } from '@/components/ui/button';
-import { QrCode as QrCodeIcon } from 'lucide-react-native';
-import {
-  Checkbox,
-  CheckboxIndicator,
-  CheckboxLabel,
-  CheckboxIcon
-} from '@/components/ui/checkbox';
-import { VStack } from '@/components/ui/vstack';
-import { CheckIcon, CloseIcon, Icon } from '@/components/ui/icon';
-import { FlatList, ScrollView, View } from 'react-native';
-import {
-  Modal,
-  ModalBackdrop,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalHeader
-} from '@/components/ui/modal';
-import QRCode from 'react-native-qrcode-svg';
 
 export default function Route() {
   const { gameid } = useLocalSearchParams<{ gameid: string }>();
@@ -126,40 +108,32 @@ export default function Route() {
 
   return (
     <ThemedView className="flex-1 justify-center p-4 space-y-4">
-      <ScrollView className="flex-1">
-        <VStack space="md" className="flex-1">
-          <FlatList
-            data={allPlayers}
-            className="flex-1"
-            keyExtractor={(player) => player._id}
-            renderItem={({ item: player }) => (
-              <Checkbox
-                value={player._id}
-                isChecked={playerUpdates[player._id]}
-                onChange={(isSelected) => {
-                  setPlayerUpdates((prev) => ({
-                    ...prev,
-                    [player._id]: isSelected
-                  }));
-                }}
-              >
-                <CheckboxIndicator>
-                  <CheckboxIcon as={CheckIcon} />
-                </CheckboxIndicator>
-                <CheckboxLabel>
-                  <ThemedText>{player.name}</ThemedText>
-                </CheckboxLabel>
-              </Checkbox>
-            )}
-          />
-        </VStack>
-      </ScrollView>
-
+      <Button className="w-fit">
+        <ButtonText>need 1</ButtonText>
+      </Button>
+      <FlatList
+        data={allPlayers}
+        renderItem={({ item: player }) => (
+          <View style={{ flexDirection: 'row', gap: '1em' }}>
+            <Checkbox
+              value={playerUpdates[player._id]}
+              onValueChange={(value) => {
+                setPlayerUpdates({
+                  ...playerUpdates,
+                  [player._id]: value
+                });
+              }}
+            />
+            <ThemedText>{player.name}</ThemedText>
+          </View>
+        )}
+        keyExtractor={(item) => item._id}
+      />
       <Button
         disabled={continueButtonDisabled}
         onPress={handleContinueButtonPress}
       >
-        <ButtonText>Save and continue</ButtonText>
+        <ButtonText>Continue</ButtonText>
       </Button>
     </ThemedView>
   );
