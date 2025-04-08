@@ -1,5 +1,4 @@
 import { Button, ButtonText } from '@/components/ui/button';
-import { VStack } from '@/components/ui/vstack';
 import { ThemedView } from '@/components/ThemedView';
 import { useState } from 'react';
 import { createGame } from '@/api/games';
