@@ -1,4 +1,3 @@
-import { View, Modal } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
@@ -7,12 +6,6 @@ import api from '@/api';
 import { Player } from '@/api/types';
 import { getAllPlayers } from '@/api/players';
 import { Button, ButtonText } from '@/components/ui/button';
-import {
-  Checkbox,
-  CheckboxIndicator,
-  CheckboxLabel,
-  CheckboxIcon
-} from '@/components/ui/checkbox';
 import {
   useToast,
   Toast,
@@ -80,14 +73,15 @@ export default function Route() {
   }
 
   const renderItem = ({ item: player }: { item: Player }) => {
-    const handleCheckboxChange = (isSelected: boolean) => {
+    const playerButtonPressHandler = () => {
       // Count how many players are currently selected
       const currentSelectedCount = Object.values(playerUpdates).filter(
         (v) => v === true
       ).length;
 
-      // If trying to select and already at 4 players, show toast and prevent selection
-      if (isSelected && currentSelectedCount >= 4) {
+      // If trying to select and already at 4 players
+      const notSelected = playerUpdates[player._id] !== true; // allows for deselection
+      if (currentSelectedCount == 4 && notSelected) {
         handleToast();
         return;
       }
@@ -95,35 +89,21 @@ export default function Route() {
       // Otherwise update the state
       setPlayerUpdates((prev) => ({
         ...prev,
-        [player._id]: isSelected
+        [player._id]: !prev[player._id]
       }));
     };
 
     return (
-      // <Checkbox
-      //   value={player._id}
-      //   // Explicitly handle undefined with a default false value
-      //   isChecked={playerUpdates[player._id] === true}
-      //   onChange={handleCheckboxChange}
-      // >
-      //   <CheckboxIndicator>
-      //     <CheckboxIcon as={CheckIcon} />
-      //   </CheckboxIndicator>
-      //   <CheckboxLabel>
-      //     <ThemedText>{player.name}</ThemedText>
-      //   </CheckboxLabel>
-      // </Checkbox>
-
-      <Button size="md" variant="outline" action="primary">
-        <ButtonText
-          className={
-            playerUpdates[player._id] === true
-              ? 'bg-primary-white text-white'
-              : 'bg-transparent text-primary-500'
-          }
-        >
-          {player.name}
-        </ButtonText>
+      <Button
+        size="md"
+        action="primary"
+        onPress={playerButtonPressHandler}
+        variant={playerUpdates[player._id] === true ? 'solid' : 'outline'}
+        className={`border-0 border-b rounded-none ${
+          playerUpdates[player._id] === true ? 'border-black' : ''
+        }`}
+      >
+        <ButtonText>{player.name}</ButtonText>
       </Button>
     );
   };
