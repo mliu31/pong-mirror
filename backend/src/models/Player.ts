@@ -14,7 +14,8 @@ const playerSchema = new mongoose.Schema<IPlayer>({
   userID: {
     type: Number,
     required: true,
-    default: 0
+    default: 0,
+    unique: true
   },
   name: {
     type: String,
@@ -22,7 +23,8 @@ const playerSchema = new mongoose.Schema<IPlayer>({
   },
   email: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   rank: {
     type: Number,
