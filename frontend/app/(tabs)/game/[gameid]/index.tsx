@@ -22,6 +22,7 @@ export default function Route() {
   const [playerUpdates, setPlayerUpdates] = useState<
     Record<Player['_id'], boolean>
   >({});
+  const [numSelectedPlayers, setNumSelectedPlayers] = useState(0);
 
   const toast = useToast();
   const [toastId, setToastId] = useState(0);
@@ -74,19 +75,20 @@ export default function Route() {
 
   const renderItem = ({ item: player }: { item: Player }) => {
     const playerButtonPressHandler = () => {
-      // Count how many players are currently selected
-      const currentSelectedCount = Object.values(playerUpdates).filter(
-        (v) => v === true
-      ).length;
-
       // If trying to select and already at 4 players
-      const notSelected = playerUpdates[player._id] !== true; // allows for deselection
-      if (currentSelectedCount == 4 && notSelected) {
+      const isSelected = playerUpdates[player._id] === true; // allow for deselection
+      if (numSelectedPlayers == 4 && !isSelected) {
         handleToast();
         return;
       }
 
-      // Otherwise update the state
+      // Otherwise update states
+      if (isSelected) {
+        setNumSelectedPlayers((prev) => prev - 1);
+      } else {
+        setNumSelectedPlayers((prev) => prev + 1);
+      }
+
       setPlayerUpdates((prev) => ({
         ...prev,
         [player._id]: !prev[player._id]
