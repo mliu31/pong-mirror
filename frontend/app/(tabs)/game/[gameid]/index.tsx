@@ -13,7 +13,6 @@ import {
   ToastDescription
 } from '@/components/ui/toast';
 import { VStack } from '@/components/ui/vstack';
-import { CheckIcon } from '@/components/ui/icon';
 import { FlatList, ScrollView } from 'react-native';
 
 export default function Route() {
@@ -56,6 +55,14 @@ export default function Route() {
   );
 
   const [continueButtonDisabled, setContinueButtonDisabled] = useState(false);
+
+  useEffect(() => {
+    if (numSelectedPlayers < 2) {
+      setContinueButtonDisabled(true);
+    } else {
+      setContinueButtonDisabled(false);
+    }
+  }, [numSelectedPlayers]);
 
   const handleContinueButtonPress = () => {
     setContinueButtonDisabled(true);
@@ -127,6 +134,7 @@ export default function Route() {
       <Button
         disabled={continueButtonDisabled}
         onPress={handleContinueButtonPress}
+        action={continueButtonDisabled === true ? 'secondary' : 'primary'}
       >
         <ButtonText>Save and continue</ButtonText>
       </Button>
