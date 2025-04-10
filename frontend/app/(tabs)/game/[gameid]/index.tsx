@@ -31,24 +31,6 @@ export default function Route() {
     []
   );
 
-  // // is this necessary? only caled on page load w gameid -- nothing happens bc game data.players is empty
-  // useEffect(
-  //   () =>
-  //     void getGame(gameid).then(({ data }) =>
-  //       setPlayerUpdates((prev) => ({
-  //         ...data.players.reduce(
-  //           (acc, { player }) => ({
-  //             ...acc,
-  //             [player._id]: false
-  //           }),
-  //           {}
-  //         ),
-  //         ...prev
-  //       }))
-  //     ),
-  //   [gameid]
-  // );
-
   const [continueButtonDisabled, setContinueButtonDisabled] = useState(false);
 
   const handleContinueButtonPress = () => {
