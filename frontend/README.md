@@ -16,11 +16,13 @@
 > Make sure you have Node.JS ≥23 installed - we suggest [`nvm use node`](https://github.com/nvm-sh/nvm).
 
 ### Scripts
-| Command           | Description                                             |
-| ----------------- | ------------------------------------------------------- |
-| `bun run android` | Start a live development build of the app on Android.   |
-| `bun run ios`     | Start a live development build of the app on iOS.       |
-| `bun run lint`    | Check for errors.                                       |
-| `bun run start`   | Start a live development build of the app.              |
-| `bun run test`    | Run tests using Jest.                                   |
-| `bun run web`     | Start a live development build of the app in a browser. |
+| Command            | Description                                             |
+| ------------------ | ------------------------------------------------------- |
+| `bun run android`  | Start a live development build of the app on Android.   |
+| `bun run check`    | Check for TypeScript errors.                            |
+| `bun run ios`      | Start a live development build of the app on iOS.       |
+| `bun run lint`     | Check for code/style errors.                            |
+| `bun run lint:fix` | Fix code/style errors.                                  |
+| `bun run start`    | Start a live development build of the app.              |
+| `bun run test`     | Run tests using Jest.                                   |
+| `bun run web`      | Start a live development build of the app in a browser. |
