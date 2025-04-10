@@ -78,3 +78,11 @@ export const removePlayerFriend = async (pid: string, fid: string) => {
 
   return updatedPlayer;
 };
+
+export const getPlayerGroup = async (pid: string): Promise<string[]> => {
+  const player = await Player.findById(pid);
+  if (!player) {
+    throw new Error('Player not found');
+  }
+  return player.groups;
+};
