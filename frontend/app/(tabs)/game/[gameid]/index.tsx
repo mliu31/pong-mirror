@@ -48,7 +48,7 @@ export default function Route() {
       render: ({ id }) => {
         const uniqueToastId = 'toast-' + id;
         return (
-          <Toast nativeID={uniqueToastId} action="muted" variant="solid">
+          <Toast nativeID={uniqueToastId} action="muted" variant="outline">
             <ToastTitle>Max 4 players in a game</ToastTitle>
           </Toast>
         );
@@ -86,9 +86,8 @@ export default function Route() {
         (v) => v === true
       ).length;
 
-      // If trying to select and already at 4 players, show modal and prevent selection
+      // If trying to select and already at 4 players, show toast and prevent selection
       if (isSelected && currentSelectedCount >= 4) {
-        // setModalVisible(true);
         handleToast();
         return;
       }
