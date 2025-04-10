@@ -1,4 +1,4 @@
-import { View, StyleSheet, Modal } from 'react-native';
+import { View, Modal } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react';
 import api from '@/api';
 import { Player } from '@/api/types';
 import { getAllPlayers } from '@/api/players';
-import { getGame } from '@/api/games';
 import { Button, ButtonText } from '@/components/ui/button';
 import {
   Checkbox,
@@ -14,6 +13,12 @@ import {
   CheckboxLabel,
   CheckboxIcon
 } from '@/components/ui/checkbox';
+import {
+  useToast,
+  Toast,
+  ToastTitle,
+  ToastDescription
+} from '@/components/ui/toast';
 import { VStack } from '@/components/ui/vstack';
 import { CheckIcon } from '@/components/ui/icon';
 import { FlatList, ScrollView } from 'react-native';
@@ -24,7 +29,32 @@ export default function Route() {
   const [playerUpdates, setPlayerUpdates] = useState<
     Record<Player['_id'], boolean>
   >({});
-  const [modalVisible, setModalVisible] = useState(false);
+
+  const toast = useToast();
+  const [toastId, setToastId] = useState(0);
+  const handleToast = () => {
+    if (!toast.isActive(toastId.toString())) {
+      showNewToast();
+    }
+  };
+
+  const showNewToast = () => {
+    const newId = Math.random();
+    setToastId(newId);
+    toast.show({
+      id: newId.toString(),
+      placement: 'top',
+      duration: 3000,
+      render: ({ id }) => {
+        const uniqueToastId = 'toast-' + id;
+        return (
+          <Toast nativeID={uniqueToastId} action="muted" variant="solid">
+            <ToastTitle>Max 4 players in a game</ToastTitle>
+          </Toast>
+        );
+      }
+    });
+  };
 
   useEffect(
     () => void getAllPlayers().then(({ data }) => setAllPlayers(data)),
@@ -58,7 +88,8 @@ export default function Route() {
 
       // If trying to select and already at 4 players, show modal and prevent selection
       if (isSelected && currentSelectedCount >= 4) {
-        setModalVisible(true);
+        // setModalVisible(true);
+        handleToast();
         return;
       }
 
@@ -89,22 +120,6 @@ export default function Route() {
   return (
     <ThemedView className="flex-1 justify-center p-4 space-y-4">
       <ThemedText>Add Players</ThemedText>
-
-      {/* max 4 players popup if try to add >4 */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View>
-          <ThemedText>Max 4 players in a game</ThemedText>
-          <Button onPress={() => setModalVisible(false)}>
-            <ButtonText>Close</ButtonText>
-          </Button>
-        </View>
-      </Modal>
-
       <ScrollView className="flex-1">
         <VStack space="md" className="flex-1">
           <FlatList
