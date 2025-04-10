@@ -14,7 +14,8 @@ const playerSchema = new mongoose.Schema<IPlayer>({
   userID: {
     type: Number,
     required: true,
-    default: 0
+    default: 0,
+    unique: true
   },
   name: {
     type: String,
