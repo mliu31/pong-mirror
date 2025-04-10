@@ -24,7 +24,7 @@ const LeaderboardScreen: React.FC = () => {
   const [currentTab, setCurrentTab] = useState<Tab>('Top');
   // State to store leaderboard data from API
   const [items, setItems] = useState<LeaderboardItem[]>([]);
-  // Loading state for A PI calls
+  // Loading state for API calls
   const [isLoading, setIsLoading] = useState(true);
   // Error state for API failures
   const [error, setError] = useState<string | null>(null);
