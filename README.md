@@ -54,3 +54,13 @@ Install [`bun`](https://bun.sh), then refer to the [frontend](./frontend) and [b
 We are thankful to Professor Vasanta Lakshmi Kommineni (@kvasanta) for her guidance and support throughout the project.
 
 This project was developed with assistance from generative AI models by OpenAI, including GPT-4o, o1, and o3-mini.
+
+
+### Scripts
+| Command                 | Description                                             |
+| ----------------------- | ------------------------------------------------------- |
+| `bun run check`         | Check for TypeScript errors in the entire monorepo.     |
+| `bun run lint`          | Check for code/style errors in the entire monorepo.     |
+| `bun run lint:fix`      | Fix code/style errors in the entire monorepo.           |
+| `bun run lint:root`     | Check for code/style errors in the main project folder. |
+| `bun run lint:root:fix` | Fix code/style errors in the main project folder.       |
