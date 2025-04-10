@@ -48,7 +48,7 @@ export default function Route() {
       render: ({ id }) => {
         const uniqueToastId = 'toast-' + id;
         return (
-          <Toast nativeID={uniqueToastId} action="muted" variant="solid">
+          <Toast nativeID={uniqueToastId} action="muted" variant="outline">
             <ToastTitle>Max 4 players in a game</ToastTitle>
           </Toast>
         );
