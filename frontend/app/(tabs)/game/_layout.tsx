@@ -14,6 +14,14 @@ export default function GameLayout() {
           title: 'Add Players'
         }}
       />
+
+      <Stack.Screen
+        name="[gameid]/teamBuilder"
+        options={{
+          headerShown: true,
+          title: 'Form Teams'
+        }}
+      />
     </Stack>
   );
 }
