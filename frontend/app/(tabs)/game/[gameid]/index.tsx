@@ -100,19 +100,31 @@ export default function Route() {
     };
 
     return (
-      <Checkbox
-        value={player._id}
-        // Explicitly handle undefined with a default false value
-        isChecked={playerUpdates[player._id] === true}
-        onChange={handleCheckboxChange}
-      >
-        <CheckboxIndicator>
-          <CheckboxIcon as={CheckIcon} />
-        </CheckboxIndicator>
-        <CheckboxLabel>
-          <ThemedText>{player.name}</ThemedText>
-        </CheckboxLabel>
-      </Checkbox>
+      // <Checkbox
+      //   value={player._id}
+      //   // Explicitly handle undefined with a default false value
+      //   isChecked={playerUpdates[player._id] === true}
+      //   onChange={handleCheckboxChange}
+      // >
+      //   <CheckboxIndicator>
+      //     <CheckboxIcon as={CheckIcon} />
+      //   </CheckboxIndicator>
+      //   <CheckboxLabel>
+      //     <ThemedText>{player.name}</ThemedText>
+      //   </CheckboxLabel>
+      // </Checkbox>
+
+      <Button size="md" variant="outline" action="primary">
+        <ButtonText
+          className={
+            playerUpdates[player._id] === true
+              ? 'bg-primary-white text-white'
+              : 'bg-transparent text-primary-500'
+          }
+        >
+          {player.name}
+        </ButtonText>
+      </Button>
     );
   };
 
