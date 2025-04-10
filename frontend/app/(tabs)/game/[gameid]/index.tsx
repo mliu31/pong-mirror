@@ -9,7 +9,6 @@ import { Button, ButtonText } from '@/components/ui/button';
 import { useToast, Toast, ToastTitle } from '@/components/ui/toast';
 import { VStack } from '@/components/ui/vstack';
 import { FlatList, ScrollView } from 'react-native';
-import { Heading } from '@/components/ui/heading';
 
 export default function Route() {
   const { gameid } = useLocalSearchParams<{ gameid: string }>();
@@ -115,7 +114,6 @@ export default function Route() {
 
   return (
     <ThemedView className="flex-1 justify-center p-4 space-y-4">
-      <Heading>Add Players</Heading>
       <ScrollView className="flex-1">
         <VStack space="md" className="flex-1">
           <FlatList
