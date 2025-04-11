@@ -128,7 +128,8 @@ export default function Route() {
       <Button
         disabled={continueButtonDisabled}
         onPress={handleContinueButtonPress}
-        action={continueButtonDisabled === true ? 'secondary' : 'primary'}
+        action={continueButtonDisabled === false ? 'primary' : 'secondary'}
+        className={continueButtonDisabled === false ? 'bg-success-300' : ''}
       >
         <ButtonText>Continue</ButtonText>
       </Button>
