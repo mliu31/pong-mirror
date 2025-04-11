@@ -33,7 +33,7 @@ const TeamChoiceButtons = ({
         color={team === TEAM.BLUE ? 'blue' : 'gray'}
       />
 
-      {team && <Text>Selected Team: {team}</Text>}
+      {team && <Text>{team} team</Text>}
     </View>
   );
 };

@@ -17,6 +17,7 @@ export default function Route() {
     Record<Player['_id'], boolean>
   >({});
   const [numSelectedPlayers, setNumSelectedPlayers] = useState(0);
+  const [continueButtonDisabled, setContinueButtonDisabled] = useState(false);
 
   const toast = useToast();
   const [toastId, setToastId] = useState(0);
@@ -48,8 +49,6 @@ export default function Route() {
     () => void getAllPlayers().then(({ data }) => setAllPlayers(data)),
     []
   );
-
-  const [continueButtonDisabled, setContinueButtonDisabled] = useState(false);
 
   useEffect(() => {
     if (numSelectedPlayers < 2) {
@@ -131,7 +130,7 @@ export default function Route() {
         onPress={handleContinueButtonPress}
         action={continueButtonDisabled === true ? 'secondary' : 'primary'}
       >
-        <ButtonText>Save and continue</ButtonText>
+        <ButtonText>Continue</ButtonText>
       </Button>
     </ThemedView>
   );
