@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/checkbox';
 import { VStack } from '@/components/ui/vstack';
 import { CheckIcon, CloseIcon, Icon } from '@/components/ui/icon';
-import { FlatList, ScrollView } from 'react-native';
+import { FlatList, ScrollView, View } from 'react-native';
 import {
   Modal,
   ModalBackdrop,
@@ -25,6 +25,7 @@ import {
   ModalContent,
   ModalHeader
 } from '@/components/ui/modal';
+import QRCode from 'react-native-qrcode-svg';
 
 export default function Route() {
   const { gameid } = useLocalSearchParams<{ gameid: string }>();
@@ -88,7 +89,7 @@ export default function Route() {
           onClose={() => {
             setShowModal(false);
           }}
-          size="md"
+          size="sm"
         >
           <ModalBackdrop />
           <ModalContent>
@@ -101,7 +102,14 @@ export default function Route() {
                 />
               </ModalCloseButton>
             </ModalHeader>
-            <ModalBody>qr code goes here</ModalBody>
+            <ModalBody>
+              <View className="items-center justify-center">
+                <QRCode
+                  value="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                  size={200}
+                />
+              </View>
+            </ModalBody>
           </ModalContent>
         </Modal>
       </>
