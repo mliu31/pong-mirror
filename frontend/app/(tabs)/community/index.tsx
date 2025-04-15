@@ -1,10 +1,10 @@
 import { View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import AddButton from './addButton';
-import FriendBox from './friendBox';
-import GroupBox from './groupBox';
-import HomeView from './homeView';
-import TitleDiv from './titleDiv';
+import AddButton from '../../../components/private-leaderboards/addButton';
+// import HomeView from './homeView';
+import TitleDiv from './[playerid]/titleDiv';
+import FriendBox from './[playerid]/friendBox';
+import GroupBox from './[playerid]/groupBox';
 
 // frontend layout
 // span with friends
@@ -14,12 +14,12 @@ import TitleDiv from './titleDiv';
 // span with groups
 // button with add groups
 // loaded groups
-import { StyleSheet, Button } from 'react-native';
+// import { StyleSheet, Button } from 'react-native';
 
-import { ThemedView } from '@/components/ThemedView';
-import { useState } from 'react';
-import { createGame } from '@/api/games';
-import { useRouter } from 'expo-router';
+// import { ThemedView } from '@/components/ThemedView';
+// import { useState } from 'react';
+// import { createGame } from '@/api/games';
+// import { useRouter } from 'expo-router';
 
 export default function CommunityLandingScreen() {
   return (
