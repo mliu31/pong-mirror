@@ -1,6 +1,6 @@
 import { getAllPlayers } from '@/api/players';
 import { Player } from '@/api/types';
-import { useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, SafeAreaView, FlatList } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
