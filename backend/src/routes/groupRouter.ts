@@ -10,41 +10,63 @@ const router = express.Router();
 
 // GET request for groups
 router.get('/:groupid', async (req, res) => {
-  const group = await getGroup(req.params.groupid);
-  return void res.json(group);
-  //   try {
-  //     const group = await getGroup(req.params.gid);
-  //     return void res.json(group);
-  //   } catch (error) {
-  //     if (error instanceof Error) {
-  //       res.status(500).json({ message: error.message });
-  //     } else {
-  //       res.status(404).json({ message: '404 Error group not found' });
-  //     }
-  //   }
+  try {
+    const group = await getGroup(req.params.groupid);
+    return void res.json(group);
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).json({ message: error.message });
+    } else {
+      res.status(404).json({ message: '404 Error group not found' });
+    }
+  }
 });
 
 // PUT request to create a group
-// router.put('/addGroup/:pid/:groupName', async (req, res) => {
+router.put('/addGroup/:pid/:groupName', async (req, res) => {
+  try {
+    const player = await getPlayer(req.params.pid);
+    try {
+      // put the group into the schema
+      const group = await createGroup(req.params.groupName, req.params.pid);
+      // put the group into the player
+      try {
+        const groupId = group._id.toString();
+        await joinGroup(req.params.pid, groupId);
+        return void res.json(group);
+      } catch (error) {
+        if (error instanceof Error) {
+          res.status(500).json({ message: error.message });
+        } else {
+          res.status(404).json({ message: '404 Error group not found' });
+        }
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(500).json({ message: error.message });
+      } else {
+        res.status(404).json({ message: '404 Error group not found' });
+      }
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).json({ message: error.message });
+    } else {
+      res.status(404).json({ message: '404 Error player not found' });
+    }
+  }
+});
+
+// // PUT request to add someone to a group
+// router.put('/addPlayer/:groupid/:playerid', async (req, res) => {
 //   try {
-//     const player = await getPlayer(req.params.pid);
-//     try {
-//       // put the group into the schema
-//       createGroup(req.params.groupName, req.params.pid);
-//       const group = await getGroup()
-//       player?.groups.push(req.params.)
-//     } catch (error) {
-//       if (error instanceof Error) {
-//         res.status(500).json({ message: error.message });
-//       } else {
-//         res.status(404).json({ message: '404 Error group not found' });
-//       }
-//     }
+//     const player = await getPlayer(req.params.playerid);
+//     const 
 //   } catch (error) {
 //     if (error instanceof Error) {
 //       res.status(500).json({ message: error.message });
 //     } else {
-//       res.status(404).json({ message: '404 Error player not found' });
+//       res.status(404).json({ message: '404 Error group not found' });
 //     }
 //   }
 // });

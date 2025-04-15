@@ -8,11 +8,13 @@ export const getGroup = (groupId: string) => Group.findById(groupId);
 
 // create a private group
 
-export const createGroup = (groupName: string, playerId: string) =>
-  Group.create({
+export const createGroup = (groupName: string, playerId: string) => {
+  const group = Group.create({
     name: groupName,
     members: [playerId]
   });
+  return group;
+}
 
 // join a private group
 
