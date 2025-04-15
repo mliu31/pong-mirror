@@ -4,7 +4,7 @@ import { getPlayerGroup } from '../player/playerController';
 
 // get private groups
 
-export const getGroup = async (groupId: string) => Group.find(groupId);
+export const getGroup = (groupId: string) => Group.findById(groupId);
 
 // create a private group
 
