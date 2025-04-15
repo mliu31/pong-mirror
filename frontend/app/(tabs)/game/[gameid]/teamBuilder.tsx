@@ -4,6 +4,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { useEffect, useState } from 'react';
 import { getGame } from '@/api/games';
 import TeamChoiceButtons from '../../../../components/TeamChoiceButtons';
+import PlayerChip from '../../../../components/PlayerChip';
 import { Button, ButtonText } from '@/components/ui/button';
 import { Game } from '@/api/apiTypes';
 import { Box } from '@/components/ui/box';
@@ -33,11 +34,11 @@ export default function Route() {
         <>
           <Box className="flex-row h-full">
             <Box className="w-1/2 bg-success-300 p-10 top-0 left-0 ">
-              <Text className="text-typography-default">Team 1</Text>
+              <Text className="text-typography-default text-left">Team 1</Text>
             </Box>
 
             <Box className="w-1/2 bg-secondary-50 p-10 top-0 right-0">
-              <Text className="text-typography-default">Team 2</Text>
+              <Text className="text-typography-default text-right">Team 2</Text>
             </Box>
           </Box>
 
@@ -48,6 +49,12 @@ export default function Route() {
                 pid={player._id}
                 initialValue={team}
                 gameid={local.gameid as string}
+              />
+
+              <PlayerChip
+                pid={player._id}
+                playerName={player.name}
+                team={team}
               />
             </ThemedText>
           ))}

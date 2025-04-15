@@ -19,8 +19,8 @@
   "dependencies": {
     "@expo/html-elements": "^0.4.2",
     "connect-mongo": "^5.1.0",
-    "react-native-gesture-handler": "^2.25.0",
-    "react-native-reanimated": "^3.17.3"
+    "react-native-gesture-handler": "~2.20.2",
+    "react-native-reanimated": "~3.16.1"
   },
   "devDependencies": {
     "eslint-plugin-package-json": "^0.26.4",
