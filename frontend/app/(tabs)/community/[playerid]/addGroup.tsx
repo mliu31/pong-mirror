@@ -1,5 +1,9 @@
-import React from 'react';
-import { Dimensions, SafeAreaView, StyleSheet, View } from 'react-native';
+import {
+  // Dimensions,
+  SafeAreaView,
+  // StyleSheet,
+  View
+} from 'react-native';
 
 // const styles = StyleSheet.create({
 //   searchView: {
