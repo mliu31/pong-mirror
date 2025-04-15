@@ -1,7 +1,14 @@
 import mongoose from 'mongoose';
-import AutoIncrement from 'mongoose-sequence';
+import mongooseSequence from 'mongoose-sequence';
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const AutoIncrement = require('mongoose-sequence')(mongoose);
 
-const groupSchema = new mongoose.Schema({
+export interface IGroup extends Document {
+  name: string;
+  members: string[];
+}
+
+const groupSchema = new mongoose.Schema<IGroup>({
   name: {
     type: String,
     required: true
@@ -15,4 +22,4 @@ const groupSchema = new mongoose.Schema({
 
 groupSchema.plugin(AutoIncrement, { inc_field: 'id' });
 
-export default mongoose.model('Group', groupSchema);
+export default mongoose.model<IGroup>('Group', groupSchema);

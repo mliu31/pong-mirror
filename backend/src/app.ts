@@ -10,6 +10,7 @@ import playersRouter from './routes/playersRouter';
 import leaderboardRouter from './routes/leaderboardRouter';
 import MongoStore from 'connect-mongo';
 import corsOptions from './util/corsOptions';
+import groupRouter from './routes/groupRouter';
 
 // if we can't connect to the database, exit immediately - don't let Express start listening.
 // this handler must be registered before calling mongoose.connect.
@@ -51,5 +52,6 @@ app.use('/auth', authRoutes);
 app.use('/games', gamesRouter);
 app.use('/players', playersRouter);
 app.use('/leaderboard', leaderboardRouter);
+app.use('/groups', groupRouter);
 
 export default app;
