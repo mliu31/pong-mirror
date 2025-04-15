@@ -11,20 +11,24 @@ import { Dimensions } from 'react-native';
 const PlayerChip = ({
   pid,
   playerName,
-  team
+  team,
+  teamBoxHeight
 }: {
   pid: string;
   playerName: string;
   team: TeamValue;
+  teamBoxHeight: number;
 }) => {
-  const { width, height } = Dimensions.get('screen');
-  console.log(width, height);
+  const { width } = Dimensions.get('screen');
+  console.log(width, teamBoxHeight, teamBoxHeight / 2 - 32);
 
   const onLeft = useSharedValue(true);
-  const translationX = useSharedValue(0);
-  const translationY = useSharedValue(0);
+  const translationX = useSharedValue(Math.floor(width / 2) - 32); // 32px offset bc of 64px chip radius
+  const translationY = useSharedValue(Math.floor(teamBoxHeight / 2) - 32);
   const prevTranslationX = useSharedValue(0);
   const prevTranslationY = useSharedValue(0);
+
+  console.log(translationX, translationY);
 
   // animate chip based on gesture
   const animatedStyles = useAnimatedStyle(() => ({
@@ -68,7 +72,7 @@ const PlayerChip = ({
       }
 
       const maxTranslateX = width / 2;
-      const maxTranslateY = height / 2;
+      const maxTranslateY = teamBoxHeight / 2 - 32;
 
       translationX.value = clamp(
         prevTranslationX.value + event.translationX,
@@ -89,8 +93,8 @@ const PlayerChip = ({
   return (
     <GestureDetector gesture={panGesture}>
       <Animated.View style={[animatedStyles]}>
-        <Box className="w-20 h-20 rounded-full bg-primary-500 items-center justify-center">
-          <Text className="text-secondary-0 font-bold text-3xl">
+        <Box className="w-16 h-16 rounded-full bg-primary-500 items-center justify-center">
+          <Text className="text-secondary-0 font-bold text-2xl">
             {initials}
           </Text>
         </Box>
