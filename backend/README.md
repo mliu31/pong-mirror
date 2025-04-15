@@ -14,12 +14,14 @@ We use Bun as our runtime and package manager.
 5. `bun run dev` to start a local live server.
 
 ### Scripts
-| Command           | Description                           |
-| ----------------- | ------------------------------------- |
-| `bun run build`   | Build the server (for deployment).    |
-| `bun run dev`     | Start the server with live reloading. |
-| `bun run lint`    | Check for errors.                     |
-| `bun run preview` | Start the built server.               |
+| Command            | Description                           |
+| ------------------ | ------------------------------------- |
+| `bun run build`    | Build the server (for deployment).    |
+| `bun run check`    | Check for TypeScript errors.          |
+| `bun run dev`      | Start the server with live reloading. |
+| `bun run lint`     | Check for code/style errors.          |
+| `bun run lint:fix` | Fix code/style errors.                |
+| `bun run preview`  | Start the built server.               |
 
 ### Environment Variables
 | Variable      | Required or default | Description                |
