@@ -20,11 +20,14 @@ const PlayerChip = ({
   teamBoxHeight: number;
 }) => {
   const { width } = Dimensions.get('screen');
-  console.log(width, teamBoxHeight, teamBoxHeight / 2 - 32);
+  const chipSize = 64; // px, from tailwind (w-16, h-16)
+  console.log(width, teamBoxHeight, teamBoxHeight / 2 - chipSize / 2);
 
   const onLeft = useSharedValue(true);
   const translationX = useSharedValue(Math.floor(width / 2) - 32); // 32px offset bc of 64px chip radius
-  const translationY = useSharedValue(Math.floor(teamBoxHeight / 2) - 32);
+  const translationY = useSharedValue(
+    Math.floor(teamBoxHeight / 2) - chipSize / 2
+  );
   const prevTranslationX = useSharedValue(0);
   const prevTranslationY = useSharedValue(0);
 
@@ -58,10 +61,13 @@ const PlayerChip = ({
       // set previous location
       prevTranslationX.value = translationX.value;
       prevTranslationY.value = translationY.value;
+
+      console.log(translationX.value, translationY.value);
+      console.log('start');
     })
     .onUpdate((event) => {
       // limit movement to screen
-      console.log('loc: ', event.translationX, event.translationY);
+      // console.log('loc: ', event.translationX, event.translationY);
 
       if (event.translationX < 0) {
         onLeft.value = true;
@@ -71,19 +77,24 @@ const PlayerChip = ({
         console.log('right');
       }
 
-      const maxTranslateX = width / 2;
-      const maxTranslateY = teamBoxHeight / 2 - 32;
+      const minTranslate = 0;
+      const maxTranslateX = width - chipSize;
+      const maxTranslateY = teamBoxHeight - chipSize;
+
+      console.log(maxTranslateX, maxTranslateY);
 
       translationX.value = clamp(
         prevTranslationX.value + event.translationX,
-        -maxTranslateX,
+        minTranslate,
         maxTranslateX
       );
       translationY.value = clamp(
         prevTranslationY.value + event.translationY,
-        -maxTranslateY,
+        minTranslate,
         maxTranslateY
       );
+
+      console.log(translationX.value, translationY.value);
     })
     .onEnd((event) => {
       // Determine side, call onDrop, animate to snap

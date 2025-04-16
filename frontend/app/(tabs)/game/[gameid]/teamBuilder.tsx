@@ -34,6 +34,7 @@ export default function Route() {
         <ThemedText className="text-center">Loading</ThemedText>
       ) : (
         <>
+          {/* green and black team boxes */}
           <Box className="flex-row h-full">
             {/* need height from View onLayout to center chips vertically; Box doesn't have this handler */}
             <View
@@ -42,13 +43,10 @@ export default function Route() {
                 setTeamBoxHeight(height);
               }}
               style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%'
+                flex: 1
               }}
             ></View>
+
             <Box className="w-1/2 bg-success-300 p-10 top-0 left-0 ">
               <Text className="text-typography-default text-left">Team 1</Text>
             </Box>
@@ -57,36 +55,39 @@ export default function Route() {
               <Text className="text-typography-default text-right">Team 2</Text>
             </Box>
           </Box>
+
+          {/* chip overlay */}
           <Box className="absolute w-full h-full top-0 left-0">
             {teamBoxHeight > 0 &&
               gameData.players.map(({ player, team }) => (
-                <ThemedText key={player._id}>
-                  <PlayerChip
-                    pid={player._id}
-                    playerName={player.name}
-                    team={team}
-                    teamBoxHeight={teamBoxHeight}
-                  />
-                  {player.name}
-                  <TeamChoiceButtons
-                    pid={player._id}
-                    initialValue={team}
-                    gameid={local.gameid as string}
-                  />
-                </ThemedText>
-              ))}
-          </Box>
+                <PlayerChip
+                  pid={player._id}
+                  playerName={player.name}
+                  team={team}
+                  teamBoxHeight={teamBoxHeight}
+                />
 
-          <Box className="justify-center p-4">
-            <Button
-              onPress={createTeamHandler}
-              action="primary"
-              disabled={continueButtonDisabled}
-              variant="solid"
-              size="md"
-            >
-              <ButtonText>Continue</ButtonText>
-            </Button>
+                // <ThemedText key={player._id}>
+                //   {player.name}
+                //   </ThemedText>
+                //   <TeamChoiceButtons
+                //     pid={player._id}
+                //     initialValue={team}
+                //     gameid={local.gameid as string}
+                //   />
+              ))}
+            <Box className="justify-center px-4 pb-4 mt-auto">
+              <Button
+                onPress={createTeamHandler}
+                action="primary"
+                disabled={continueButtonDisabled}
+                variant="solid"
+                size="md"
+                className="shadow-md"
+              >
+                <ButtonText>Continue</ButtonText>
+              </Button>
+            </Box>
           </Box>
         </>
       )}
