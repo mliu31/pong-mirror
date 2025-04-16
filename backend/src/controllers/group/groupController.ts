@@ -1,6 +1,5 @@
 import Group from '../../models/Group';
 import Player from '../../models/Player';
-import { getPlayerGroup } from '../player/playerController';
 
 // get private groups
 
@@ -14,7 +13,7 @@ export const createGroup = (groupName: string, playerId: string) => {
     members: [playerId]
   });
   return group;
-}
+};
 
 // join a private group
 
@@ -53,15 +52,40 @@ export const leaveGroup = async (playerId: string, groupId: string) => {
 
   if (player == null) throw new Error('Player not found');
 
-  if (!player.groups.includes(groupId) || group.members.includes(playerId))
-    throw new Error('Already in group');
+  if (!player.groups.includes(groupId) || !group.members.includes(playerId))
+    throw new Error('Player is not in Group');
 
-  // const playerIndex = player.groups.findIndex(groupId);
-  // const x = player.groups.splice(playerIndex, 1);
+  const playerIndex = player.groups.indexOf(groupId, 0);
+  if (playerIndex > -1) {
+    player.groups.splice(playerIndex, 1);
+  }
+  player.save();
 
-  // const groupIndex = group.members.findIndex(playerId);
-  // const y = group.members.splice(groupIndex, 1);
+  const groupIndex = group.members.indexOf(playerId, 0);
+  if (groupIndex > -1) {
+    group.members.splice(groupIndex, 1);
+  }
+  group.save();
 
+  return group;
 };
 
-// leave a private group
+export const deleteGroup = async (groupId: string) => {
+  const group = await Group.findById(groupId);
+
+  if (group == null) throw new Error('Group not found');
+
+  for (const pid of group.members) {
+    const player = await Player.findById(pid);
+
+    if (player == null) throw new Error('Player not found');
+    const playerIndex = player.groups.indexOf(groupId, 0);
+    if (playerIndex > -1) {
+      player.groups.splice(playerIndex, 1);
+    }
+    player.save();
+  }
+
+  const deleted = Group.findByIdAndDelete(groupId);
+  return deleted;
+};
