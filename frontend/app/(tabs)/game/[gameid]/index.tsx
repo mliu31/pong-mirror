@@ -1,4 +1,4 @@
-import { router, useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams, useNavigation } from 'expo-router';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { useEffect, useState } from 'react';
@@ -7,6 +7,7 @@ import { Player } from '@/api/types';
 import { getAllPlayers } from '@/api/players';
 import { getGame } from '@/api/games';
 import { Button, ButtonText } from '@/components/ui/button';
+import { QrCode as QrCodeIcon } from 'lucide-react-native';
 import {
   Checkbox,
   CheckboxIndicator,
@@ -14,8 +15,17 @@ import {
   CheckboxIcon
 } from '@/components/ui/checkbox';
 import { VStack } from '@/components/ui/vstack';
-import { CheckIcon } from '@/components/ui/icon';
-import { FlatList, ScrollView } from 'react-native';
+import { CheckIcon, CloseIcon, Icon } from '@/components/ui/icon';
+import { FlatList, ScrollView, View } from 'react-native';
+import {
+  Modal,
+  ModalBackdrop,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader
+} from '@/components/ui/modal';
+import QRCode from 'react-native-qrcode-svg';
 
 export default function Route() {
   const { gameid } = useLocalSearchParams<{ gameid: string }>();
@@ -55,6 +65,56 @@ export default function Route() {
       router.push(`/game/${gameid}/teamBuilder`);
     });
   };
+
+  const navigation = useNavigation();
+  const [showModal, setShowModal] = useState(false);
+  navigation.setOptions({
+    headerTitle: 'Select players',
+    headerRight: () => (
+      <>
+        <Button
+          size="lg"
+          className="rounded-full p-2  mr-4 w-10 h-10"
+          onPress={() => {
+            setShowModal(true);
+          }}
+        >
+          {/* while this should be buttonIcon, stroke wasn't working with the lucide icon and it needs current color */}
+          <ButtonText>
+            <QrCodeIcon className="stroke-current" />
+          </ButtonText>
+        </Button>
+        <Modal
+          isOpen={showModal}
+          onClose={() => {
+            setShowModal(false);
+          }}
+          size="sm"
+        >
+          <ModalBackdrop />
+          <ModalContent>
+            <ModalHeader className="justify-end">
+              <ModalCloseButton>
+                <Icon
+                  as={CloseIcon}
+                  size="md"
+                  className="stroke-background-400 group-[:hover]/modal-close-button:stroke-background-700 group-[:active]/modal-close-button:stroke-background-900 group-[:focus-visible]/modal-close-button:stroke-background-900"
+                />
+              </ModalCloseButton>
+            </ModalHeader>
+            <ModalBody>
+              <View className="items-center justify-center">
+                <QRCode
+                  value="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                  size={200}
+                />
+              </View>
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+      </>
+    )
+  });
 
   if (allPlayers === null) {
     return (
