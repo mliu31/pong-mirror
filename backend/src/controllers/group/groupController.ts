@@ -21,7 +21,6 @@ export const createGroup = (groupName: string, playerId: string) => {
 export const joinGroup = async (playerId: string, groupId: string) => {
   const group = await Group.findById(groupId);
   const player = await Player.findById(playerId);
-  const playerGroups = await getPlayerGroup(playerId);
 
   if (group === null) throw new Error('Group not found');
 
@@ -31,31 +30,37 @@ export const joinGroup = async (playerId: string, groupId: string) => {
 
   // check if the person is already in the group
 
-  if (playerGroups.includes(group)) throw new Error('Already in group');
+  if (player.groups.includes(groupId) || group.members.includes(playerId))
+    throw new Error('Already in group');
 
   // add them to the array on group side
-
   group.members.push(playerId);
+  await group.save();
   player.groups.push(groupId);
+
+  await player.save();
+
+  return group;
 
   // for the player, add the group to their side
 };
 
 export const leaveGroup = async (playerId: string, groupId: string) => {
-  const group = Group.findById(groupId);
-  const player = Player.findById(playerId);
-  const playerGroups = await getPlayerGroup(playerId);
+  const group = await Group.findById(groupId);
+  const player = await Player.findById(playerId);
 
   if (group == null) throw new Error('Group not found');
 
   if (player == null) throw new Error('Player not found');
 
-  if (!playerGroups.includes(group)) throw new Error('Player is not in group');
-  const playerIndex = player.groups.findIndex(groupId);
-  const x = player.groups.splice(playerIndex, 1);
+  if (!player.groups.includes(groupId) || group.members.includes(playerId))
+    throw new Error('Already in group');
 
-  const groupIndex = group.members.findIndex(playerId);
-  const y = group.members.splice(groupIndex, 1);
+  // const playerIndex = player.groups.findIndex(groupId);
+  // const x = player.groups.splice(playerIndex, 1);
+
+  // const groupIndex = group.members.findIndex(playerId);
+  // const y = group.members.splice(groupIndex, 1);
 
 };
 

@@ -5,6 +5,8 @@ import {
 } from '../controllers/group/groupController';
 import { getPlayer } from '../controllers/player/playerController';
 import express from 'express';
+import Player from '../models/Player';
+import Group from '../models/Group';
 
 const router = express.Router();
 
@@ -25,7 +27,7 @@ router.get('/:groupid', async (req, res) => {
 // PUT request to create a group
 router.put('/addGroup/:pid/:groupName', async (req, res) => {
   try {
-    const player = await getPlayer(req.params.pid);
+    Player.findById(req.params.pid);
     try {
       // put the group into the schema
       const group = await createGroup(req.params.groupName, req.params.pid);
@@ -57,18 +59,30 @@ router.put('/addGroup/:pid/:groupName', async (req, res) => {
   }
 });
 
-// // PUT request to add someone to a group
-// router.put('/addPlayer/:groupid/:playerid', async (req, res) => {
-//   try {
-//     const player = await getPlayer(req.params.playerid);
-//     const 
-//   } catch (error) {
-//     if (error instanceof Error) {
-//       res.status(500).json({ message: error.message });
-//     } else {
-//       res.status(404).json({ message: '404 Error group not found' });
-//     }
-//   }
-// });
+// join group
+
+router.patch('/addPlayer/:groupId/:playerId', async (req, res) => {
+  try {
+    // find the player
+    Player.findById(req.params.playerId);
+    try {
+      const group = await getGroup(req.params.groupId);
+      console.log(group);
+      return void res.json(group);
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(500).json({ message: error.message });
+      } else {
+        res.status(404).json({ message: '404 Error player not found' });
+      }
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).json({ message: error.message });
+    } else {
+      res.status(404).json({ message: '404 Error player not found' });
+    }
+  }
+});
 
 export default router;
