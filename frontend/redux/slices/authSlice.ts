@@ -34,26 +34,23 @@ export const signup = createAsyncThunk(
   'auth/signup',
   async (data: NewPlayer) => {
     const response = await api.post('/auth/signup', data);
-    const resData = response.data;
-    await AsyncStorage.setItem('player', JSON.stringify(resData));
-    return resData;
+    await AsyncStorage.setItem('player', JSON.stringify(response.data));
+    return response.data;
   }
 );
 
 // login
 export const login = createAsyncThunk('auth/login', async (data: NewPlayer) => {
   const response = await api.post('/auth/login', data);
-  const resData = response.data;
-  await AsyncStorage.setItem('player', JSON.stringify(resData));
-  return resData;
+  await AsyncStorage.setItem('player', JSON.stringify(response.data));
+  return response.data;
 });
 
 //logout
 export const logout = createAsyncThunk('auth/logout', async () => {
   const response = await api.post('/auth/logout', {});
-  const resData = response.data;
-  localStorage.removeItem('player');
-  return resData;
+  await AsyncStorage.removeItem('player');
+  return response.data;
 });
 
 const authSlice = createSlice({
