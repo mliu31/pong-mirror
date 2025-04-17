@@ -9,7 +9,7 @@ export default function GameLandingScreen() {
   const router = useRouter();
 
   return (
-    <ThemedView className="flex-1 items-center justify-center gap-4">
+    <ThemedView className="flex-1 items-center justify-center">
       <Button
         className="w-fit"
         isDisabled={buttonDisabled}
@@ -21,9 +21,6 @@ export default function GameLandingScreen() {
         }}
       >
         <ButtonText>Create game</ButtonText>
-      </Button>
-      <Button className="w-fit" onPress={() => router.push('/game/join')}>
-        <ButtonText>Join game</ButtonText>
       </Button>
     </ThemedView>
   );
