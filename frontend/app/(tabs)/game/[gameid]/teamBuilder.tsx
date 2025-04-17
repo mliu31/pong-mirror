@@ -15,7 +15,7 @@ export default function Route() {
   const local = useLocalSearchParams();
 
   const [gameData, setGameData] = useState<Game | null>(null);
-  const [continueButtonDisabled, setContinueButtonDisabled] = useState(false);
+  const [continueButtonDisabled, setContinueButtonDisabled] = useState(true);
   const [teamBoxHeight, setTeamBoxHeight] = useState(0); // to center chips vertically
 
   useEffect(() => {
@@ -36,7 +36,7 @@ export default function Route() {
         <>
           {/* green and black team boxes */}
           <Box className="flex-row h-full">
-            {/* need height from View onLayout to center chips vertically; Box doesn't have this handler */}
+            {/* need height prop from View onLayout to center chips vertically; Box doesn't have this handler */}
             <View
               onLayout={(event) => {
                 const { height } = event.nativeEvent.layout;
@@ -59,12 +59,14 @@ export default function Route() {
           {/* chip overlay */}
           <Box className="absolute w-full h-full top-0 left-0">
             {teamBoxHeight > 0 &&
-              gameData.players.map(({ player, team }) => (
+              gameData.players.map(({ player, team }, index) => (
                 <PlayerChip
                   pid={player._id}
                   playerName={player.name}
                   team={team}
                   teamBoxHeight={teamBoxHeight}
+                  order={index}
+                  totalPlayers={gameData.players.length}
                 />
 
                 // <ThemedText key={player._id}>

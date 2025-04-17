@@ -7,31 +7,39 @@ import Animated, {
   useAnimatedStyle
 } from 'react-native-reanimated';
 import { Dimensions } from 'react-native';
+import { withSpring } from 'react-native-reanimated';
 
 const PlayerChip = ({
   pid,
   playerName,
   team,
-  teamBoxHeight
+  teamBoxHeight,
+  order,
+  totalPlayers
 }: {
   pid: string;
   playerName: string;
   team: TeamValue;
   teamBoxHeight: number;
+  order: number;
+  totalPlayers: number;
 }) => {
   const { width } = Dimensions.get('screen');
-  const chipSize = 64; // px, from tailwind (w-16, h-16)
-  console.log(width, teamBoxHeight, teamBoxHeight / 2 - chipSize / 2);
+  const CHIP_SIZE = 64; // px, from tailwind (w-16, h-16)
 
   const onLeft = useSharedValue(true);
-  const translationX = useSharedValue(Math.floor(width / 2) - 32); // 32px offset bc of 64px chip radius
-  const translationY = useSharedValue(
-    Math.floor(teamBoxHeight / 2) - chipSize / 2
-  );
+
+  // initial position
+  const initial_positionX = Math.floor(width / 2) - 32; // 32px offset bc of 64px chip radius
+  const initial_positionY = Math.floor(teamBoxHeight / 2) - CHIP_SIZE / 2;
+
+  // current position
+  const translationX = useSharedValue(initial_positionX);
+  const translationY = useSharedValue(initial_positionY);
+
+  // previous position
   const prevTranslationX = useSharedValue(0);
   const prevTranslationY = useSharedValue(0);
-
-  console.log(translationX, translationY);
 
   // animate chip based on gesture
   const animatedStyles = useAnimatedStyle(() => ({
@@ -41,7 +49,7 @@ const PlayerChip = ({
     ]
   }));
 
-  // prevent chips from going off screen
+  // used to prevent chips from going off screen
   function clamp(val: number, min: number, max: number) {
     return Math.min(Math.max(val, min), max);
   }
@@ -62,13 +70,12 @@ const PlayerChip = ({
       prevTranslationX.value = translationX.value;
       prevTranslationY.value = translationY.value;
 
-      console.log(translationX.value, translationY.value);
-      console.log('start');
+      console.log('start loc: ', translationX.value, translationY.value);
     })
     .onUpdate((event) => {
       // limit movement to screen
-      // console.log('loc: ', event.translationX, event.translationY);
 
+      // logging -- todo delete
       if (event.translationX < 0) {
         onLeft.value = true;
         console.log('left');
@@ -77,12 +84,14 @@ const PlayerChip = ({
         console.log('right');
       }
 
+      // define screen bounds
       const minTranslate = 0;
-      const maxTranslateX = width - chipSize;
-      const maxTranslateY = teamBoxHeight - chipSize;
+      const maxTranslateX = width - CHIP_SIZE;
+      const maxTranslateY = teamBoxHeight - CHIP_SIZE;
 
-      console.log(maxTranslateX, maxTranslateY);
+      console.log('x, y bounds: ', maxTranslateX, maxTranslateY);
 
+      // enforce screen bounds
       translationX.value = clamp(
         prevTranslationX.value + event.translationX,
         minTranslate,
@@ -94,17 +103,29 @@ const PlayerChip = ({
         maxTranslateY
       );
 
-      console.log(translationX.value, translationY.value);
+      console.log('update loc: ', event.translationX, event.translationY);
     })
     .onEnd((event) => {
-      // Determine side, call onDrop, animate to snap
+      // Determine L/R side, animate to snap
+
+      // center of each vertical half of screen
+      const leftX = width * 0.25 - CHIP_SIZE / 2;
+      const rightX = width * 0.75 - CHIP_SIZE / 2;
+
+      if (translationX.value < width / 2) {
+        translationX.value = withSpring(leftX);
+      } else {
+        translationX.value = withSpring(rightX);
+      }
+
+      // translationY.value = withSpring(teamBoxHeight / 2 - CHIP_SIZE / 2);
     });
 
   const initials = getInitials(playerName);
   return (
     <GestureDetector gesture={panGesture}>
       <Animated.View style={[animatedStyles]}>
-        <Box className="w-16 h-16 rounded-full bg-primary-500 items-center justify-center">
+        <Box className="w-16 h-16 rounded-full bg-primary-500 items-center justify-center mb-2">
           <Text className="text-secondary-0 font-bold text-2xl">
             {initials}
           </Text>
