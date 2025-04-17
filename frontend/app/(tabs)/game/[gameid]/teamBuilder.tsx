@@ -15,8 +15,11 @@ export default function Route() {
   const local = useLocalSearchParams();
 
   const [gameData, setGameData] = useState<Game | null>(null);
-  const [continueButtonDisabled, setContinueButtonDisabled] = useState(true);
+  const [continueButtonDisabled, setContinueButtonDisabled] = useState(false);
   const [teamBoxHeight, setTeamBoxHeight] = useState(0); // to center chips vertically
+  const [chipAssignments, setChipAssignments] = useState<
+    Record<string, 'left' | 'right'>
+  >({}); // TODO change Team const to left/right?? or one/two?
 
   useEffect(() => {
     getGame(local.gameid as string).then((res) =>
@@ -27,6 +30,14 @@ export default function Route() {
   const createTeamHandler = () => {
     router.push(`./inProgress`);
   };
+
+  const handleTeamChoice = (playerId: string, side: 'left' | 'right') => {
+    setChipAssignments((prev) => ({ ...prev, [playerId]: side }));
+  };
+
+  useEffect(() => {
+    console.log('chipAssignments', chipAssignments);
+  }, [chipAssignments]);
 
   return (
     <ThemedView className="flex-1 relative">
@@ -66,7 +77,8 @@ export default function Route() {
                   team={team}
                   teamBoxHeight={teamBoxHeight}
                   order={index}
-                  totalPlayers={gameData.players.length}
+                  totalChips={gameData.players.length}
+                  onSnapSide={handleTeamChoice}
                 />
 
                 // <ThemedText key={player._id}>

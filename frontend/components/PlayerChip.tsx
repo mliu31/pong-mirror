@@ -15,23 +15,28 @@ const PlayerChip = ({
   team,
   teamBoxHeight,
   order,
-  totalPlayers
+  totalChips,
+  onSnapSide
 }: {
   pid: string;
   playerName: string;
   team: TeamValue;
   teamBoxHeight: number;
   order: number;
-  totalPlayers: number;
+  totalChips: number;
+  onSnapSide: (pid: string, side: 'left' | 'right') => void;
 }) => {
   const { width } = Dimensions.get('screen');
   const CHIP_SIZE = 64; // px, from tailwind (w-16, h-16)
+  const CHIP_HEIGHT = CHIP_SIZE + 8; // px, from tailwind (mb-2)
 
-  const onLeft = useSharedValue(true);
+  // const onLeft = useSharedValue(true);
 
   // initial position
   const initial_positionX = Math.floor(width / 2) - 32; // 32px offset bc of 64px chip radius
-  const initial_positionY = Math.floor(teamBoxHeight / 2) - CHIP_SIZE / 2;
+  const initial_positionY = Math.floor(
+    teamBoxHeight / 2 - (CHIP_HEIGHT * totalChips) / 2
+  );
 
   // current position
   const translationX = useSharedValue(initial_positionX);
@@ -69,27 +74,25 @@ const PlayerChip = ({
       // set previous location
       prevTranslationX.value = translationX.value;
       prevTranslationY.value = translationY.value;
-
-      console.log('start loc: ', translationX.value, translationY.value);
     })
     .onUpdate((event) => {
       // limit movement to screen
 
       // logging -- todo delete
-      if (event.translationX < 0) {
-        onLeft.value = true;
-        console.log('left');
-      } else {
-        onLeft.value = false;
-        console.log('right');
-      }
+      // if (event.translationX < 0) {
+      //   onLeft.value = true;
+      //   console.log('left');
+      // } else {
+      //   onLeft.value = false;
+      //   console.log('right');
+      // }
 
-      // define screen bounds
+      // define screen bounds TODO
       const minTranslate = 0;
       const maxTranslateX = width - CHIP_SIZE;
       const maxTranslateY = teamBoxHeight - CHIP_SIZE;
 
-      console.log('x, y bounds: ', maxTranslateX, maxTranslateY);
+      // console.log('x, y bounds for ', playerName, maxTranslateX, maxTranslateY);
 
       // enforce screen bounds
       translationX.value = clamp(
@@ -103,10 +106,15 @@ const PlayerChip = ({
         maxTranslateY
       );
 
-      console.log('update loc: ', event.translationX, event.translationY);
+      // console.log('update loc: ', event.translationX, event.translationY);
     })
     .onEnd((event) => {
       // Determine L/R side, animate to snap
+
+      // const initial_positionY =
+      //   Math.floor(teamBoxHeight / 2) -
+      //   (CHIP_HEIGHT * totalChips) / 2 +
+      //   CHIP_HEIGHT * order;
 
       // center of each vertical half of screen
       const leftX = width * 0.25 - CHIP_SIZE / 2;
