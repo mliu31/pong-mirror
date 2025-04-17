@@ -2,7 +2,7 @@ import React from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import TitleDiv from './[playerid]/titleDiv';
 import { View } from 'react-native';
-import AddButton from '../../../components/private-leaderboards/addButton';
+import AddButton from '../../../../components/private-leaderboards/addButton';
 import FriendBox from './[playerid]/friendBox';
 import GroupBox from './[playerid]/groupBox';
 

@@ -2,10 +2,10 @@ import { View, Text, Button } from 'react-native';
 
 import { useRouter } from 'expo-router';
 import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../../redux/store';
-import { logout } from '../../../redux/slices/authSlice';
+import { AppDispatch } from '../../../../redux/store';
+import { logout } from '../../../../redux/slices/authSlice';
 
-import { styles } from '../../../components/auth/authstyles';
+import { styles } from '../../../../components/auth/authstyles';
 
 export default function Logout() {
   const router = useRouter();

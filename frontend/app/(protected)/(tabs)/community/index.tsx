@@ -1,6 +1,6 @@
 import { View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import AddButton from '../../../components/private-leaderboards/addButton';
+import AddButton from '../../../../components/private-leaderboards/addButton';
 // import HomeView from './homeView';
 import TitleDiv from './[playerid]/titleDiv';
 import FriendBox from './[playerid]/friendBox';
