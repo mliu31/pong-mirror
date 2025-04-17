@@ -62,6 +62,18 @@ router.post('/login', async (req, res) => {
   }
 });
 
+router.post('/logout', async (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: 'Failed to log out' });
+    }
+
+    res.clearCookie('connect.sid');
+    res.json({ message: 'Logout successful' });
+  });
+});
+
 export const requireLoggedInHandler: RequestHandler = (req, res, next) => {
   if (req.session.player === undefined) {
     return void res.status(401).json({ message: 'Unauthorized' });

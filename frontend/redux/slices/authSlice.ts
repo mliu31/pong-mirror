@@ -48,6 +48,14 @@ export const login = createAsyncThunk('auth/login', async (data: NewPlayer) => {
   return resData;
 });
 
+//logout
+export const logout = createAsyncThunk('auth/logout', async () => {
+  const response = await api.post('/auth/logout', {});
+  const resData = response.data;
+  localStorage.removeItem('player');
+  return resData;
+});
+
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -79,6 +87,18 @@ const authSlice = createSlice({
       .addCase(login.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload as string;
+      })
+      .addCase(logout.pending, (state) => {
+        state.status = 'loading';
+        state.error = null;
+      })
+      .addCase(logout.fulfilled, (state, action) => {
+        state.status = 'idle';
+        state.basicPlayerInfo = null;
+      })
+      .addCase(logout.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message || 'Logout failed';
       });
   }
 });
