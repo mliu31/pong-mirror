@@ -7,10 +7,20 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { useAppSelector } from '@/redux/redux-hooks';
+
+import { useRouter } from 'expo-router';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
+  // TODO: flesh out route protection
+  const basicPlayerInfo = useAppSelector((state) => state.auth.basicPlayerInfo);
+  const router = useRouter();
+
+  if (!basicPlayerInfo) {
+    router.navigate('/login');
+  }
   return (
     <Tabs
       screenOptions={{
