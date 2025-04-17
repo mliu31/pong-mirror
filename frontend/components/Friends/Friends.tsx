@@ -1,6 +1,6 @@
 import FriendList from './FriendList';
-import { router, useFocusEffect } from 'expo-router';
-import { useState } from 'react';
+import { router } from 'expo-router';
+import { useEffect, useState } from 'react';
 import { Button, StyleSheet, View, Text } from 'react-native';
 import { getPlayer } from '@/api/players';
 
@@ -9,13 +9,13 @@ const Friends = ({ pid }: { pid: string }) => {
   const [friends, setFriends] = useState<string[]>([]);
 
   // on page load, fetch friend ids
-  useFocusEffect(() => {
+  useEffect(() => {
     const fetchFriends = async () => {
       const player = await getPlayer(pid);
       setFriends(player.data.friends);
     };
     fetchFriends();
-  });
+  }, [pid, setFriends]);
 
   // route to edit friends page
   const EditFriendHandler = (fids: string[], pid: string) => {
