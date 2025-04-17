@@ -13,7 +13,6 @@
     "start": "expo start",
     "test": "jest --watchAll",
     "web": "DARK_MODE=media expo start --web"
-    "web": "DARK_MODE=media expo start --web"
   },
   "jest": {
     "preset": "jest-expo"
