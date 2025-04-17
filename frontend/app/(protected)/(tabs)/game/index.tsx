@@ -22,6 +22,14 @@ export default function GameLandingScreen() {
       >
         <ButtonText>Create game</ButtonText>
       </Button>
+      <Button
+        className="w-fit"
+        onPress={() => {
+          router.push('/game/join');
+        }}
+      >
+        <ButtonText>Join game</ButtonText>
+      </Button>
     </ThemedView>
   );
 }
