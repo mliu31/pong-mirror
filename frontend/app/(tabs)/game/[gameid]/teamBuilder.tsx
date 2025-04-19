@@ -15,11 +15,13 @@ export default function Route() {
   const local = useLocalSearchParams();
 
   const [gameData, setGameData] = useState<Game | null>(null);
-  const [continueButtonDisabled, setContinueButtonDisabled] = useState(false);
+  const [continueButtonDisabled, setContinueButtonDisabled] = useState(true);
   const [teamBoxHeight, setTeamBoxHeight] = useState(0); // to center chips vertically
   const [chipAssignments, setChipAssignments] = useState<
     Record<string, 'left' | 'right'>
   >({}); // TODO change Team const to left/right?? or one/two?
+  const [numLeft, setNumLeft] = useState(0);
+  const [numRight, setNumRight] = useState(0);
 
   useEffect(() => {
     getGame(local.gameid as string).then((res) =>
@@ -36,8 +38,32 @@ export default function Route() {
   };
 
   useEffect(() => {
-    console.log('chipAssignments', chipAssignments);
-  }, [chipAssignments]);
+    // count number of players on each side
+    let left = 0;
+    let right = 0;
+    Object.values(chipAssignments).forEach((side) => {
+      if (side === 'left') {
+        left++;
+      } else if (side === 'right') {
+        right++;
+      }
+    });
+    setNumLeft(left);
+    setNumRight(right);
+
+    // check all players assigned & team validity (1v1, 1v2, 2v2)
+    if (gameData && gameData.players.length === left + right) {
+      if (
+        left > 0 &&
+        right > 0 &&
+        !(gameData.players.length === 4 && left !== 2 && right !== 2)
+      ) {
+        setContinueButtonDisabled(false);
+      } else {
+        setContinueButtonDisabled(true);
+      }
+    }
+  }, [chipAssignments, gameData]);
 
   return (
     <ThemedView className="flex-1 relative">
@@ -74,7 +100,6 @@ export default function Route() {
                 <PlayerChip
                   pid={player._id}
                   playerName={player.name}
-                  team={team}
                   teamBoxHeight={teamBoxHeight}
                   order={index}
                   totalChips={gameData.players.length}
@@ -97,7 +122,11 @@ export default function Route() {
                 disabled={continueButtonDisabled}
                 variant="solid"
                 size="md"
-                className="shadow-md"
+                className={
+                  continueButtonDisabled === false
+                    ? 'bg-primary-300 shadow-md'
+                    : 'bg-secondary-800 shadow-md'
+                }
               >
                 <ButtonText>Continue</ButtonText>
               </Button>
