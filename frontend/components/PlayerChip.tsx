@@ -25,6 +25,7 @@ const PlayerChip = ({
   totalChips: number;
   onSnapSide: (pid: string, side: 'left' | 'right') => void;
 }) => {
+  // dimension constants
   const [isDragging, setIsDragging] = useState(false);
   const [chipWidth, setChipWidth] = useState(0); // for dragging bounds; width is dynamic bc includes name label
 
@@ -57,6 +58,7 @@ const PlayerChip = ({
   }));
 
   // cap x,y coords to enforce drag bounds
+  // cap x,y coords to enforce drag bounds
   function clamp(val: number, min: number, max: number) {
     return Math.min(Math.max(val, min), max);
   }
@@ -76,6 +78,7 @@ const PlayerChip = ({
       // set previous location
       prevTranslationX.value = translationX.value;
       prevTranslationY.value = translationY.value;
+      setIsDragging(true);
       setIsDragging(true);
     })
     .onUpdate((event) => {
@@ -118,6 +121,7 @@ const PlayerChip = ({
       //   Math.floor(teamBoxHeight / 2) -
       //   (CHIP_HEIGHT * totalChips) / 2 +
       //   CHIP_HEIGHT * order;
+      // translationY.value = withSpring(teamBoxHeight / 2 - CHIP_DIAM / 2);
       // translationY.value = withSpring(teamBoxHeight / 2 - CHIP_DIAM / 2);
     });
 
