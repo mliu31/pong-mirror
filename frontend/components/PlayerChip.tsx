@@ -13,6 +13,7 @@ import { useState } from 'react';
 const PlayerChip = ({
   pid,
   playerName,
+  team,
   teamBoxHeight,
   order,
   totalChips,
@@ -20,6 +21,7 @@ const PlayerChip = ({
 }: {
   pid: string;
   playerName: string;
+  team: TeamValue;
   teamBoxHeight: number;
   order: number;
   totalChips: number;
@@ -34,15 +36,23 @@ const PlayerChip = ({
   const CHIP_DIAM = 64; // px, from tailwind (w-16, h-16)w
   const CHIP_HEIGHT = CHIP_DIAM + chipHeightOffset; // px
 
-  // initial position
-  const initial_positionX = Math.floor(width / 2 - CHIP_DIAM / 2);
-  const initial_positionY = Math.floor(
+  // left and right team positions
+  const leftX = width * 0.25 - CHIP_DIAM / 2;
+  const rightX = width * 0.75 - CHIP_DIAM / 2;
+
+  // unassigned team position
+  const unasssigned_positionX = Math.floor(width / 2 - CHIP_DIAM / 2);
+  const unassigned_positionY = Math.floor(
     teamBoxHeight / 2 - (CHIP_HEIGHT * totalChips) / 2 + CHIP_HEIGHT * order
   );
 
   // current position
-  const translationX = useSharedValue(initial_positionX);
-  const translationY = useSharedValue(initial_positionY);
+  const initialX =
+    team === 'LEFT' ? leftX : team === 'RIGHT' ? rightX : unasssigned_positionX;
+  const initialY = unassigned_positionY;
+
+  const translationX = useSharedValue(initialX);
+  const translationY = useSharedValue(initialY);
 
   // previous position
   const prevTranslationX = useSharedValue(0);
@@ -104,17 +114,13 @@ const PlayerChip = ({
       // Determine L/R side, animate to snap
 
       setIsDragging(false);
-      // center of each vertical half of screen
-      const leftX = width * 0.25 - CHIP_DIAM / 2;
-      const rightX = width * 0.75 - CHIP_DIAM / 2;
-
       if (translationX.value < width / 2 - chipWidth / 2) {
         translationX.value = withSpring(leftX);
-        translationY.value = withSpring(initial_positionY);
+        translationY.value = withSpring(unassigned_positionY);
         onSnapSide(pid, 'LEFT');
       } else {
         translationX.value = withSpring(rightX);
-        translationY.value = withSpring(initial_positionY);
+        translationY.value = withSpring(unassigned_positionY);
         onSnapSide(pid, 'RIGHT');
       }
     });

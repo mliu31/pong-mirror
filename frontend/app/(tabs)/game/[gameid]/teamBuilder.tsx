@@ -1,36 +1,37 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { ThemedView } from '@/components/ThemedView';
-import { ThemedText } from '@/components/ThemedText';
 import { useEffect, useState } from 'react';
 import { getGame } from '@/api/games';
-import TeamChoiceButtons from '../../../../components/TeamChoiceButtons';
-import PlayerChip from '../../../../components/PlayerChip';
-import { Button, ButtonText } from '@/components/ui/button';
 import { Game } from '@/api/apiTypes';
-import { Box } from '@/components/ui/box';
-import { Text } from '@/components/ui/text';
-import { View } from 'react-native';
+import { View, Text } from 'react-native';
 import { TeamValue } from '@/constants/TEAM';
+import { updatePlayerTeam } from '@/api/games';
+import { ThemedView } from '@/components/ThemedView';
+import { ThemedText } from '@/components/ThemedText';
+import { Box } from '@/components/ui/box';
+import { Button, ButtonText } from '@/components/ui/button';
+import PlayerChip from '@/components/PlayerChip';
 
 export default function Route() {
   const local = useLocalSearchParams();
 
   const [gameData, setGameData] = useState<Game | null>(null);
   const [continueButtonDisabled, setContinueButtonDisabled] = useState(true);
-  const [teamBoxHeight, setTeamBoxHeight] = useState(0); // to center chips vertically
+  const [teamBoxHeight, setTeamBoxHeight] = useState(0); // used to center chips vertically
   const [chipAssignments, setChipAssignments] = useState<
     Record<string, TeamValue>
   >({});
 
   useEffect(() => {
-    getGame(local.gameid as string).then((res) =>
-      setGameData(res.data as Game)
-    );
+    getGame(local.gameid as string).then((res) => {
+      setGameData(res.data as Game);
+      res.data.players.forEach((player) => {
+        setChipAssignments((prev) => ({
+          ...prev,
+          [player.player._id]: player.team
+        }));
+      });
+    });
   }, [local.gameid]);
-
-  const createTeamHandler = () => {
-    router.push(`./inProgress`);
-  };
 
   const handleTeamChoice = (playerId: string, team: TeamValue) => {
     setChipAssignments((prev) => ({ ...prev, [playerId]: team }));
@@ -62,13 +63,22 @@ export default function Route() {
     }
   }, [chipAssignments, gameData]);
 
+  const createTeamHandler = async () => {
+    // set teams in BE from chipAssignments
+    const updatePromises = Object.entries(chipAssignments).map(([pid, team]) =>
+      updatePlayerTeam(pid, team, local.gameid as string)
+    );
+    await Promise.all(updatePromises);
+
+    router.push(`./inProgress`);
+  };
+
   return (
     <ThemedView className="flex-1 relative">
       {gameData === null ? (
         <ThemedText className="text-center">Loading</ThemedText>
       ) : (
         <>
-          {/* green and black team boxes */}
           <Box className="flex-row h-full">
             {/* need height prop from View onLayout to center chips vertically; Box doesn't have this handler */}
             <View
@@ -81,12 +91,13 @@ export default function Route() {
               }}
             ></View>
 
+            {/* L/R team boxes */}
             <Box className="w-1/2 bg-success-300 p-10 top-0 left-0 ">
-              <Text className="text-typography-default text-left">Team 1</Text>
+              <Text className="text-typography-950 text-left">Team 1</Text>
             </Box>
 
             <Box className="w-1/2 bg-secondary-50 p-10 top-0 right-0">
-              <Text className="text-typography-default text-right">Team 2</Text>
+              <Text className="text-typography-950 text-right">Team 2</Text>
             </Box>
           </Box>
 
@@ -95,8 +106,10 @@ export default function Route() {
             {teamBoxHeight > 0 &&
               gameData.players.map(({ player, team }, index) => (
                 <PlayerChip
+                  key={player._id}
                   pid={player._id}
                   playerName={player.name}
+                  team={team}
                   teamBoxHeight={teamBoxHeight}
                   order={index}
                   totalChips={gameData.players.length}
