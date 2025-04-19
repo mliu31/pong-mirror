@@ -10,6 +10,7 @@ import { Game } from '@/api/apiTypes';
 import { Box } from '@/components/ui/box';
 import { Text } from '@/components/ui/text';
 import { View } from 'react-native';
+import { TeamValue } from '@/constants/TEAM';
 
 export default function Route() {
   const local = useLocalSearchParams();
@@ -18,10 +19,8 @@ export default function Route() {
   const [continueButtonDisabled, setContinueButtonDisabled] = useState(true);
   const [teamBoxHeight, setTeamBoxHeight] = useState(0); // to center chips vertically
   const [chipAssignments, setChipAssignments] = useState<
-    Record<string, 'left' | 'right'>
-  >({}); // TODO change Team const to left/right?? or one/two?
-  const [numLeft, setNumLeft] = useState(0);
-  const [numRight, setNumRight] = useState(0);
+    Record<string, TeamValue>
+  >({});
 
   useEffect(() => {
     getGame(local.gameid as string).then((res) =>
@@ -33,8 +32,8 @@ export default function Route() {
     router.push(`./inProgress`);
   };
 
-  const handleTeamChoice = (playerId: string, side: 'left' | 'right') => {
-    setChipAssignments((prev) => ({ ...prev, [playerId]: side }));
+  const handleTeamChoice = (playerId: string, team: TeamValue) => {
+    setChipAssignments((prev) => ({ ...prev, [playerId]: team }));
   };
 
   useEffect(() => {
@@ -42,14 +41,12 @@ export default function Route() {
     let left = 0;
     let right = 0;
     Object.values(chipAssignments).forEach((side) => {
-      if (side === 'left') {
+      if (side === 'LEFT') {
         left++;
-      } else if (side === 'right') {
+      } else if (side === 'RIGHT') {
         right++;
       }
     });
-    setNumLeft(left);
-    setNumRight(right);
 
     // check all players assigned & team validity (1v1, 1v2, 2v2)
     if (gameData && gameData.players.length === left + right) {

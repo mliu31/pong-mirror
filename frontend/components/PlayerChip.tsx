@@ -23,16 +23,15 @@ const PlayerChip = ({
   teamBoxHeight: number;
   order: number;
   totalChips: number;
-  onSnapSide: (pid: string, side: 'left' | 'right') => void;
+  onSnapSide: (pid: string, team: TeamValue) => void;
 }) => {
-  // dimension constants
   const [isDragging, setIsDragging] = useState(false);
   const [chipWidth, setChipWidth] = useState(0); // for dragging bounds; width is dynamic bc includes name label
 
   // dimension constants
   const { width } = Dimensions.get('screen');
-  const chipHeightOffset = 16; // px, padding on left/right of chip
-  const CHIP_DIAM = 64; // px, from tailwind (w-16, h-16)
+  const chipHeightOffset = 16; // px, padding below chip
+  const CHIP_DIAM = 64; // px, from tailwind (w-16, h-16)w
   const CHIP_HEIGHT = CHIP_DIAM + chipHeightOffset; // px
 
   // initial position
@@ -49,6 +48,11 @@ const PlayerChip = ({
   const prevTranslationX = useSharedValue(0);
   const prevTranslationY = useSharedValue(0);
 
+  // cap x,y coords to enforce drag bounds
+  function clamp(val: number, min: number, max: number) {
+    return Math.min(Math.max(val, min), max);
+  }
+
   // animate chip based on gesture
   const animatedStyles = useAnimatedStyle(() => ({
     transform: [
@@ -56,12 +60,6 @@ const PlayerChip = ({
       { translateY: translationY.value }
     ]
   }));
-
-  // cap x,y coords to enforce drag bounds
-  // cap x,y coords to enforce drag bounds
-  function clamp(val: number, min: number, max: number) {
-    return Math.min(Math.max(val, min), max);
-  }
 
   // turn name into initials
   const getInitials = (name: string) => {
@@ -72,7 +70,7 @@ const PlayerChip = ({
     return names[0][0];
   };
 
-  // detects pan gesture (drag/drop)
+  // detect pan gesture (drag/drop)
   const panGesture = Gesture.Pan()
     .onStart(() => {
       // set previous location
@@ -85,8 +83,9 @@ const PlayerChip = ({
       // limit movement to screen
 
       // screen bounds, 16px padding
-      const minTranslate = 16;
-      const maxTranslateX = width - chipWidth - 16;
+      const BORDER_PADDING = 16;
+      const minTranslate = BORDER_PADDING;
+      const maxTranslateX = width - chipWidth - BORDER_PADDING;
       const maxTranslateY = teamBoxHeight - CHIP_DIAM - 96; // padding above button
 
       // enforce screen bounds
@@ -111,18 +110,13 @@ const PlayerChip = ({
 
       if (translationX.value < width / 2 - chipWidth / 2) {
         translationX.value = withSpring(leftX);
-        onSnapSide(pid, 'left');
+        translationY.value = withSpring(initial_positionY);
+        onSnapSide(pid, 'LEFT');
       } else {
         translationX.value = withSpring(rightX);
-        onSnapSide(pid, 'right');
+        translationY.value = withSpring(initial_positionY);
+        onSnapSide(pid, 'RIGHT');
       }
-
-      // const initial_positionY =
-      //   Math.floor(teamBoxHeight / 2) -
-      //   (CHIP_HEIGHT * totalChips) / 2 +
-      //   CHIP_HEIGHT * order;
-      // translationY.value = withSpring(teamBoxHeight / 2 - CHIP_DIAM / 2);
-      // translationY.value = withSpring(teamBoxHeight / 2 - CHIP_DIAM / 2);
     });
 
   const initials = getInitials(playerName);
