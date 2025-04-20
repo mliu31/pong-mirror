@@ -22,6 +22,14 @@ export default function GameLayout() {
           title: 'Form Teams'
         }}
       />
+
+      <Stack.Screen
+        name="[gameid]/inProgress"
+        options={{
+          headerShown: true,
+          title: 'Game Started'
+        }}
+      />
     </Stack>
   );
 }

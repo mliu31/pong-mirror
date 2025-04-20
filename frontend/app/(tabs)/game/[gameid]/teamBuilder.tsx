@@ -16,10 +16,10 @@ export default function Route() {
 
   const [gameData, setGameData] = useState<Game | null>(null);
   const [continueButtonDisabled, setContinueButtonDisabled] = useState(true);
-  const [teamBoxHeight, setTeamBoxHeight] = useState(0); // used to center chips vertically
   const [chipAssignments, setChipAssignments] = useState<
     Record<string, TeamValue>
   >({});
+  const [teamBoxHeight, setTeamBoxHeight] = useState(0); // used to center chips vertically
 
   useEffect(() => {
     getGame(local.gameid as string).then((res) => {
@@ -113,19 +113,15 @@ export default function Route() {
                   teamBoxHeight={teamBoxHeight}
                   order={index}
                   totalChips={gameData.players.length}
+                  // position={{ x: 0, y: 0 }} // initial position
                   onSnapSide={handleTeamChoice}
                 />
-
-                // <ThemedText key={player._id}>
-                //   {player.name}
-                //   </ThemedText>
-                //   <TeamChoiceButtons
-                //     pid={player._id}
-                //     initialValue={team}
-                //     gameid={local.gameid as string}
-                //   />
               ))}
             <Box className="justify-center px-4 pb-4 mt-auto">
+              <ThemedText className="text-center text-typography-950 text-lg mb-2">
+                Drag players to assign teams
+              </ThemedText>
+
               <Button
                 onPress={createTeamHandler}
                 action="primary"
@@ -134,7 +130,7 @@ export default function Route() {
                 size="md"
                 className={
                   continueButtonDisabled === false
-                    ? 'bg-primary-300 shadow-md'
+                    ? 'bg-primary-500 shadow-md'
                     : 'bg-secondary-800 shadow-md'
                 }
               >
