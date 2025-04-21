@@ -9,6 +9,7 @@ import Animated, {
 import { View } from 'react-native';
 import { withSpring } from 'react-native-reanimated';
 import { useState } from 'react';
+import { CHIP_DIAM, BORDER_PADDING } from '@/constants/CHIP';
 
 const PlayerChip = ({
   pid,
@@ -27,7 +28,6 @@ const PlayerChip = ({
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [chipWidth, setChipWidth] = useState(0); // for dragging bounds; width is dynamic bc includes name label
-  const CHIP_DIAM = 64; // px, from tailwind (w-16, h-16)w
 
   const translationX = useSharedValue(position.x);
   const translationY = useSharedValue(position.y);
@@ -70,8 +70,7 @@ const PlayerChip = ({
         .onUpdate((event) => {
           // limit movement to screen
 
-          // screen bounds, 16px padding
-          const BORDER_PADDING = 16;
+          // screen bounds
           const minTranslate = BORDER_PADDING;
           const maxTranslateX = bounds.maxX - chipWidth - BORDER_PADDING;
           const maxTranslateY = bounds.maxY - CHIP_DIAM - 108; // padding above button

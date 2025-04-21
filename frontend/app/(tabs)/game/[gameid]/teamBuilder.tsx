@@ -10,6 +10,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { Box } from '@/components/ui/box';
 import { Button, ButtonText } from '@/components/ui/button';
 import PlayerChip from '@/components/PlayerChip';
+import { CHIP_DIAM, CHIP_HEIGHT } from '@/constants/CHIP';
 
 export default function TeamBuilder() {
   const local = useLocalSearchParams();
@@ -33,15 +34,11 @@ export default function TeamBuilder() {
     });
   }, [local.gameid]);
 
-  useEffect(() => {
-    console.log(chipAssignments);
-  }, [chipAssignments]);
-
   // handle chip drag & drop
   const handleTeamChoice = (playerId: string, team: TeamValue) => {
     setChipAssignments((prev) => ({
       ...prev,
-      playerId: team
+      [playerId]: team
     }));
   };
 
@@ -73,8 +70,10 @@ export default function TeamBuilder() {
 
   const createTeamHandler = async () => {
     // set teams in BE from chipAssignments
-    const updatePromises = Object.entries(chipAssignments).map(([pid, team]) =>
-      updatePlayerTeam(pid, team, local.gameid as string)
+    const updatePromises = Object.entries(chipAssignments).map(
+      ([pid, team]) => {
+        updatePlayerTeam(pid, team, local.gameid as string);
+      }
     );
     await Promise.all(updatePromises);
 
@@ -85,9 +84,6 @@ export default function TeamBuilder() {
 
   // dimension constants
   const { width } = Dimensions.get('screen');
-  const chipHeightOffset = 16; // px, padding below chip
-  const CHIP_DIAM = 64; // px, from tailwind (w-16, h-16)w
-  const CHIP_HEIGHT = CHIP_DIAM + chipHeightOffset; // px
 
   // left and right team positions
   const leftX = width * 0.25 - CHIP_DIAM / 2;
