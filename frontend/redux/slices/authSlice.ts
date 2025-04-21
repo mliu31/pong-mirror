@@ -9,12 +9,14 @@ interface AuthApiState {
   basicPlayerInfo?: Player | null;
   status: 'idle' | 'loading' | 'failed';
   error: string | null;
+  isAuthenticated: boolean;
 }
 
 const initialState: AuthApiState = {
   basicPlayerInfo: null,
   status: 'idle',
-  error: null
+  error: null,
+  isAuthenticated: false
 };
 
 const loadPlayer = async (): Promise<Player | null> => {
@@ -30,11 +32,20 @@ export const loadAuthState = createAsyncThunk(
 );
 
 // signup
-export const signup = createAsyncThunk(
-  'auth/signup',
-  async (data: NewPlayer) => {
-    const response = await api.post('/auth/signup', data);
-    await AsyncStorage.setItem('player', JSON.stringify(response.data));
+export const signup = createAsyncThunk('auth/signup', async (data: Player) => {
+  const response = await api.post('/auth/signup', data);
+  await AsyncStorage.setItem('player', JSON.stringify(response.data));
+  return response.data;
+});
+
+// signup with Google
+export const googleSignup = createAsyncThunk(
+  'auth/googleSignup',
+  async (accessToken: string) => {
+    const response = await api.post('/auth/googleSignup', {
+      accessToken
+    });
+
     return response.data;
   }
 );
@@ -59,6 +70,13 @@ const authSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(loadAuthState.fulfilled, (state, action) => {
+        if (action.payload) {
+          state.basicPlayerInfo = action.payload;
+          state.isAuthenticated = true;
+        }
+      })
+
       .addCase(signup.pending, (state) => {
         state.status = 'loading';
         state.error = null;
@@ -67,6 +85,7 @@ const authSlice = createSlice({
         state.basicPlayerInfo = action.payload;
         state.status = 'idle';
         state.error = null;
+        state.isAuthenticated = true;
       })
       .addCase(signup.rejected, (state, action) => {
         state.status = 'failed';
@@ -80,11 +99,31 @@ const authSlice = createSlice({
         state.basicPlayerInfo = action.payload;
         state.status = 'idle';
         state.error = null;
+        state.isAuthenticated = true;
       })
       .addCase(login.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload as string;
       })
+      .addCase(googleSignup.pending, (state) => {
+        state.status = 'loading';
+        state.error = null;
+      })
+      .addCase(
+        googleSignup.fulfilled,
+        (state, action: PayloadAction<NewPlayer>) => {
+          state.basicPlayerInfo = action.payload;
+          state.status = 'idle';
+          state.error = null;
+          state.isAuthenticated = true;
+        }
+      )
+      .addCase(googleSignup.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload as string;
+        state.isAuthenticated = false;
+      })
+
       .addCase(logout.pending, (state) => {
         state.status = 'loading';
         state.error = null;
@@ -92,6 +131,7 @@ const authSlice = createSlice({
       .addCase(logout.fulfilled, (state, action) => {
         state.status = 'idle';
         state.basicPlayerInfo = null;
+        state.isAuthenticated = false;
       })
       .addCase(logout.rejected, (state, action) => {
         state.status = 'failed';

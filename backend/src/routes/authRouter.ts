@@ -31,6 +31,39 @@ router.post('/signup', async (req, res) => {
   }
 });
 
+router.post('/googleSignup', async (req, res) => {
+  const { accessToken } = req.body;
+  if (!accessToken) {
+    return void res.status(400).json({ message: 'Access token not found' });
+  }
+
+  const googleRes = await fetch(
+    `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${accessToken}`
+  );
+  if (!googleRes.ok) {
+    console.error('Google API error:', await googleRes.text());
+    return void res.status(401).json({ message: 'Invalid Google token' });
+  }
+
+  const googlePlayerInfo = await googleRes.json();
+
+  // check if the player with that email exists
+  let player = await Player.findOne({ email: googlePlayerInfo.email });
+  if (!player) {
+    player = new Player({
+      name: googlePlayerInfo.name,
+      email: googlePlayerInfo.email,
+      googleID: googlePlayerInfo.sub
+    });
+
+    await player.save();
+  }
+
+  // save player
+  req.session.player = player;
+  res.json(player);
+});
+
 router.post('/login', async (req, res) => {
   try {
     const { email } = req.body;
