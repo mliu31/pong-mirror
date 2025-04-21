@@ -23,13 +23,7 @@ const PlayerChip = ({
   position: { x: number; y: number };
   dragging: boolean;
   bounds: { minX: number; maxX: number; minY: number; maxY: number };
-  onSnapSide?: (
-    pid: string,
-    {
-      team,
-      new_position
-    }: { team: TeamValue; new_position: { x: number; y: number } }
-  ) => void;
+  onSnapSide?: (pid: string, team: TeamValue) => void;
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [chipWidth, setChipWidth] = useState(0); // for dragging bounds; width is dynamic bc includes name label
@@ -101,17 +95,11 @@ const PlayerChip = ({
           if (translationX.value < bounds.maxX / 2 - chipWidth / 2) {
             translationX.value = withSpring(bounds.maxX * 0.25 - CHIP_DIAM / 2);
             translationY.value = withSpring(position.y);
-            onSnapSide?.(pid, {
-              team: 'LEFT',
-              new_position: { x: translationX.value, y: translationY.value }
-            });
+            onSnapSide?.(pid, 'LEFT');
           } else {
             translationX.value = withSpring(bounds.maxX * 0.75 - CHIP_DIAM / 2);
             translationY.value = withSpring(position.y);
-            onSnapSide?.(pid, {
-              team: 'RIGHT',
-              new_position: { x: translationX.value, y: translationY.value }
-            });
+            onSnapSide?.(pid, 'RIGHT');
           }
         })
     : Gesture.Pan(); // Return a default gesture if dragging is false

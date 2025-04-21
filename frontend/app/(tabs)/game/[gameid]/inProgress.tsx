@@ -27,7 +27,7 @@ export default function InProgress() {
         game.players.filter((p) => p.team === 'RIGHT').map((p) => p.player)
       );
     });
-  }, [local.gameid]);
+  }, [local]);
 
   const { width } = Dimensions.get('screen');
   const chipHeightOffset = 16; // px, padding below chip
