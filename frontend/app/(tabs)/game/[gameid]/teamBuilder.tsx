@@ -1,7 +1,7 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { getGame } from '@/api/games';
-import { Game } from '@/api/apiTypes';
+import { Game } from '@/api/types';
 import { View, Text, Dimensions } from 'react-native';
 import { TeamValue } from '@/constants/TEAM';
 import { updatePlayerTeam } from '@/api/games';
@@ -11,13 +11,13 @@ import { Box } from '@/components/ui/box';
 import { Button, ButtonText } from '@/components/ui/button';
 import PlayerChip from '@/components/PlayerChip';
 
-export default function Route() {
+export default function TeamBuilder() {
   const local = useLocalSearchParams();
 
   const [gameData, setGameData] = useState<Game | null>(null);
   const [continueButtonDisabled, setContinueButtonDisabled] = useState(true);
   const [chipAssignments, setChipAssignments] = useState<
-    Record<string, TeamValue>
+    Record<string, { team: TeamValue; position: { x: number; y: number } }>
   >({});
   const [teamBoxHeight, setTeamBoxHeight] = useState(0); // used to center chips vertically
 
@@ -28,25 +28,38 @@ export default function Route() {
       res.data.players.forEach((player) => {
         setChipAssignments((prev) => ({
           ...prev,
-          [player.player._id]: player.team
+          [player.player._id]: { team: player.team, position: { x: 0, y: 0 } }
         }));
       });
     });
   }, [local.gameid]);
 
+  useEffect(() => {
+    console.log(chipAssignments);
+  }, [chipAssignments]);
+
   // handle chip drag & drop
-  const handleTeamChoice = (playerId: string, team: TeamValue) => {
-    setChipAssignments((prev) => ({ ...prev, [playerId]: team }));
+  const handleTeamChoice = (
+    playerId: string,
+    {
+      team,
+      new_position
+    }: { team: TeamValue; new_position: { x: number; y: number } }
+  ) => {
+    setChipAssignments((prev) => ({
+      ...prev,
+      [playerId]: { team: team, position: new_position }
+    }));
   };
 
   useEffect(() => {
     // count number of players on each side
     let left = 0;
     let right = 0;
-    Object.values(chipAssignments).forEach((side) => {
-      if (side === 'LEFT') {
+    Object.values(chipAssignments).forEach(({ team }) => {
+      if (team === 'LEFT') {
         left++;
-      } else if (side === 'RIGHT') {
+      } else if (team === 'RIGHT') {
         right++;
       }
     });
@@ -67,12 +80,17 @@ export default function Route() {
 
   const createTeamHandler = async () => {
     // set teams in BE from chipAssignments
-    const updatePromises = Object.entries(chipAssignments).map(([pid, team]) =>
-      updatePlayerTeam(pid, team, local.gameid as string)
+    const updatePromises = Object.entries(chipAssignments).map(([pid, info]) =>
+      updatePlayerTeam(pid, info.team, local.gameid as string)
     );
     await Promise.all(updatePromises);
 
-    router.push(`./inProgress`);
+    router.push({
+      pathname: `./inProgress`,
+      params: {
+        initialPositions: JSON.stringify(chipAssignments)
+      }
+    });
   };
 
   // dimension constants

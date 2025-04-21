@@ -8,7 +8,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { View } from 'react-native';
 import { withSpring } from 'react-native-reanimated';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 const PlayerChip = ({
   pid,
@@ -23,10 +23,17 @@ const PlayerChip = ({
   position: { x: number; y: number };
   dragging: boolean;
   bounds: { minX: number; maxX: number; minY: number; maxY: number };
-  onSnapSide: (pid: string, team: TeamValue) => void;
+  onSnapSide?: (
+    pid: string,
+    {
+      team,
+      new_position
+    }: { team: TeamValue; new_position: { x: number; y: number } }
+  ) => void;
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [chipWidth, setChipWidth] = useState(0); // for dragging bounds; width is dynamic bc includes name label
+  const CHIP_DIAM = 64; // px, from tailwind (w-16, h-16)w
 
   const translationX = useSharedValue(position.x);
   const translationY = useSharedValue(position.y);
@@ -71,12 +78,9 @@ const PlayerChip = ({
 
           // screen bounds, 16px padding
           const BORDER_PADDING = 16;
-          const CHIP_DIAM = 64; // px, from tailwind (w-16, h-16)w
           const minTranslate = BORDER_PADDING;
           const maxTranslateX = bounds.maxX - chipWidth - BORDER_PADDING;
           const maxTranslateY = bounds.maxY - CHIP_DIAM - 108; // padding above button
-
-          console.log(maxTranslateX, maxTranslateY);
 
           // enforce screen bounds
           translationX.value = clamp(
@@ -95,13 +99,19 @@ const PlayerChip = ({
 
           setIsDragging(false);
           if (translationX.value < bounds.maxX / 2 - chipWidth / 2) {
-            translationX.value = withSpring(bounds.maxX * 0.25 - chipWidth / 2);
+            translationX.value = withSpring(bounds.maxX * 0.25 - CHIP_DIAM / 2);
             translationY.value = withSpring(position.y);
-            onSnapSide(pid, 'LEFT');
+            onSnapSide?.(pid, {
+              team: 'LEFT',
+              new_position: { x: translationX.value, y: translationY.value }
+            });
           } else {
-            translationX.value = withSpring(bounds.maxX * 0.75 - chipWidth / 2);
+            translationX.value = withSpring(bounds.maxX * 0.75 - CHIP_DIAM / 2);
             translationY.value = withSpring(position.y);
-            onSnapSide(pid, 'RIGHT');
+            onSnapSide?.(pid, {
+              team: 'RIGHT',
+              new_position: { x: translationX.value, y: translationY.value }
+            });
           }
         })
     : Gesture.Pan(); // Return a default gesture if dragging is false
@@ -123,7 +133,7 @@ const PlayerChip = ({
           }}
         >
           <Box className="items-center relative">
-            <Box className="w-16 h-16 rounded-full bg-primary-500 items-center justify-center">
+            <Box className="w-16 h-16 rounded-full bg-primary-500  items-center justify-center">
               <Text className="text-secondary-0 font-bold text-2xl">
                 {initials}
               </Text>
