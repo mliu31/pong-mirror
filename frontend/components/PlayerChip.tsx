@@ -6,53 +6,30 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle
 } from 'react-native-reanimated';
-import { Dimensions, View } from 'react-native';
+import { View } from 'react-native';
 import { withSpring } from 'react-native-reanimated';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const PlayerChip = ({
   pid,
   playerName,
-  team,
-  teamBoxHeight,
-  order,
-  totalChips,
+  position,
+  dragging,
+  bounds,
   onSnapSide
 }: {
   pid: string;
   playerName: string;
-  team: TeamValue;
-  teamBoxHeight: number;
-  order: number;
-  totalChips: number;
+  position: { x: number; y: number };
+  dragging: boolean;
+  bounds: { minX: number; maxX: number; minY: number; maxY: number };
   onSnapSide: (pid: string, team: TeamValue) => void;
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [chipWidth, setChipWidth] = useState(0); // for dragging bounds; width is dynamic bc includes name label
 
-  // dimension constants
-  const { width } = Dimensions.get('screen');
-  const chipHeightOffset = 16; // px, padding below chip
-  const CHIP_DIAM = 64; // px, from tailwind (w-16, h-16)w
-  const CHIP_HEIGHT = CHIP_DIAM + chipHeightOffset; // px
-
-  // left and right team positions
-  const leftX = width * 0.25 - CHIP_DIAM / 2;
-  const rightX = width * 0.75 - CHIP_DIAM / 2;
-
-  // unassigned team position
-  const unasssigned_positionX = Math.floor(width / 2 - CHIP_DIAM / 2);
-  const unassigned_positionY = Math.floor(
-    teamBoxHeight / 2 - (CHIP_HEIGHT * totalChips) / 2 + CHIP_HEIGHT * order
-  );
-
-  // current position
-  const initialX =
-    team === 'LEFT' ? leftX : team === 'RIGHT' ? rightX : unasssigned_positionX;
-  const initialY = unassigned_positionY;
-
-  const translationX = useSharedValue(initialX);
-  const translationY = useSharedValue(initialY);
+  const translationX = useSharedValue(position.x);
+  const translationY = useSharedValue(position.y);
 
   // previous position
   const prevTranslationX = useSharedValue(0);
@@ -81,49 +58,53 @@ const PlayerChip = ({
   };
 
   // detect pan gesture (drag/drop)
-  const panGesture = Gesture.Pan()
-    .onStart(() => {
-      // set previous location
-      prevTranslationX.value = translationX.value;
-      prevTranslationY.value = translationY.value;
-      setIsDragging(true);
-      setIsDragging(true);
-    })
-    .onUpdate((event) => {
-      // limit movement to screen
+  const panGesture = dragging
+    ? Gesture.Pan()
+        .onStart(() => {
+          // set previous location
+          prevTranslationX.value = translationX.value;
+          prevTranslationY.value = translationY.value;
+          setIsDragging(true);
+        })
+        .onUpdate((event) => {
+          // limit movement to screen
 
-      // screen bounds, 16px padding
-      const BORDER_PADDING = 16;
-      const minTranslate = BORDER_PADDING;
-      const maxTranslateX = width - chipWidth - BORDER_PADDING;
-      const maxTranslateY = teamBoxHeight - CHIP_DIAM - 96; // padding above button
+          // screen bounds, 16px padding
+          const BORDER_PADDING = 16;
+          const CHIP_DIAM = 64; // px, from tailwind (w-16, h-16)w
+          const minTranslate = BORDER_PADDING;
+          const maxTranslateX = bounds.maxX - chipWidth - BORDER_PADDING;
+          const maxTranslateY = bounds.maxY - CHIP_DIAM - 108; // padding above button
 
-      // enforce screen bounds
-      translationX.value = clamp(
-        prevTranslationX.value + event.translationX,
-        minTranslate,
-        maxTranslateX
-      );
-      translationY.value = clamp(
-        prevTranslationY.value + event.translationY,
-        minTranslate,
-        maxTranslateY
-      );
-    })
-    .onEnd((event) => {
-      // Determine L/R side, animate to snap
+          console.log(maxTranslateX, maxTranslateY);
 
-      setIsDragging(false);
-      if (translationX.value < width / 2 - chipWidth / 2) {
-        translationX.value = withSpring(leftX);
-        translationY.value = withSpring(unassigned_positionY);
-        onSnapSide(pid, 'LEFT');
-      } else {
-        translationX.value = withSpring(rightX);
-        translationY.value = withSpring(unassigned_positionY);
-        onSnapSide(pid, 'RIGHT');
-      }
-    });
+          // enforce screen bounds
+          translationX.value = clamp(
+            prevTranslationX.value + event.translationX,
+            minTranslate,
+            maxTranslateX
+          );
+          translationY.value = clamp(
+            prevTranslationY.value + event.translationY,
+            minTranslate,
+            maxTranslateY
+          );
+        })
+        .onEnd((event) => {
+          // Determine L/R side, animate to snap
+
+          setIsDragging(false);
+          if (translationX.value < bounds.maxX / 2 - chipWidth / 2) {
+            translationX.value = withSpring(bounds.maxX * 0.25 - chipWidth / 2);
+            translationY.value = withSpring(position.y);
+            onSnapSide(pid, 'LEFT');
+          } else {
+            translationX.value = withSpring(bounds.maxX * 0.75 - chipWidth / 2);
+            translationY.value = withSpring(position.y);
+            onSnapSide(pid, 'RIGHT');
+          }
+        })
+    : Gesture.Pan(); // Return a default gesture if dragging is false
 
   const initials = getInitials(playerName);
   return (
@@ -134,6 +115,7 @@ const PlayerChip = ({
           { position: 'absolute', zIndex: isDragging ? 10 : 1 }
         ]}
       >
+        {/* need width prop from View onLayout for x bounds; Box doesn't have this handler */}
         <View
           onLayout={(event) => {
             const { width } = event.nativeEvent.layout;

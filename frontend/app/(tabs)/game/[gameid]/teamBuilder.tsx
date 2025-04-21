@@ -2,7 +2,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { getGame } from '@/api/games';
 import { Game } from '@/api/apiTypes';
-import { View, Text } from 'react-native';
+import { View, Text, Dimensions } from 'react-native';
 import { TeamValue } from '@/constants/TEAM';
 import { updatePlayerTeam } from '@/api/games';
 import { ThemedView } from '@/components/ThemedView';
@@ -21,6 +21,7 @@ export default function Route() {
   >({});
   const [teamBoxHeight, setTeamBoxHeight] = useState(0); // used to center chips vertically
 
+  // get game data from BE & set initial chip assignments
   useEffect(() => {
     getGame(local.gameid as string).then((res) => {
       setGameData(res.data as Game);
@@ -33,6 +34,7 @@ export default function Route() {
     });
   }, [local.gameid]);
 
+  // handle chip drag & drop
   const handleTeamChoice = (playerId: string, team: TeamValue) => {
     setChipAssignments((prev) => ({ ...prev, [playerId]: team }));
   };
@@ -73,6 +75,16 @@ export default function Route() {
     router.push(`./inProgress`);
   };
 
+  // dimension constants
+  const { width } = Dimensions.get('screen');
+  const chipHeightOffset = 16; // px, padding below chip
+  const CHIP_DIAM = 64; // px, from tailwind (w-16, h-16)w
+  const CHIP_HEIGHT = CHIP_DIAM + chipHeightOffset; // px
+
+  // left and right team positions
+  const leftX = width * 0.25 - CHIP_DIAM / 2;
+  const rightX = width * 0.75 - CHIP_DIAM / 2;
+
   return (
     <ThemedView className="flex-1 relative">
       {gameData === null ? (
@@ -109,11 +121,25 @@ export default function Route() {
                   key={player._id}
                   pid={player._id}
                   playerName={player.name}
-                  team={team}
-                  teamBoxHeight={teamBoxHeight}
-                  order={index}
-                  totalChips={gameData.players.length}
-                  // position={{ x: 0, y: 0 }} // initial position
+                  position={{
+                    x:
+                      team === 'LEFT'
+                        ? leftX
+                        : team === 'RIGHT'
+                          ? rightX
+                          : width / 2 - CHIP_DIAM / 2,
+                    y:
+                      teamBoxHeight / 2 -
+                      (CHIP_HEIGHT * gameData.players.length) / 2 +
+                      CHIP_HEIGHT * index
+                  }}
+                  dragging={true}
+                  bounds={{
+                    minX: 0,
+                    maxX: width,
+                    minY: 0,
+                    maxY: teamBoxHeight
+                  }}
                   onSnapSide={handleTeamChoice}
                 />
               ))}
