@@ -17,7 +17,8 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import spaceMono from '../assets/fonts/SpaceMono-Regular.ttf';
 import { IoProvider } from '@/context/IoContext';
 import { Provider as ReduxProvider } from 'react-redux';
-import store from '../redux/store';
+import store, { persistor } from '../redux/store';
+import { PersistGate } from 'redux-persist/integration/react';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -40,22 +41,24 @@ export default function RootLayout() {
 
   return (
     <ReduxProvider store={store}>
-      <GluestackUIProvider mode={colorScheme === 'dark' ? 'dark' : 'light'}>
-        <IoProvider>
-          <ThemeProvider
-            value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
-          >
-            <Stack>
-              <Stack.Screen
-                name="(protected)"
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen name="+not-found" />
-            </Stack>
-            <StatusBar style="auto" />
-          </ThemeProvider>
-        </IoProvider>
-      </GluestackUIProvider>
+      <PersistGate loading={null} persistor={persistor}>
+        <GluestackUIProvider mode={colorScheme === 'dark' ? 'dark' : 'light'}>
+          <IoProvider>
+            <ThemeProvider
+              value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
+            >
+              <Stack>
+                <Stack.Screen
+                  name="(protected)"
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen name="+not-found" />
+              </Stack>
+              <StatusBar style="auto" />
+            </ThemeProvider>
+          </IoProvider>
+        </GluestackUIProvider>
+      </PersistGate>
     </ReduxProvider>
   );
 }
