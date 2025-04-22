@@ -55,7 +55,16 @@ export default function InProgress() {
             action="primary"
             variant="solid"
             size="md"
-            onPress={() => router.push('./winner')}
+            onPress={() =>
+              router.push({
+                pathname: './winner',
+                params: {
+                  leftTeam: JSON.stringify(leftTeam),
+                  rightTeam: JSON.stringify(rightTeam),
+                  teamBoxHeight: teamBoxHeight
+                }
+              })
+            }
           >
             <ButtonText>End Game</ButtonText>
           </Button>
