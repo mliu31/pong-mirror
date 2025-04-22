@@ -30,6 +30,13 @@ export default function GameLayout() {
           title: 'Game Started'
         }}
       />
+      <Stack.Screen
+        name="[gameid]/winner"
+        options={{
+          headerShown: true,
+          title: 'Record Results'
+        }}
+      />
     </Stack>
   );
 }
