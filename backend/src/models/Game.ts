@@ -18,7 +18,7 @@ const gameSchema = new mongoose.Schema({
   ],
   winner: {
     type: String,
-    enum: ['RED', 'BlUE', null],
+    enum: ['RED', 'BLUE', null],
     default: null
   }
 });

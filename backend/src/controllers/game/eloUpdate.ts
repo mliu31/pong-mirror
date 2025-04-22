@@ -18,6 +18,8 @@ export const updateElo = async (gameid: string, winningColor: string) => {
       throw new Error('404 Game not found');
     }
 
+    // TODO: set game's winning color field accordingly
+
     // Find player ids
     const winningPlayers = foundGame.players.filter(
       (player) => player.team === winningColor
@@ -63,7 +65,7 @@ export const updateElo = async (gameid: string, winningColor: string) => {
     await Promise.all(
       winningPlayers.map((player) =>
         Player.findByIdAndUpdate(player.player, {
-          $inc: { elo: winnerEloChange }
+          $inc: { elo: winnerEloChange, wins: 1, gamesPlayed: 1 }
         })
       )
     );
@@ -71,7 +73,7 @@ export const updateElo = async (gameid: string, winningColor: string) => {
     await Promise.all(
       losingPlayers.map((player) =>
         Player.findByIdAndUpdate(player.player, {
-          $inc: { elo: loserEloChange }
+          $inc: { elo: loserEloChange, gamesPlayed: 1 }
         })
       )
     );
