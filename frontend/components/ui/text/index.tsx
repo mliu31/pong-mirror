@@ -34,7 +34,7 @@ const Text = React.forwardRef<React.ComponentRef<typeof RNText>, ITextProps>(
           sub,
           italic,
           highlight,
-          class: className,
+          class: className
         })}
         {...props}
         ref={ref}

@@ -1,7 +1,7 @@
 import { ThemedText } from '@/components/ThemedText';
 import { useLocalSearchParams } from 'expo-router';
-import { BackButton } from '../../../../../components/BackButton';
-import ClickWinner from './clickWinner';
+// import { BackButton } from '../../../../../components/BackButton';
+// import ClickWinner from './clickWinner';
 import { Box } from '@/components/ui/box';
 import { Button, ButtonText } from '@/components/ui/button';
 import { ThemedView } from '@/components/ThemedView';

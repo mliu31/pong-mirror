@@ -139,7 +139,7 @@ export default function Route() {
     const playerButtonPressHandler = () => {
       // If trying to select and already at 4 players
       const isSelected = playerUpdates[player._id] === true; // allow for deselection
-      if (numSelectedPlayers == 4 && !isSelected) {
+      if (numSelectedPlayers === 4 && !isSelected) {
         handleToast();
         return;
       }

@@ -6,5 +6,5 @@ const baseStyle = isWeb
   : '';
 
 export const boxStyle = tva({
-  base: baseStyle,
+  base: baseStyle
 });

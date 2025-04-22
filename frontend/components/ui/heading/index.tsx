@@ -48,7 +48,7 @@ const MappedHeading = memo(
                 sub,
                 italic,
                 highlight,
-                class: className,
+                class: className
               })}
               {...props}
               // @ts-expect-error : type issue
@@ -67,7 +67,7 @@ const MappedHeading = memo(
                 sub,
                 italic,
                 highlight,
-                class: className,
+                class: className
               })}
               {...props}
               // @ts-expect-error : type issue
@@ -86,7 +86,7 @@ const MappedHeading = memo(
                 sub,
                 italic,
                 highlight,
-                class: className,
+                class: className
               })}
               {...props}
               // @ts-expect-error : type issue
@@ -105,7 +105,7 @@ const MappedHeading = memo(
                 sub,
                 italic,
                 highlight,
-                class: className,
+                class: className
               })}
               {...props}
               // @ts-expect-error : type issue
@@ -124,7 +124,7 @@ const MappedHeading = memo(
                 sub,
                 italic,
                 highlight,
-                class: className,
+                class: className
               })}
               {...props}
               // @ts-expect-error : type issue
@@ -144,7 +144,7 @@ const MappedHeading = memo(
                 sub,
                 italic,
                 highlight,
-                class: className,
+                class: className
               })}
               {...props}
               // @ts-expect-error : type issue
@@ -163,7 +163,7 @@ const MappedHeading = memo(
                 sub,
                 italic,
                 highlight,
-                class: className,
+                class: className
               })}
               {...props}
               // @ts-expect-error : type issue
@@ -187,7 +187,7 @@ const Heading = memo(
       strikeThrough,
       sub,
       italic,
-      highlight,
+      highlight
     } = props;
 
     if (AsComp) {
@@ -202,7 +202,7 @@ const Heading = memo(
             sub,
             italic,
             highlight,
-            class: className,
+            class: className
           })}
           {...props}
         />

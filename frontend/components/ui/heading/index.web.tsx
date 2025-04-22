@@ -37,7 +37,7 @@ const MappedHeading = memo(
               sub,
               italic,
               highlight,
-              class: className,
+              class: className
             })}
             {...props}
             ref={ref}
@@ -55,7 +55,7 @@ const MappedHeading = memo(
               sub,
               italic,
               highlight,
-              class: className,
+              class: className
             })}
             {...props}
             ref={ref}
@@ -73,7 +73,7 @@ const MappedHeading = memo(
               sub,
               italic,
               highlight,
-              class: className,
+              class: className
             })}
             {...props}
             ref={ref}
@@ -91,7 +91,7 @@ const MappedHeading = memo(
               sub,
               italic,
               highlight,
-              class: className,
+              class: className
             })}
             {...props}
             ref={ref}
@@ -109,7 +109,7 @@ const MappedHeading = memo(
               sub,
               italic,
               highlight,
-              class: className,
+              class: className
             })}
             {...props}
             ref={ref}
@@ -128,7 +128,7 @@ const MappedHeading = memo(
               sub,
               italic,
               highlight,
-              class: className,
+              class: className
             })}
             {...props}
             ref={ref}
@@ -146,7 +146,7 @@ const MappedHeading = memo(
               sub,
               italic,
               highlight,
-              class: className,
+              class: className
             })}
             {...props}
             ref={ref}
@@ -168,7 +168,7 @@ const Heading = memo(
       strikeThrough,
       sub,
       italic,
-      highlight,
+      highlight
     } = props;
 
     if (AsComp) {
@@ -183,7 +183,7 @@ const Heading = memo(
             sub,
             italic,
             highlight,
-            class: className,
+            class: className
           })}
           {...props}
           ref={ref}
