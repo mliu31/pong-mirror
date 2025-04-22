@@ -18,12 +18,7 @@ export const updateElo = async (gameid: string, winningColor: string) => {
       throw new Error('404 Game not found');
     }
 
-    if (winningColor === 'RED' || winningColor === 'BLUE') {
-      foundGame.winner = winningColor;
-      await foundGame.save();
-    } else {
-      throw new Error('Invalid winning color');
-    }
+    // TODO: set game's winning color field accordingly
 
     // Find player ids
     const winningPlayers = foundGame.players.filter(
