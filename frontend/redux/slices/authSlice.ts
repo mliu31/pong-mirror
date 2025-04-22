@@ -17,24 +17,11 @@ const initialState: AuthApiState = {
   error: null
 };
 
-const loadPlayer = async (): Promise<Player | null> => {
-  const storedData = await AsyncStorage.getItem('player');
-  return storedData ? JSON.parse(storedData) : null;
-};
-
-export const loadAuthState = createAsyncThunk(
-  'auth/loadAuthState',
-  async () => {
-    return await loadPlayer();
-  }
-);
-
 // signup
 export const signup = createAsyncThunk(
   'auth/signup',
   async (data: NewPlayer) => {
     const response = await api.post('/auth/signup', data);
-    await AsyncStorage.setItem('player', JSON.stringify(response.data));
     return response.data;
   }
 );
@@ -42,14 +29,12 @@ export const signup = createAsyncThunk(
 // login
 export const login = createAsyncThunk('auth/login', async (data: NewPlayer) => {
   const response = await api.post('/auth/login', data);
-  await AsyncStorage.setItem('player', JSON.stringify(response.data));
   return response.data;
 });
 
 //logout
 export const logout = createAsyncThunk('auth/logout', async () => {
   const response = await api.post('/auth/logout', {});
-  await AsyncStorage.removeItem('player');
   return response.data;
 });
 
