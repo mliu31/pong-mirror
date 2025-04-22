@@ -26,7 +26,7 @@ export default function Login() {
             _id: '',
             name: '',
             friends: [],
-            elo: 0,
+            elo: 1200,
             rank: 0,
             groups: [],
             gamesPlayed: 0,
