@@ -8,13 +8,15 @@ import { Button, ButtonText } from '@/components/ui/button';
 import { Player } from '@/api/types';
 import { ThemedView } from '@/components/ThemedView';
 import TeamChips from '@/components/TeamChips';
+import TeamBoxes from '@/components/TeamBoxes';
 
 export default function InProgress() {
   const local = useLocalSearchParams();
   const [leftTeam, setLeftTeam] = useState<Player[]>([]);
   const [rightTeam, setRightTeam] = useState<Player[]>([]);
+  const [teamBoxHeight, setTeamBoxHeight] = useState(0); // used to center chips vertically
 
-  // sort players into left/right teams
+  // group players into left/right teams
   useEffect(() => {
     getGame(local.gameid as string).then((res) => {
       const game = res.data as Game;
@@ -29,21 +31,35 @@ export default function InProgress() {
 
   return (
     <ThemedView className="flex-1 relative">
-      <TeamChips leftTeam={leftTeam} rightTeam={rightTeam} />
-
-      <Box className="justify-center px-4 pb-4 mt-auto">
-        <ThemedText className="text-center text-typography-950 text-lg mb-2">
-          May the best team win...
+      <TeamBoxes setTeamBoxHeight={setTeamBoxHeight} />
+      <Box className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pb-4 mb-auto z-10">
+        <ThemedText className="text-center text-typography-950 text-xl">
+          vs
         </ThemedText>
+      </Box>
 
-        <Button
-          onPress={() => router.push('./winner')}
-          action="primary"
-          variant="solid"
-          size="md"
-        >
-          <ButtonText>End Game</ButtonText>
-        </Button>
+      {/* chips and continue button */}
+      <Box className="absolute w-full h-full top-0 left-0">
+        <TeamChips
+          leftTeam={leftTeam}
+          rightTeam={rightTeam}
+          teamBoxHeight={teamBoxHeight}
+        />
+
+        <Box className="justify-center px-4 pb-4 mt-auto">
+          <ThemedText className="text-center text-typography-950 text-lg mb-2">
+            May the best team win...
+          </ThemedText>
+
+          <Button
+            action="primary"
+            variant="solid"
+            size="md"
+            onPress={() => router.push('./winner')}
+          >
+            <ButtonText>End Game</ButtonText>
+          </Button>
+        </Box>
       </Box>
     </ThemedView>
   );
