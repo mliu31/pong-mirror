@@ -2,7 +2,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { getGame } from '@/api/games';
 import { Game } from '@/api/types';
-import { View, Text, Dimensions } from 'react-native';
+import { Dimensions } from 'react-native';
 import { TeamValue } from '@/constants/TEAM';
 import { updatePlayerTeam } from '@/api/games';
 import { ThemedView } from '@/components/ThemedView';
@@ -11,6 +11,7 @@ import { Box } from '@/components/ui/box';
 import { Button, ButtonText } from '@/components/ui/button';
 import PlayerChip from '@/components/PlayerChip';
 import { CHIP_DIAM, CHIP_HEIGHT } from '@/constants/CHIP';
+import TeamBoxes from '@/components/TeamBoxes';
 
 export default function TeamBuilder() {
   const local = useLocalSearchParams();
@@ -95,27 +96,7 @@ export default function TeamBuilder() {
         <ThemedText className="text-center">Loading</ThemedText>
       ) : (
         <>
-          <Box className="flex-row h-full">
-            {/* need height prop from View onLayout to center chips vertically; Box doesn't have this handler */}
-            <View
-              onLayout={(event) => {
-                const { height } = event.nativeEvent.layout;
-                setTeamBoxHeight(height);
-              }}
-              style={{
-                flex: 1
-              }}
-            ></View>
-
-            {/* L/R team boxes */}
-            <Box className="w-1/2 bg-success-300 p-10 top-0 left-0 ">
-              <Text className="text-typography-950 text-left">Team 1</Text>
-            </Box>
-
-            <Box className="w-1/2 bg-secondary-50 p-10 top-0 right-0">
-              <Text className="text-typography-950 text-right">Team 2</Text>
-            </Box>
-          </Box>
+          <TeamBoxes setTeamBoxHeight={setTeamBoxHeight} />
 
           {/* chip overlay */}
           <Box className="absolute w-full h-full top-0 left-0">
@@ -147,6 +128,7 @@ export default function TeamBuilder() {
                   onSnapSide={handleTeamChoice}
                 />
               ))}
+
             <Box className="justify-center px-4 pb-4 mt-auto">
               <ThemedText className="text-center text-typography-950 text-lg mb-2">
                 Drag players to assign teams
