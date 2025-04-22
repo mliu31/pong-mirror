@@ -26,7 +26,11 @@ export default function Login() {
             _id: '',
             name: '',
             friends: [],
-            elo: 0
+            elo: 0,
+            rank: 0,
+            groups: [],
+            gamesPlayed: 0,
+            wins: 0
           })
         ).unwrap();
         console.log('Login successful');
