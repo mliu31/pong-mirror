@@ -56,13 +56,6 @@ const authSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(loadAuthState.fulfilled, (state, action) => {
-        if (action.payload) {
-          state.basicPlayerInfo = action.payload;
-          state.isAuthenticated = true;
-        }
-      })
-
       .addCase(signup.pending, (state) => {
         state.status = 'loading';
         state.error = null;
