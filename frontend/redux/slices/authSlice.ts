@@ -35,6 +35,7 @@ export const googleSignup = createAsyncThunk(
     const response = await api.post('/auth/googleSignup', {
       accessToken
     });
+    return response.data;
   }
 );
 
