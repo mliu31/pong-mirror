@@ -9,7 +9,7 @@ import { AppDispatch } from '../redux/store';
 import { login } from '../redux/slices/authSlice';
 
 import { styles } from '../components/auth/authstyles';
-// import { useGoogleAuth } from '@/hooks/useGoogleAuth';
+import { useGoogleAuth } from '@/hooks/useGoogleAuth';
 
 // TODO: Login with Google
 
@@ -17,7 +17,7 @@ export default function Login() {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
 
-  // const { promptAsync, request } = useGoogleAuth();
+  const { promptAsync, request } = useGoogleAuth();
 
   const [email, setEmail] = useState('');
 
@@ -58,13 +58,13 @@ export default function Login() {
       </View>
 
       {/* Google */}
-      {/* <View style={styles.buttonWrapper}>
+      <View style={styles.buttonWrapper}>
         <Button
           title="Continue with Google"
           onPress={() => promptAsync()}
           disabled={!request}
         />
-      </View> */}
+      </View>
 
       {/* Don't have an account? sign up button */}
       <View style={styles.buttonWrapper}>
