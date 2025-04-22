@@ -48,6 +48,8 @@ export default function Profile() {
       {/* Display Player Information */}
       <Text style={styles.info}>Email: {player?.email}</Text>
       <Text style={styles.info}>ELO: {player?.elo}</Text>
+      <Text style={styles.info}>Games Played: {player?.gamesPlayed}</Text>
+      <Text style={styles.info}>Wins: {player?.wins}</Text>
 
       {player && <Friends pid={player._id} />}
 

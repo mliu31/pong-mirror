@@ -8,6 +8,8 @@ export interface IPlayer extends Document {
   elo: number;
   rank: number;
   groups: string[];
+  gamesPlayed: number;
+  wins: number;
   googleID: string;
 }
 
@@ -45,6 +47,16 @@ const playerSchema = new mongoose.Schema<IPlayer>({
     type: [String],
     required: true,
     default: []
+  },
+  gamesPlayed: {
+    type: Number,
+    required: true,
+    default: 0
+  },
+  wins: {
+    type: Number,
+    required: true,
+    default: 0
   },
   googleID: {
     type: String,
