@@ -18,56 +18,113 @@ const TeamChips = ({
   // left and right team positions
   const leftX = width * 0.25 - CHIP_DIAM / 2;
   const rightX = width * 0.75 - CHIP_DIAM / 2;
+
+  const renderTeam = (team: Player[], isLeft: boolean) => {
+    return (
+      <Box
+      // TODO WORKING ON BORDER
+      // className="absolute border border-gray-300 rounded-xl"
+      // style={{
+      //   left: teamX - 12, // shift box so it wraps the chip's center
+      //   top: teamBoxHeight / 2 - (CHIP_HEIGHT * team.length) / 2 - 12, // add padding above
+      //   width: CHIP_DIAM + 24,
+      //   height: CHIP_HEIGHT * team.length + 24,
+      //   padding: 6,
+      //   alignItems: 'center',
+      //   justifyContent: 'center'
+      // }}
+      >
+        {team.map((player, index) => (
+          <PlayerChip
+            key={player._id}
+            pid={player._id}
+            playerName={player.name}
+            position={{
+              x: isLeft ? leftX : rightX,
+              y:
+                teamBoxHeight / 2 -
+                (CHIP_HEIGHT * team.length) / 2 +
+                CHIP_HEIGHT * index
+            }}
+            dragging={false}
+            bounds={{
+              minX: 0,
+              maxX: width,
+              minY: 0,
+              maxY: teamBoxHeight
+            }}
+          />
+        ))}
+      </Box>
+    );
+  };
+
   return (
-    <Box>
-      {teamBoxHeight > 0 &&
-        leftTeam &&
-        leftTeam.map((player, index) => (
-          <PlayerChip
-            key={player._id}
-            pid={player._id}
-            playerName={player.name}
-            position={{
-              x: leftX,
-              y:
-                teamBoxHeight / 2 -
-                (CHIP_HEIGHT * leftTeam.length) / 2 +
-                CHIP_HEIGHT * index
-            }}
-            dragging={false}
-            bounds={{
-              minX: 0,
-              maxX: width,
-              minY: 0,
-              maxY: teamBoxHeight
-            }}
-          />
-        ))}
-      {teamBoxHeight > 0 &&
-        rightTeam &&
-        rightTeam.map((player, index) => (
-          <PlayerChip
-            key={player._id}
-            pid={player._id}
-            playerName={player.name}
-            position={{
-              x: rightX,
-              y:
-                teamBoxHeight / 2 -
-                (CHIP_HEIGHT * rightTeam.length) / 2 +
-                CHIP_HEIGHT * index
-            }}
-            dragging={false}
-            bounds={{
-              minX: 0,
-              maxX: width,
-              minY: 0,
-              maxY: teamBoxHeight
-            }}
-          />
-        ))}
+    <Box className="absolute w-full h-full top-0 left-0">
+      {teamBoxHeight > 0 && renderTeam(leftTeam, true)}
+      {teamBoxHeight > 0 && renderTeam(rightTeam, false)}
     </Box>
   );
 };
+// <Box>
+{
+  // PREV CODE WILL REMOVE
+  /* <Box className="absolute border border-gray-300 rounded-xl bg-white p-2 items-center">
+        {teamBoxHeight > 0 &&
+          leftTeam &&
+          leftTeam.map((player, index) => (
+            <PlayerChip
+              key={player._id}
+              pid={player._id}
+              playerName={player.name}
+              position={{
+                x: isLeft ? leftX : rightX,
+                y:
+                teamBoxHeight / 2 -
+                (CHIP_HEIGHT * leftTeam.length) / 2 +
+                CHIP_HEIGHT * index
+                  
+              }}
+              dragging={false}
+              bounds={{
+                minX: 0,
+                maxX: width,
+                minY: 0,
+                maxY: teamBoxHeight
+              }}
+            />
+          ))}
+      </Box> */
+}
+
+{
+  /* <Box className="absolute border border-red-50 rounded-lg p-4 w-2/5">
+        {teamBoxHeight > 0 &&
+          rightTeam &&
+          rightTeam.map((player, index) => (
+            <PlayerChip
+              key={player._id}
+              pid={player._id}
+              playerName={player.name}
+              position={{
+                x: rightX,
+                y:
+                  teamBoxHeight / 2 -
+                  (CHIP_HEIGHT * rightTeam.length) / 2 +
+                  CHIP_HEIGHT * index
+              }}
+              dragging={false}
+              bounds={{
+                minX: 0,
+                maxX: width,
+                minY: 0,
+                maxY: teamBoxHeight
+              }}
+            />
+          ))}
+      </Box>
+    </Box> */
+}
+// );
 
 export default TeamChips;
