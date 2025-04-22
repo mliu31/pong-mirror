@@ -9,7 +9,7 @@ import Animated, {
 import { View } from 'react-native';
 import { withSpring } from 'react-native-reanimated';
 import { useState } from 'react';
-import { CHIP_DIAM, BORDER_PADDING } from '@/constants/CHIP';
+import { CHIP_DIAM, PADDING } from '@/constants/CHIP';
 
 const PlayerChip = ({
   pid,
@@ -71,8 +71,8 @@ const PlayerChip = ({
           // limit movement to screen
 
           // screen bounds
-          const minTranslate = BORDER_PADDING;
-          const maxTranslateX = bounds.maxX - chipWidth - BORDER_PADDING;
+          const minTranslate = PADDING;
+          const maxTranslateX = bounds.maxX - chipWidth - PADDING;
           const maxTranslateY = bounds.maxY - CHIP_DIAM - 108; // padding above button
 
           // enforce screen bounds

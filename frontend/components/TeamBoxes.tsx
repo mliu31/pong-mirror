@@ -20,7 +20,7 @@ const TeamBoxes = ({
       ></View>
 
       {/* L/R team boxes */}
-      <Box className="w-1/2 bg-success-300 p-10 top-0 left-0 ">
+      <Box className="w-1/2 bg-success-300 p-10 top-0 left-0">
         <Text className="text-typography-950 text-left">Team 1</Text>
       </Box>
 
