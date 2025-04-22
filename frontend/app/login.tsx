@@ -9,10 +9,15 @@ import { AppDispatch } from '../redux/store';
 import { login } from '../redux/slices/authSlice';
 
 import { styles } from '../components/auth/authstyles';
+import { useGoogleAuth } from '@/hooks/useGoogleAuth';
+
+// TODO: Login with Google
 
 export default function Login() {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
+
+  const { promptAsync, request } = useGoogleAuth();
 
   const [email, setEmail] = useState('');
 
@@ -20,17 +25,8 @@ export default function Login() {
     if (email) {
       console.log('Attempting to login with:', { email });
       try {
-        await dispatch(
-          login({
-            email,
-            _id: '',
-            name: '',
-            friends: [],
-            elo: 0
-          })
-        ).unwrap();
+        await dispatch(login({ email })).unwrap(); // ignore error
         console.log('Login successful');
-
         router.push('/profile');
       } catch (err) {
         console.error('Login failed:', err);
@@ -59,6 +55,15 @@ export default function Login() {
       {/* log in button */}
       <View style={styles.buttonWrapper}>
         <Button title="Log in" onPress={handleLogin} />
+      </View>
+
+      {/* Google */}
+      <View style={styles.buttonWrapper}>
+        <Button
+          title="Continue with Google"
+          onPress={() => promptAsync()}
+          disabled={!request}
+        />
       </View>
 
       {/* Don't have an account? sign up button */}

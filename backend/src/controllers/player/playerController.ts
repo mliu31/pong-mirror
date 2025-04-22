@@ -1,6 +1,6 @@
 import Player from '../../models/Player';
 
-// A function to create a new player with a unique userID
+// New player
 export const newPlayer = async (name: string, email: string) => {
   const existingPlayer = await Player.findOne({ email });
   if (existingPlayer) {
@@ -14,13 +14,15 @@ export const newPlayer = async (name: string, email: string) => {
     newPlayerID = lastPlayer.userID + 1;
   }
 
+  // TODO: work around for the ranking issue
+
   const newPlayer = new Player({
     userID: newPlayerID,
     name: name,
     email: email,
     friends: [],
-    elo: 1000, // default TODO: default? read from playe rmodel
-    rank: 0 // start
+    elo: 1000, // TODO: default? read from player model
+    rank: 0
   });
 
   await newPlayer.save();
