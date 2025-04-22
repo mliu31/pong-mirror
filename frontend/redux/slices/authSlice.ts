@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../../api';
 import { Player } from '@/api/types';
 
-type NewPlayer = Player;
+type NewPlayer = Pick<Player, 'name' | 'email'>;
+type LoginPlayer = Pick<Player, 'email'>;
 
 interface AuthApiState {
   basicPlayerInfo?: Player | null;
@@ -40,10 +40,13 @@ export const googleSignup = createAsyncThunk(
 );
 
 // login
-export const login = createAsyncThunk('auth/login', async (data: NewPlayer) => {
-  const response = await api.post('/auth/login', data);
-  return response.data;
-});
+export const login = createAsyncThunk(
+  'auth/login',
+  async (data: LoginPlayer) => {
+    const response = await api.post('/auth/login', data);
+    return response.data;
+  }
+);
 
 //logout
 export const logout = createAsyncThunk('auth/logout', async () => {
@@ -61,7 +64,7 @@ const authSlice = createSlice({
         state.status = 'loading';
         state.error = null;
       })
-      .addCase(signup.fulfilled, (state, action: PayloadAction<NewPlayer>) => {
+      .addCase(signup.fulfilled, (state, action: PayloadAction<Player>) => {
         state.basicPlayerInfo = action.payload;
         state.status = 'idle';
         state.error = null;
@@ -75,7 +78,7 @@ const authSlice = createSlice({
         state.status = 'loading';
         state.error = null;
       })
-      .addCase(login.fulfilled, (state, action: PayloadAction<NewPlayer>) => {
+      .addCase(login.fulfilled, (state, action: PayloadAction<Player>) => {
         state.basicPlayerInfo = action.payload;
         state.status = 'idle';
         state.error = null;
@@ -91,7 +94,7 @@ const authSlice = createSlice({
       })
       .addCase(
         googleSignup.fulfilled,
-        (state, action: PayloadAction<NewPlayer>) => {
+        (state, action: PayloadAction<Player>) => {
           state.basicPlayerInfo = action.payload;
           state.status = 'idle';
           state.error = null;
