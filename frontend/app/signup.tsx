@@ -9,6 +9,7 @@ import { AppDispatch } from '../redux/store';
 import { signup } from '../redux/slices/authSlice';
 
 import { styles } from '../components/auth/authstyles';
+import { useGoogleAuth } from '@/hooks/useGoogleAuth';
 
 export default function SignUp() {
   const router = useRouter();
@@ -17,23 +18,13 @@ export default function SignUp() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
 
+  const { promptAsync, request } = useGoogleAuth();
+
   const handleSignUp = async () => {
     if (name && email) {
       console.log('Attempting to sign up with:', { name, email });
       try {
-        await dispatch(
-          signup({
-            name,
-            email,
-            _id: '',
-            friends: [],
-            elo: 1200,
-            rank: 0,
-            groups: [],
-            gamesPlayed: 0,
-            wins: 0
-          })
-        ).unwrap();
+        await dispatch(signup({ name, email })).unwrap();
         console.log('Sign up successful');
 
         router.push('/profile');
@@ -77,6 +68,15 @@ export default function SignUp() {
       {/* sign up button */}
       <View style={styles.buttonWrapper}>
         <Button title="Sign up" onPress={handleSignUp} />
+      </View>
+
+      {/* Google sign up button */}
+      <View style={styles.buttonWrapper}>
+        <Button
+          title="Continue with Google"
+          onPress={() => promptAsync()}
+          disabled={!request}
+        />
       </View>
 
       {/* Already have an account? login button */}

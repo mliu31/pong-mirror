@@ -1,3 +1,5 @@
+import { Tabs, useRootNavigationState, useRouter } from 'expo-router';
+import React, { useEffect } from 'react';
 import { Platform } from 'react-native';
 
 import { HapticTab } from '@/components/HapticTab';
@@ -5,10 +7,22 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { Tabs } from 'expo-router';
+import { useAppSelector } from '@/redux/redux-hooks';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+
+  // TODO: flesh out route protection
+  const basicPlayerInfo = useAppSelector((state) => state.auth.basicPlayerInfo);
+  const router = useRouter();
+  const rootNavigationState = useRootNavigationState();
+
+  useEffect(() => {
+    if (!rootNavigationState?.key) return; // waiting for router
+    if (!basicPlayerInfo) {
+      router.replace('/login');
+    }
+  }, [basicPlayerInfo, rootNavigationState, router]);
 
   return (
     <Tabs

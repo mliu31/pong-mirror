@@ -10,6 +10,7 @@ export interface IPlayer extends Document {
   groups: string[];
   gamesPlayed: number;
   wins: number;
+  googleID: string;
 }
 
 const playerSchema = new mongoose.Schema<IPlayer>({
@@ -30,7 +31,7 @@ const playerSchema = new mongoose.Schema<IPlayer>({
   },
   rank: {
     type: Number,
-    required: true
+    required: false // TODO: set required: true and fix issues
   },
   elo: {
     type: Number,
@@ -56,6 +57,10 @@ const playerSchema = new mongoose.Schema<IPlayer>({
     type: Number,
     required: true,
     default: 0
+  },
+  googleID: {
+    type: String,
+    required: false
   }
 });
 

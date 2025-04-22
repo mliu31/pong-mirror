@@ -1,20 +1,22 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../../api';
 import { Player } from '@/api/types';
 
-type NewPlayer = Player;
+type NewPlayer = Pick<Player, 'name' | 'email'>;
+type LoginPlayer = Pick<Player, 'email'>;
 
 interface AuthApiState {
   basicPlayerInfo?: Player | null;
   status: 'idle' | 'loading' | 'failed';
   error: string | null;
+  isAuthenticated: boolean;
 }
 
 const initialState: AuthApiState = {
   basicPlayerInfo: null,
   status: 'idle',
-  error: null
+  error: null,
+  isAuthenticated: false
 };
 
 // signup
@@ -26,11 +28,25 @@ export const signup = createAsyncThunk(
   }
 );
 
+// signup with Google
+export const googleSignup = createAsyncThunk(
+  'auth/googleSignup',
+  async (accessToken: string) => {
+    const response = await api.post('/auth/googleSignup', {
+      accessToken
+    });
+    return response.data;
+  }
+);
+
 // login
-export const login = createAsyncThunk('auth/login', async (data: NewPlayer) => {
-  const response = await api.post('/auth/login', data);
-  return response.data;
-});
+export const login = createAsyncThunk(
+  'auth/login',
+  async (data: LoginPlayer) => {
+    const response = await api.post('/auth/login', data);
+    return response.data;
+  }
+);
 
 //logout
 export const logout = createAsyncThunk('auth/logout', async () => {
@@ -48,10 +64,11 @@ const authSlice = createSlice({
         state.status = 'loading';
         state.error = null;
       })
-      .addCase(signup.fulfilled, (state, action: PayloadAction<NewPlayer>) => {
+      .addCase(signup.fulfilled, (state, action: PayloadAction<Player>) => {
         state.basicPlayerInfo = action.payload;
         state.status = 'idle';
         state.error = null;
+        state.isAuthenticated = true;
       })
       .addCase(signup.rejected, (state, action) => {
         state.status = 'failed';
@@ -61,15 +78,35 @@ const authSlice = createSlice({
         state.status = 'loading';
         state.error = null;
       })
-      .addCase(login.fulfilled, (state, action: PayloadAction<NewPlayer>) => {
+      .addCase(login.fulfilled, (state, action: PayloadAction<Player>) => {
         state.basicPlayerInfo = action.payload;
         state.status = 'idle';
         state.error = null;
+        state.isAuthenticated = true;
       })
       .addCase(login.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload as string;
       })
+      .addCase(googleSignup.pending, (state) => {
+        state.status = 'loading';
+        state.error = null;
+      })
+      .addCase(
+        googleSignup.fulfilled,
+        (state, action: PayloadAction<Player>) => {
+          state.basicPlayerInfo = action.payload;
+          state.status = 'idle';
+          state.error = null;
+          state.isAuthenticated = true;
+        }
+      )
+      .addCase(googleSignup.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload as string;
+        state.isAuthenticated = false;
+      })
+
       .addCase(logout.pending, (state) => {
         state.status = 'loading';
         state.error = null;
@@ -77,6 +114,7 @@ const authSlice = createSlice({
       .addCase(logout.fulfilled, (state, action) => {
         state.status = 'idle';
         state.basicPlayerInfo = null;
+        state.isAuthenticated = false;
       })
       .addCase(logout.rejected, (state, action) => {
         state.status = 'failed';
