@@ -1,6 +1,6 @@
 import { ThemedText } from '@/components/ThemedText';
-import { useLocalSearchParams, router } from 'expo-router';
-import { BackButton } from '../../../../components/BackButton';
+import { useLocalSearchParams } from 'expo-router';
+import { BackButton } from '../../../../../components/BackButton';
 import ClickWinner from './clickWinner';
 import { Box } from '@/components/ui/box';
 import { Button, ButtonText } from '@/components/ui/button';
@@ -9,7 +9,7 @@ import TeamChips from '@/components/TeamChips';
 import TeamBoxes from '@/components/TeamBoxes';
 import { useState } from 'react';
 import { Player } from '@/api/types';
-import { Dimensions, Pressable, View, Text, StyleSheet } from 'react-native';
+import { Dimensions, Pressable } from 'react-native';
 import { TeamValue } from '@/constants/TEAM';
 
 export default function WinnerScreen() {
@@ -23,7 +23,7 @@ export default function WinnerScreen() {
   const [winner, setWinner] = useState<TeamValue>();
 
   const handleConfirm = () => {
-    console.log(winner);
+    console.log(winner, gameid);
   };
 
   const handlePress = (event: { nativeEvent: { locationX: number } }) => {

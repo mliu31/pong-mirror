@@ -7,12 +7,16 @@ export interface IPlayer extends Document {
   friends: string[];
   elo: number;
   rank: number;
+  groups: string[];
+  googleID: string;
 }
 
 const playerSchema = new mongoose.Schema<IPlayer>({
   userID: {
     type: Number,
-    required: true
+    required: true,
+    default: 0,
+    unique: true
   },
   name: {
     type: String,
@@ -20,21 +24,31 @@ const playerSchema = new mongoose.Schema<IPlayer>({
   },
   email: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   rank: {
     type: Number,
-    required: true
+    required: false // TODO: set required: true and fix issues
   },
   elo: {
     type: Number,
     required: true,
-    default: 1000
+    default: 1200
   },
   friends: {
     type: [String],
     required: true,
     default: []
+  },
+  groups: {
+    type: [String],
+    required: true,
+    default: []
+  },
+  googleID: {
+    type: String,
+    required: false
   }
 });
 

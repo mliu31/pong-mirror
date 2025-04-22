@@ -1,5 +1,34 @@
 import Player from '../../models/Player';
 
+// New player
+export const newPlayer = async (name: string, email: string) => {
+  const existingPlayer = await Player.findOne({ email });
+  if (existingPlayer) {
+    throw new Error('Player already exists');
+  }
+
+  // TODO: switch to using Mongo ids
+  const lastPlayer = await Player.findOne().sort({ userID: -1 });
+  let newPlayerID = 1;
+  if (lastPlayer) {
+    newPlayerID = lastPlayer.userID + 1;
+  }
+
+  // TODO: work around for the ranking issue
+
+  const newPlayer = new Player({
+    userID: newPlayerID,
+    name: name,
+    email: email,
+    friends: [],
+    elo: 1000, // TODO: default? read from player model
+    rank: 0
+  });
+
+  await newPlayer.save();
+  return newPlayer;
+};
+
 export const getAllPlayers = () => Player.find();
 
 export const getPlayer = async (pid: string) => {
@@ -9,6 +38,7 @@ export const getPlayer = async (pid: string) => {
   }
   return player;
 };
+
 export const addPlayerFriend = async (pid: string, fid: string) => {
   const player = await getPlayer(pid);
   const friend = await getPlayer(fid);
@@ -49,4 +79,12 @@ export const removePlayerFriend = async (pid: string, fid: string) => {
   );
 
   return updatedPlayer;
+};
+
+export const getPlayerGroup = async (pid: string): Promise<string[]> => {
+  const player = await Player.findById(pid);
+  if (!player) {
+    throw new Error('Player not found');
+  }
+  return player.groups;
 };
