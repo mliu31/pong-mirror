@@ -3,6 +3,7 @@ import { Player } from '@/api/types';
 import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import Friends from '@/components/Friends/Friends';
+import LogoutButton from '@/components/LogoutButton';
 
 export default function Profile() {
   // For now, using a hardcoded player ID.
@@ -49,6 +50,8 @@ export default function Profile() {
       <Text style={styles.info}>ELO: {player?.elo}</Text>
 
       {player && <Friends pid={player._id} />}
+
+      <LogoutButton />
     </View>
   );
 }
