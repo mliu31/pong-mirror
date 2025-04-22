@@ -14,4 +14,8 @@ export interface Player {
   email: string;
   friends: string[];
   elo: number;
+  rank: number;
+  groups: string[];
+  gamesPlayed: number;
+  wins: number;
 }
