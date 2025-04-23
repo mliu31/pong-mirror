@@ -57,14 +57,10 @@ router.put('/:gameid/players/:pid/team/:team', async (req, res) => {
   res.json(game);
 });
 
-router.patch('/:gameid/winningColor/:winningColor', async (req, res) => {
-  const { gameid, winningColor } = req.params;
-  return void res.json(await updateElo(gameid, winningColor));
-});
-
 router.patch('/:gameid/winner/:team', async (req, res) => {
   const { gameid, team } = req.params;
-  return void res.json(await setGameWinner(gameid, team));
+  return void (res.json(await setGameWinner(gameid, team)),
+  res.json(await updateElo(gameid, team)));
 });
 
 export default router;

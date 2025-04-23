@@ -11,21 +11,19 @@ const getKFactor = (playerElo: number): number => {
   }
 };
 
-export const updateElo = async (gameid: string, winningColor: string) => {
+export const updateElo = async (gameid: string, winner: string) => {
   try {
     const foundGame = await Game.findById(gameid);
     if (!foundGame) {
       throw new Error('404 Game not found');
     }
 
-    // TODO: set game's winning color field accordingly
-
     // Find player ids
     const winningPlayers = foundGame.players.filter(
-      (player) => player.team === winningColor
+      (player) => player.team === winner
     );
     const losingPlayers = foundGame.players.filter(
-      (player) => player.team !== winningColor
+      (player) => player.team !== winner
     );
 
     // Fetch player objects
