@@ -84,7 +84,7 @@ export default function TeamBuilder() {
   };
 
   // dimension constants
-  const { width } = Dimensions.get('screen');
+  const { width } = Dimensions.get('window');
 
   // left and right team positions
   const leftX = width * 0.25 - CHIP_DIAM / 2;
