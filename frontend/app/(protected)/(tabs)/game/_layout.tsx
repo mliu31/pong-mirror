@@ -2,15 +2,17 @@ import { Stack } from 'expo-router';
 
 export default function GameLayout() {
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false
-      }}
-    >
+    <Stack>
+      <Stack.Screen
+        name="index"
+        options={{
+          title: 'Join or Create Game',
+          headerShown: false
+        }}
+      />
       <Stack.Screen
         name="[gameid]/index"
         options={{
-          headerShown: true,
           title: 'Add Players'
         }}
       />
@@ -18,7 +20,6 @@ export default function GameLayout() {
       <Stack.Screen
         name="[gameid]/teamBuilder"
         options={{
-          headerShown: true,
           title: 'Form Teams'
         }}
       />
@@ -26,14 +27,12 @@ export default function GameLayout() {
       <Stack.Screen
         name="[gameid]/inProgress"
         options={{
-          headerShown: true,
           title: 'Game Started'
         }}
       />
       <Stack.Screen
         name="[gameid]/winner"
         options={{
-          headerShown: true,
           title: 'Record Results'
         }}
       />
