@@ -80,8 +80,8 @@
     "@types/jest": "^29.5.12",
     "@types/react": "~18.3.12",
     "@types/react-dom": "18.3.1",
-    "@types/react-test-renderer": "^18.3.0",
-    "eslint": "^9.20.1",
+    "@types/react-test-renderer": "^18.3.1",
+    "eslint": "^9.24.0",
     "eslint-config-expo": "^8.0.1",
     "eslint-plugin-package-json": "^0.26.0",
     "eslint-plugin-react-hooks": "^5.1.0",
@@ -90,6 +90,6 @@
     "jscodeshift": "0.15.2",
     "lint-staged": "^15.4.3",
     "react-test-renderer": "18.3.1",
-    "typescript": "^5.3.3"
+    "typescript": "^5.8.3"
   }
 }

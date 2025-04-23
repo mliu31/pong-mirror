@@ -5,18 +5,12 @@ import { useEffect, useState } from 'react';
 import api from '@/api';
 import { Player } from '@/api/types';
 import { getAllPlayers } from '@/api/players';
-import { getGame } from '@/api/games';
 import { Button, ButtonText } from '@/components/ui/button';
-import { QrCode as QrCodeIcon } from 'lucide-react-native';
-import {
-  Checkbox,
-  CheckboxIndicator,
-  CheckboxLabel,
-  CheckboxIcon
-} from '@/components/ui/checkbox';
+import { useToast, Toast, ToastTitle } from '@/components/ui/toast';
 import { VStack } from '@/components/ui/vstack';
-import { CheckIcon, CloseIcon, Icon } from '@/components/ui/icon';
 import { FlatList, ScrollView, View } from 'react-native';
+import { QrCode as QrCodeIcon } from 'lucide-react-native';
+import { CloseIcon, Icon } from '@/components/ui/icon';
 import {
   Modal,
   ModalBackdrop,
@@ -33,35 +27,46 @@ export default function Route() {
   const [playerUpdates, setPlayerUpdates] = useState<
     Record<Player['_id'], boolean>
   >({});
+  const [numSelectedPlayers, setNumSelectedPlayers] = useState(0);
+  const [isUpdatingPlayers, setIsUpdatingPlayers] = useState(false);
+  const shouldDisableContinueButton =
+    numSelectedPlayers < 2 || isUpdatingPlayers;
+
+  const toast = useToast();
+  const [toastId, setToastId] = useState(0);
+  const handleToast = () => {
+    if (!toast.isActive(toastId.toString())) {
+      showNewToast();
+    }
+  };
+
+  const showNewToast = () => {
+    const newId = Math.random();
+    setToastId(newId);
+    toast.show({
+      id: newId.toString(),
+      placement: 'top',
+      duration: 3000,
+      render: ({ id }) => {
+        const uniqueToastId = 'toast-' + id;
+        return (
+          <Toast nativeID={uniqueToastId} action="error" variant="solid">
+            <ToastTitle>Max 4 players in a game</ToastTitle>
+          </Toast>
+        );
+      }
+    });
+  };
 
   useEffect(
     () => void getAllPlayers().then(({ data }) => setAllPlayers(data)),
     []
   );
 
-  useEffect(
-    () =>
-      void getGame(gameid).then(({ data }) =>
-        setPlayerUpdates((prev) => ({
-          ...data.players.reduce(
-            (acc, { player }) => ({
-              ...acc,
-              [player._id]: true
-            }),
-            {}
-          ),
-          ...prev
-        }))
-      ),
-    [gameid]
-  );
-
-  const [continueButtonDisabled, setContinueButtonDisabled] = useState(false);
-
   const handleContinueButtonPress = () => {
-    setContinueButtonDisabled(true);
+    setIsUpdatingPlayers(true);
     api.patch(`/games/${gameid}/players`, playerUpdates).then(() => {
-      setContinueButtonDisabled(false);
+      setIsUpdatingPlayers(false);
       router.push(`/game/${gameid}/teamBuilder`);
     });
   };
@@ -124,7 +129,45 @@ export default function Route() {
     );
   }
 
+  const renderItem = ({ item: player }: { item: Player }) => {
+    const playerButtonPressHandler = () => {
+      // If trying to select and already at 4 players
+      const isSelected = playerUpdates[player._id] === true; // allow for deselection
+      if (numSelectedPlayers === 4 && !isSelected) {
+        handleToast();
+        return;
+      }
+
+      // Otherwise update states
+      if (isSelected) {
+        setNumSelectedPlayers((prev) => prev - 1);
+      } else {
+        setNumSelectedPlayers((prev) => prev + 1);
+      }
+
+      setPlayerUpdates((prev) => ({
+        ...prev,
+        [player._id]: !prev[player._id]
+      }));
+    };
+
+    return (
+      <Button
+        size="md"
+        action="primary"
+        onPress={playerButtonPressHandler}
+        variant={playerUpdates[player._id] === true ? 'solid' : 'outline'}
+        className={`border-0 border-b rounded-none ${
+          playerUpdates[player._id] === true ? 'border-black' : ''
+        }`}
+      >
+        <ButtonText>{player.name}</ButtonText>
+      </Button>
+    );
+  };
+
   return (
+    // TODO: add searchbar
     <ThemedView className="flex-1 justify-center p-4 space-y-4">
       <ScrollView className="flex-1">
         <VStack space="md" className="flex-1">
@@ -132,34 +175,18 @@ export default function Route() {
             data={allPlayers}
             className="flex-1"
             keyExtractor={(player) => player._id}
-            renderItem={({ item: player }) => (
-              <Checkbox
-                value={player._id}
-                isChecked={playerUpdates[player._id]}
-                onChange={(isSelected) => {
-                  setPlayerUpdates((prev) => ({
-                    ...prev,
-                    [player._id]: isSelected
-                  }));
-                }}
-              >
-                <CheckboxIndicator>
-                  <CheckboxIcon as={CheckIcon} />
-                </CheckboxIndicator>
-                <CheckboxLabel>
-                  <ThemedText>{player.name}</ThemedText>
-                </CheckboxLabel>
-              </Checkbox>
-            )}
+            renderItem={renderItem}
           />
         </VStack>
       </ScrollView>
 
       <Button
-        disabled={continueButtonDisabled}
+        disabled={shouldDisableContinueButton}
         onPress={handleContinueButtonPress}
+        action={shouldDisableContinueButton ? 'secondary' : 'primary'}
+        className={shouldDisableContinueButton ? '' : 'bg-success-300'}
       >
-        <ButtonText>Save and continue</ButtonText>
+        <ButtonText>Continue</ButtonText>
       </Button>
     </ThemedView>
   );

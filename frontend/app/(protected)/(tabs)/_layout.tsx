@@ -1,7 +1,6 @@
 import { Tabs, useRootNavigationState, useRouter } from 'expo-router';
 import React, { useEffect } from 'react';
 import { Platform } from 'react-native';
-
 import { HapticTab } from '@/components/HapticTab';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
@@ -50,15 +49,6 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="inProgress"
-        options={{
-          title: 'inProgress',
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="paperplane.fill" color={color} />
-          )
-        }}
-      />
-      <Tabs.Screen
         name="game"
         options={{
           title: 'Game',
@@ -72,7 +62,16 @@ export default function TabLayout() {
         options={{
           title: 'Leaderboard',
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="rosette" color={color} />
+            <IconSymbol size={28} name="chart.bar.fill" color={color} />
+          )
+        }}
+      />
+      <Tabs.Screen
+        name="community"
+        options={{
+          title: 'Community',
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={28} name="person.3.fill" color={color} />
           )
         }}
       />

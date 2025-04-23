@@ -73,4 +73,22 @@ export const setPlayerTeam = async (
   }
 };
 
+export const setGameWinner = async (gameId: string, team: string) => {
+  try {
+    const game = await Game.findById(gameId);
+    if (!game) {
+      throw new Error('Game not found');
+    }
+    if (isValidTeam(team)) {
+      game.winner = team;
+    } else {
+      throw new Error('Invalid team value');
+    }
+    await game.save();
+    return game;
+  } catch (e) {
+    throw new Error('Internal server error' + e);
+  }
+};
+
 export { updateElo };

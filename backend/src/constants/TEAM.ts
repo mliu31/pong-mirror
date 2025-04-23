@@ -1,6 +1,6 @@
 const TEAM = Object.freeze({
-  RED: 'RED',
-  BLUE: 'BLUE',
+  LEFT: 'LEFT',
+  RIGHT: 'RIGHT',
   UNASSIGNED: null
 });
 

@@ -1,52 +1,77 @@
-import { StyleSheet, Button, View } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { Dimensions } from 'react-native';
-import { useRouter } from 'expo-router';
 import { ThemedText } from '@/components/ThemedText';
-
-const styles = StyleSheet.create({
-  playerViews: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    paddingBottom: Dimensions.get('window').height / 10,
-    paddingTop: Dimensions.get('window').height / 10
-  },
-
-  fixedButton: {
-    flexDirection: 'column',
-    position: 'absolute',
-    top: 0,
-    left: 0
-  }
-});
+import { router, useLocalSearchParams } from 'expo-router';
+import { Game } from '@/api/types';
+import { useEffect, useState } from 'react';
+import { getGame } from '@/api/games';
+import { Box } from '@/components/ui/box';
+import { Button, ButtonText } from '@/components/ui/button';
+import { Player } from '@/api/types';
+import { ThemedView } from '@/components/ThemedView';
+import TeamChips from '@/components/TeamChips';
+import TeamBoxes from '@/components/TeamBoxes';
+import TEAM from '@/constants/TEAM';
 
 export default function InProgress() {
-  const router = useRouter();
+  const local = useLocalSearchParams();
+  const [leftTeam, setLeftTeam] = useState<Player[]>([]);
+  const [rightTeam, setRightTeam] = useState<Player[]>([]);
+  const [teamBoxHeight, setTeamBoxHeight] = useState(0); // used to center chips vertically
+
+  // group players into left/right teams
+  useEffect(() => {
+    getGame(local.gameid as string).then((res) => {
+      const game = res.data as Game;
+      setLeftTeam(
+        game.players.filter((p) => p.team === TEAM.LEFT).map((p) => p.player)
+      );
+      setRightTeam(
+        game.players.filter((p) => p.team === TEAM.RIGHT).map((p) => p.player)
+      );
+    });
+  }, [local.gameid]);
+
   return (
-    <SafeAreaProvider>
-      <View>
-        <View style={styles.fixedButton}></View>
-        <Button title="Back" onPress={() => router.back()}></Button>
+    <ThemedView className="flex-1 relative">
+      <TeamBoxes setTeamBoxHeight={setTeamBoxHeight} />
 
-        <View
-          style={{ flexDirection: 'column', justifyContent: 'space-between' }}
-        ></View>
+      <Box className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pb-4 mb-auto z-10">
+        <ThemedText className="text-center text-typography-950 text-xl">
+          vs
+        </ThemedText>
+      </Box>
 
-        <View style={[styles.playerViews, { backgroundColor: '#D2042D' }]}>
-          <ThemedText>Ethan and Jordan</ThemedText>
-        </View>
+      {/* chips and continue button */}
+      <Box className="absolute w-full h-full top-0 left-0">
+        <TeamChips
+          leftTeam={leftTeam}
+          rightTeam={rightTeam}
+          teamBoxHeight={teamBoxHeight}
+        />
 
-        <View style={{ flexDirection: 'column', alignItems: 'center' }}>
+        <Box className="justify-center px-4 pb-4 mt-auto">
+          <ThemedText className="text-center text-typography-950 text-lg mb-2">
+            May the best team win...
+          </ThemedText>
+
           <Button
-            title="Finish Game"
-            onPress={() => router.push('./winner')}
-          ></Button>
-        </View>
-
-        <View style={[styles.playerViews, { backgroundColor: '#0000FF' }]}>
-          <ThemedText>Brian and Megan</ThemedText>
-        </View>
-      </View>
-    </SafeAreaProvider>
+            action="primary"
+            variant="solid"
+            size="md"
+            onPress={() =>
+              router.push({
+                pathname: './winner',
+                params: {
+                  leftTeam: JSON.stringify(leftTeam),
+                  rightTeam: JSON.stringify(rightTeam),
+                  teamBoxHeight: teamBoxHeight
+                }
+              })
+            }
+          >
+            <ButtonText>End Game</ButtonText>
+          </Button>
+        </Box>
+      </Box>
+    </ThemedView>
   );
 }
