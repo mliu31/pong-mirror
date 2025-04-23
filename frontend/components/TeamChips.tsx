@@ -24,7 +24,7 @@ const TeamChips = ({
 }) => {
   const { width } = Dimensions.get('screen');
 
-  // left and right team positions
+  // left and right team x coords
   const leftX = width * 0.25 - CHIP_DIAM / 2;
   const rightX = width * 0.75 - CHIP_DIAM / 2;
 
@@ -36,6 +36,7 @@ const TeamChips = ({
     const teamX = isLeft ? leftX : rightX;
     return (
       <Box>
+        {/* conditional border around winning team */}
         <Box
           className={`absolute ${showBorder ? 'border' : ''} border-gray-300 rounded-xl`}
           style={{
@@ -47,6 +48,7 @@ const TeamChips = ({
             padding: 6
           }}
         ></Box>
+        {/* list all player chips  */}
         {team.map((player, index) => (
           <PlayerChip
             key={player._id}

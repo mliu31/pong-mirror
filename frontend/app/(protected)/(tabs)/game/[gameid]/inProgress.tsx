@@ -33,6 +33,7 @@ export default function InProgress() {
   return (
     <ThemedView className="flex-1 relative">
       <TeamBoxes setTeamBoxHeight={setTeamBoxHeight} />
+
       <Box className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pb-4 mb-auto z-10">
         <ThemedText className="text-center text-typography-950 text-xl">
           vs

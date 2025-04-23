@@ -26,6 +26,7 @@ export default function WinnerScreen() {
     console.log(winner, gameid);
   };
 
+  // set winner depending on L/R screen pressed
   const handlePress = (event: { nativeEvent: { locationX: number } }) => {
     const x = event.nativeEvent.locationX;
     if (x < width / 2) {
@@ -37,11 +38,9 @@ export default function WinnerScreen() {
 
   return (
     <ThemedView className="flex-1 relative">
-      <Pressable
-        style={{ flex: 1 }}
-        onPressIn={handlePress} // press start gives you coords
-      >
+      <Pressable style={{ flex: 1 }} onPressIn={handlePress}>
         <TeamBoxes setTeamBoxHeight={setTeamBoxHeight} />
+
         <Box className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pb-4 mb-auto z-10">
           <ThemedText className="text-center text-typography-950 text-xl">
             vs
