@@ -31,10 +31,10 @@ export default function WinnerScreen() {
 
     if (x < width / 2) {
       console.log('left winner');
-      setWinner('LEFT');
+      setWinner(TEAM.LEFT);
     } else {
       console.log('right winner');
-      setWinner('RIGHT');
+      setWinner(TEAM.RIGHT);
     }
   };
 
