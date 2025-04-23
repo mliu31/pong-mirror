@@ -71,10 +71,8 @@ export default function TeamBuilder() {
 
   const createTeamHandler = async () => {
     // set teams in BE from chipAssignments
-    const updatePromises = Object.entries(chipAssignments).map(
-      ([pid, team]) => {
-        updatePlayerTeam(pid, team, local.gameid as string);
-      }
+    const updatePromises = Object.entries(chipAssignments).map(([pid, team]) =>
+      updatePlayerTeam(pid, team, local.gameid as string)
     );
     await Promise.all(updatePromises);
 
