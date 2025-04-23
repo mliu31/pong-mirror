@@ -101,33 +101,36 @@ export default function TeamBuilder() {
           {/* chip overlay */}
           <Box className="absolute w-full h-full top-0 left-0">
             {teamBoxHeight > 0 &&
-              gameData.players.map(({ player, team }, index) => (
-                <PlayerChip
-                  key={player._id}
-                  pid={player._id}
-                  playerName={player.name}
-                  position={{
-                    x:
-                      team === TEAM.LEFT
-                        ? leftX
-                        : team === TEAM.RIGHT
-                          ? rightX
-                          : width / 2 - CHIP_DIAM / 2,
-                    y:
-                      teamBoxHeight / 2 -
-                      (CHIP_HEIGHT * gameData.players.length) / 2 +
-                      CHIP_HEIGHT * index
-                  }}
-                  dragging={true}
-                  bounds={{
-                    minX: 0,
-                    maxX: width,
-                    minY: 0,
-                    maxY: teamBoxHeight
-                  }}
-                  onSnapSide={handleTeamChoice}
-                />
-              ))}
+              gameData.players.map(({ player }, index) => {
+                const team = chipAssignments[player._id];
+                return (
+                  <PlayerChip
+                    key={player._id}
+                    pid={player._id}
+                    playerName={player.name}
+                    position={{
+                      x:
+                        team === TEAM.LEFT
+                          ? leftX
+                          : team === TEAM.RIGHT
+                            ? rightX
+                            : width / 2 - CHIP_DIAM / 2,
+                      y:
+                        teamBoxHeight / 2 -
+                        (CHIP_HEIGHT * gameData.players.length) / 2 +
+                        CHIP_HEIGHT * index
+                    }}
+                    dragging={true}
+                    bounds={{
+                      minX: 0,
+                      maxX: width,
+                      minY: 0,
+                      maxY: teamBoxHeight
+                    }}
+                    onSnapSide={handleTeamChoice}
+                  />
+                );
+              })}
 
             <Box className="justify-center px-4 pb-4 mt-auto">
               <ThemedText className="text-center text-typography-950 text-lg mb-2">
