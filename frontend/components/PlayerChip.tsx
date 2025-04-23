@@ -94,11 +94,11 @@ const PlayerChip = ({
           if (translationX.value < bounds.maxX / 2 - chipWidth / 2) {
             translationX.value = withSpring(bounds.maxX * 0.25 - CHIP_DIAM / 2);
             translationY.value = withSpring(position.y);
-            onSnapSide?.(pid, 'LEFT');
+            onSnapSide?.(pid, TEAM.LEFT);
           } else {
             translationX.value = withSpring(bounds.maxX * 0.75 - CHIP_DIAM / 2);
             translationY.value = withSpring(position.y);
-            onSnapSide?.(pid, 'RIGHT');
+            onSnapSide?.(pid, TEAM.RIGHT);
           }
         })
     : Gesture.Pan(); // Return a default gesture if dragging is false
