@@ -9,6 +9,7 @@ import { Player } from '@/api/types';
 import { ThemedView } from '@/components/ThemedView';
 import TeamChips from '@/components/TeamChips';
 import TeamBoxes from '@/components/TeamBoxes';
+import { TeamValue } from '@/constants/TEAM';
 
 export default function InProgress() {
   const local = useLocalSearchParams();
@@ -21,10 +22,10 @@ export default function InProgress() {
     getGame(local.gameid as string).then((res) => {
       const game = res.data as Game;
       setLeftTeam(
-        game.players.filter((p) => p.team === 'LEFT').map((p) => p.player)
+        game.players.filter((p) => p.team === TEAM.LEFT).map((p) => p.player)
       );
       setRightTeam(
-        game.players.filter((p) => p.team === 'RIGHT').map((p) => p.player)
+        game.players.filter((p) => p.team === TEAM.RIGHT).map((p) => p.player)
       );
     });
   }, [local]);
