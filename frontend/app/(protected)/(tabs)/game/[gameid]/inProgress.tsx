@@ -28,7 +28,7 @@ export default function InProgress() {
         game.players.filter((p) => p.team === TEAM.RIGHT).map((p) => p.player)
       );
     });
-  }, [local]);
+  }, [local.gameid]);
 
   return (
     <ThemedView className="flex-1 relative">
