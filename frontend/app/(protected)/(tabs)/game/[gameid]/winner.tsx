@@ -19,7 +19,7 @@ export default function WinnerScreen() {
     rightTeam: string;
   }>();
   const [teamBoxHeight, setTeamBoxHeight] = useState(0); // used to center chips vertically
-  const { width } = Dimensions.get('screen');
+  const { width } = Dimensions.get('window');
   const [winner, setWinner] = useState<TeamValue>();
 
   const handleConfirm = () => {

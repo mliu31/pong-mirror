@@ -22,7 +22,7 @@ const TeamChips = ({
   showLeftBorder?: boolean;
   showRightBorder?: boolean;
 }) => {
-  const { width } = Dimensions.get('screen');
+  const { width } = Dimensions.get('window');
 
   // left and right team x coords
   const leftX = width * 0.25 - CHIP_DIAM / 2;
