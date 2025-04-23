@@ -9,7 +9,7 @@ import { Player } from '@/api/types';
 import { ThemedView } from '@/components/ThemedView';
 import TeamChips from '@/components/TeamChips';
 import TeamBoxes from '@/components/TeamBoxes';
-import { TeamValue } from '@/constants/TEAM';
+import TEAM from '@/constants/TEAM';
 
 export default function InProgress() {
   const local = useLocalSearchParams();

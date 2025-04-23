@@ -10,7 +10,7 @@ import TeamBoxes from '@/components/TeamBoxes';
 import { useState } from 'react';
 import { Player } from '@/api/types';
 import { Dimensions, Pressable } from 'react-native';
-import { TeamValue } from '@/constants/TEAM';
+import TEAM, { TeamValue } from '@/constants/TEAM';
 
 export default function WinnerScreen() {
   const { gameid, leftTeam, rightTeam } = useLocalSearchParams<{

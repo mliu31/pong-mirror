@@ -1,6 +1,6 @@
 import { Box } from '@/components/ui/box';
 import { Text } from '@/components/ui/text';
-import { TeamValue } from '@/constants/TEAM';
+import TEAM, { TeamValue } from '@/constants/TEAM';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import Animated, {
   useSharedValue,

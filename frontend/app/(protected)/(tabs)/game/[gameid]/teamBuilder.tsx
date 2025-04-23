@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { getGame } from '@/api/games';
 import { Game } from '@/api/types';
 import { Dimensions } from 'react-native';
-import { TeamValue } from '@/constants/TEAM';
+import TEAM, { TeamValue } from '@/constants/TEAM';
 import { updatePlayerTeam } from '@/api/games';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
