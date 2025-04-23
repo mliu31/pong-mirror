@@ -1,6 +1,5 @@
 import { ThemedText } from '@/components/ThemedText';
-import { useLocalSearchParams } from 'expo-router';
-// import { BackButton } from '../../../../../components/BackButton';
+import { useLocalSearchParams, router } from 'expo-router';
 // import ClickWinner from './clickWinner';
 import { Box } from '@/components/ui/box';
 import { Button, ButtonText } from '@/components/ui/button';
@@ -11,6 +10,7 @@ import { useState } from 'react';
 import { Player } from '@/api/types';
 import { Dimensions, Pressable } from 'react-native';
 import TEAM, { TeamValue } from '@/constants/TEAM';
+import { setGameWinner } from '@/api/games';
 
 export default function WinnerScreen() {
   const { gameid, leftTeam, rightTeam } = useLocalSearchParams<{
@@ -23,7 +23,8 @@ export default function WinnerScreen() {
   const [winner, setWinner] = useState<TeamValue>();
 
   const handleConfirm = () => {
-    console.log(winner, gameid);
+    if (winner) setGameWinner(gameid, winner);
+    router.replace('/game');
   };
 
   // set winner depending on L/R screen pressed
@@ -66,7 +67,13 @@ export default function WinnerScreen() {
               action="primary"
               variant="solid"
               size="md"
+              disabled={!winner}
               onPress={() => handleConfirm()}
+              className={
+                winner
+                  ? 'bg-primary-500 shadow-md'
+                  : 'bg-secondary-800 shadow-md'
+              }
             >
               <ButtonText>Confirm</ButtonText>
             </Button>
@@ -74,19 +81,5 @@ export default function WinnerScreen() {
         </Box>
       </Pressable>
     </ThemedView>
-
-    // <SafeAreaProvider>
-    //   <View>
-    //     <BackButton></BackButton>
-    //     <View
-    //       style={{ flexDirection: 'column', justifyContent: 'space-between' }}
-    //     ></View>
-    //     <ClickWinner teamColor="RED" gameid={gameid} />
-    //     <View style={{ flexDirection: 'column', alignItems: 'center' }}>
-    //       <ThemedText>Select Winner</ThemedText>
-    //     </View>
-    //     <ClickWinner teamColor="BLUE" gameid={gameid} />
-    //   </View>
-    // </SafeAreaProvider>
   );
 }
