@@ -57,83 +57,85 @@ const PlayerChip = ({
     }
     return names[0][0];
   };
+  const initials = getInitials(playerName);
 
   // detect pan gesture (drag/drop)
-  const panGesture = dragging
-    ? Gesture.Pan()
-        .onStart(() => {
-          // set previous location
-          prevTranslationX.value = translationX.value;
-          prevTranslationY.value = translationY.value;
-          setIsDragging(true);
-        })
-        .onUpdate((event) => {
-          // limit movement to screen
+  const panGesture = Gesture.Pan()
+    .onStart(() => {
+      // set previous location
+      prevTranslationX.value = translationX.value;
+      prevTranslationY.value = translationY.value;
+      setIsDragging(true);
+    })
+    .onUpdate((event) => {
+      // limit movement to screen
 
-          // screen bounds
-          const minTranslate = PADDING;
-          const maxTranslateX = bounds.maxX - chipWidth - PADDING;
-          const maxTranslateY = bounds.maxY - CHIP_DIAM - 108; // padding above button
+      // screen bounds
+      const minTranslate = PADDING;
+      const maxTranslateX = bounds.maxX - chipWidth - PADDING;
+      const maxTranslateY = bounds.maxY - CHIP_DIAM - 108; // padding above button
 
-          // enforce screen bounds
-          translationX.value = clamp(
-            prevTranslationX.value + event.translationX,
-            minTranslate,
-            maxTranslateX
-          );
-          translationY.value = clamp(
-            prevTranslationY.value + event.translationY,
-            minTranslate,
-            maxTranslateY
-          );
-        })
-        .onEnd((event) => {
-          // Determine L/R side, animate to snap
+      // enforce screen bounds
+      translationX.value = clamp(
+        prevTranslationX.value + event.translationX,
+        minTranslate,
+        maxTranslateX
+      );
+      translationY.value = clamp(
+        prevTranslationY.value + event.translationY,
+        minTranslate,
+        maxTranslateY
+      );
+    })
+    .onEnd((event) => {
+      // Determine L/R side, animate to snap
 
-          setIsDragging(false);
-          if (translationX.value < bounds.maxX / 2 - chipWidth / 2) {
-            translationX.value = withSpring(bounds.maxX * 0.25 - CHIP_DIAM / 2);
-            translationY.value = withSpring(position.y);
-            onSnapSide?.(pid, TEAM.LEFT);
-          } else {
-            translationX.value = withSpring(bounds.maxX * 0.75 - CHIP_DIAM / 2);
-            translationY.value = withSpring(position.y);
-            onSnapSide?.(pid, TEAM.RIGHT);
-          }
-        })
-    : Gesture.Pan(); // Return a default gesture if dragging is false
+      setIsDragging(false);
+      if (translationX.value < bounds.maxX / 2 - chipWidth / 2) {
+        translationX.value = withSpring(bounds.maxX * 0.25 - CHIP_DIAM / 2);
+        translationY.value = withSpring(position.y);
+        onSnapSide?.(pid, TEAM.LEFT);
+      } else {
+        translationX.value = withSpring(bounds.maxX * 0.75 - CHIP_DIAM / 2);
+        translationY.value = withSpring(position.y);
+        onSnapSide?.(pid, TEAM.RIGHT);
+      }
+    });
 
-  const initials = getInitials(playerName);
-  return (
-    <GestureDetector gesture={panGesture}>
-      <Animated.View
-        style={[
-          animatedStyles,
-          { position: 'absolute', zIndex: isDragging ? 10 : 1 }
-        ]}
+  const animatedChip = (
+    <Animated.View
+      style={[
+        animatedStyles,
+        { position: 'absolute', zIndex: isDragging ? 10 : 1 }
+      ]}
+    >
+      {/* need width prop from View onLayout for x bounds; Box doesn't have this handler */}
+      <View
+        onLayout={(event) => {
+          const { width } = event.nativeEvent.layout;
+          setChipWidth(width);
+        }}
       >
-        {/* need width prop from View onLayout for x bounds; Box doesn't have this handler */}
-        <View
-          onLayout={(event) => {
-            const { width } = event.nativeEvent.layout;
-            setChipWidth(width);
-          }}
-        >
-          <Box className="items-center relative">
-            <Box className="w-16 h-16 rounded-full bg-primary-500  items-center justify-center">
-              <Text className="text-secondary-0 font-bold text-2xl">
-                {initials}
-              </Text>
-            </Box>
-            {isDragging && (
-              <Box>
-                <Text className="text-center">{playerName}</Text>
-              </Box>
-            )}
+        <Box className="items-center relative">
+          <Box className="w-16 h-16 rounded-full bg-primary-500  items-center justify-center">
+            <Text className="text-secondary-0 font-bold text-2xl">
+              {initials}
+            </Text>
           </Box>
-        </View>
-      </Animated.View>
-    </GestureDetector>
+          {isDragging && (
+            <Box>
+              <Text className="text-center">{playerName}</Text>
+            </Box>
+          )}
+        </Box>
+      </View>
+    </Animated.View>
+  );
+
+  return dragging ? (
+    <GestureDetector gesture={panGesture}>{animatedChip}</GestureDetector>
+  ) : (
+    animatedChip
   );
 };
 
