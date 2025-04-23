@@ -73,7 +73,7 @@ const PlayerChip = ({
       // screen bounds
       const minTranslate = PADDING;
       const maxTranslateX = bounds.maxX - chipWidth - PADDING;
-      const maxTranslateY = bounds.maxY - CHIP_DIAM - 108; // padding above button
+      const maxTranslateY = bounds.maxY - CHIP_DIAM - 108; // includes the height of padding and the "continue" button
 
       // enforce screen bounds
       translationX.value = clamp(
