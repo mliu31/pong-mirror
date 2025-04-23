@@ -41,7 +41,8 @@ const TeamChips = ({
           className={`absolute ${showBorder ? 'border' : ''} border-gray-300 rounded-xl`}
           style={{
             left: teamX - PADDING, // shift box so it wraps the chip's center
-            top: teamBoxHeight / 2 - (CHIP_HEIGHT * team.length) / 2 - PADDING, // add padding above
+            top:
+              (teamBoxHeight - (CHIP_HEIGHT * team.length + PADDING * 2)) / 2, // add padding above
             width: CHIP_DIAM + PADDING * 2,
             height:
               CHIP_HEIGHT * team.length + PADDING * 2 - CHIP_HEIGHT_OFFSET,
