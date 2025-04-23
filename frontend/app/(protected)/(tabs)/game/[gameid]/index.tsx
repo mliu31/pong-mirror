@@ -28,7 +28,9 @@ export default function Route() {
     Record<Player['_id'], boolean>
   >({});
   const [numSelectedPlayers, setNumSelectedPlayers] = useState(0);
-  const [continueButtonDisabled, setContinueButtonDisabled] = useState(false);
+  const [isUpdatingPlayers, setIsUpdatingPlayers] = useState(false);
+  const shouldDisableContinueButton =
+    numSelectedPlayers < 2 || isUpdatingPlayers;
 
   const toast = useToast();
   const [toastId, setToastId] = useState(0);
@@ -61,18 +63,10 @@ export default function Route() {
     []
   );
 
-  useEffect(() => {
-    if (numSelectedPlayers < 2) {
-      setContinueButtonDisabled(true);
-    } else {
-      setContinueButtonDisabled(false);
-    }
-  }, [numSelectedPlayers]);
-
   const handleContinueButtonPress = () => {
-    setContinueButtonDisabled(true);
+    setIsUpdatingPlayers(true);
     api.patch(`/games/${gameid}/players`, playerUpdates).then(() => {
-      setContinueButtonDisabled(false);
+      setIsUpdatingPlayers(false);
       router.push(`/game/${gameid}/teamBuilder`);
     });
   };
@@ -187,10 +181,10 @@ export default function Route() {
       </ScrollView>
 
       <Button
-        disabled={continueButtonDisabled}
+        disabled={shouldDisableContinueButton}
         onPress={handleContinueButtonPress}
-        action={continueButtonDisabled === false ? 'primary' : 'secondary'}
-        className={continueButtonDisabled === false ? 'bg-success-300' : ''}
+        action={shouldDisableContinueButton ? 'secondary' : 'primary'}
+        className={shouldDisableContinueButton ? '' : 'bg-success-300'}
       >
         <ButtonText>Continue</ButtonText>
       </Button>
