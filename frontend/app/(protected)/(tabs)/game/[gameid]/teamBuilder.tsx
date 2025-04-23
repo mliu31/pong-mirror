@@ -48,9 +48,9 @@ export default function TeamBuilder() {
     let left = 0;
     let right = 0;
     Object.values(chipAssignments).forEach((team) => {
-      if (team === 'LEFT') {
+      if (team === TEAM.LEFT) {
         left++;
-      } else if (team === 'RIGHT') {
+      } else if (team === TEAM.RIGHT) {
         right++;
       }
     });
@@ -108,9 +108,9 @@ export default function TeamBuilder() {
                   playerName={player.name}
                   position={{
                     x:
-                      team === 'LEFT'
+                      team === TEAM.LEFT
                         ? leftX
-                        : team === 'RIGHT'
+                        : team === TEAM.RIGHT
                           ? rightX
                           : width / 2 - CHIP_DIAM / 2,
                     y:
