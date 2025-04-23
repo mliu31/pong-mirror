@@ -38,7 +38,7 @@ const TeamChips = ({
       <Box>
         {/* conditional border around winning team */}
         <Box
-          className={`absolute ${showBorder ? 'border' : ''} border-gray-300 rounded-xl`}
+          className={`absolute ${showBorder ? 'border-4' : ''} border-gray-300 rounded-xl`}
           style={{
             left: teamX - PADDING, // shift box so it wraps the chip's center
             top:
