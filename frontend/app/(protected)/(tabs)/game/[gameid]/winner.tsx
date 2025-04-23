@@ -28,12 +28,9 @@ export default function WinnerScreen() {
 
   const handlePress = (event: { nativeEvent: { locationX: number } }) => {
     const x = event.nativeEvent.locationX;
-
     if (x < width / 2) {
-      console.log('left winner');
       setWinner(TEAM.LEFT);
     } else {
-      console.log('right winner');
       setWinner(TEAM.RIGHT);
     }
   };
@@ -57,6 +54,8 @@ export default function WinnerScreen() {
             leftTeam={JSON.parse(leftTeam) as Player[]}
             rightTeam={JSON.parse(rightTeam) as Player[]}
             teamBoxHeight={teamBoxHeight}
+            showLeftBorder={winner === TEAM.LEFT}
+            showRightBorder={winner === TEAM.RIGHT}
           />
 
           <Box className="justify-center px-4 pb-4 mt-auto">
