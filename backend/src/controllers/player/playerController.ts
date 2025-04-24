@@ -1,4 +1,5 @@
 import Player from '../../models/Player';
+import { updateRanks } from '../leaderboard/rankingCurrent';
 
 // New player
 export const newPlayer = async (name: string, email: string) => {
@@ -7,24 +8,16 @@ export const newPlayer = async (name: string, email: string) => {
     throw new Error('Player already exists');
   }
 
-  // TODO: switch to using Mongo ids
-  const lastPlayer = await Player.findOne().sort({ userID: -1 });
-  let newPlayerID = 1;
-  if (lastPlayer) {
-    newPlayerID = lastPlayer.userID + 1;
-  }
-
   // TODO: work around for the ranking issue
 
   const newPlayer = new Player({
-    userID: newPlayerID,
+    // userID: newPlayerID,
     name: name,
     email: email,
     friends: [],
-    elo: 1000, // TODO: default? read from player model
-    rank: 0
+    elo: 1000 // TODO: default? read from player model
   });
-
+  updateRanks();
   await newPlayer.save();
   return newPlayer;
 };
