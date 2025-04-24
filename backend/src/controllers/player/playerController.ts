@@ -8,10 +8,7 @@ export const newPlayer = async (name: string, email: string) => {
     throw new Error('Player already exists');
   }
 
-  // TODO: work around for the ranking issue
-
   const newPlayer = new Player({
-    // userID: newPlayerID,
     name: name,
     email: email,
     friends: [],

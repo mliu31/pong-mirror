@@ -11,8 +11,6 @@ import { login } from '../redux/slices/authSlice';
 import { styles } from '../components/auth/authstyles';
 import { useGoogleAuth } from '@/hooks/useGoogleAuth';
 
-// TODO: Login with Google
-
 export default function Login() {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();

@@ -35,6 +35,15 @@ export const googleSignup = createAsyncThunk(
     const response = await api.post('/auth/googleSignup', {
       accessToken
     });
+    // check domain for dartmouth.edu
+    const data = response.data;
+    const email = data.email;
+    const domain = email?.split('@')[1];
+
+    if (domain !== 'dartmouth.edu') {
+      throw new Error('Unauthorized domain');
+    }
+
     return response.data;
   }
 );
