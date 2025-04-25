@@ -7,20 +7,25 @@ const router = express.Router();
 router.post('/signup', async (req, res) => {
   try {
     const { name, email } = req.body;
+    const lowercasedEmail = email.toLowerCase();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (typeof name !== 'string' || typeof email !== 'string') {
+    if (
+      typeof name !== 'string' ||
+      typeof lowercasedEmail !== 'string' ||
+      !emailRegex.test(lowercasedEmail)
+    ) {
       return void res
         .status(400)
-        .json({ message: 'Invalid request, expected email and name' });
+        .json({ message: 'Please enter a valid username and email.' });
     }
 
-    const player = await newPlayer(name, email);
+    const player = await newPlayer(name, lowercasedEmail);
     req.session.player = player;
 
     res.json({
-      message: 'Sign up successful',
+      message: 'Sign up successful!',
       player: {
-        userID: player.userID,
         name: player.name,
         email: player.email
       }
@@ -67,16 +72,23 @@ router.post('/googleSignup', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const { email } = req.body;
+    const lowercasedEmail = email.toLowerCase();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (typeof email !== 'string') {
+    if (
+      typeof lowercasedEmail !== 'string' ||
+      !emailRegex.test(lowercasedEmail)
+    ) {
       return void res
         .status(400)
-        .json({ message: 'Invalid request, expected email' });
+        .json({ message: 'Please enter a valid email address.' });
     }
 
-    const player = await Player.findOne({ email });
+    const player = await Player.findOne({ email: lowercasedEmail });
     if (!player) {
-      return void res.status(400).json({ message: 'Invalid credentials' });
+      return void res.status(400).json({
+        message: "Invalid credentials. Don't have an account? Sign up below!"
+      });
     }
 
     Player.findOne();
@@ -84,7 +96,6 @@ router.post('/login', async (req, res) => {
     res.json({
       message: 'Login successful',
       player: {
-        userID: player.userID,
         name: player.name,
         email: player.email
       }

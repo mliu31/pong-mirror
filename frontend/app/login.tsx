@@ -18,19 +18,29 @@ export default function Login() {
   const { promptAsync, request } = useGoogleAuth();
 
   const [email, setEmail] = useState('');
+  const [error, setError] = useState('');
 
   const handleLogin = async () => {
     if (email) {
-      console.log('Attempting to login with:', { email });
+      const lowercasedEmail = email.toLowerCase();
+      console.log('Attempting to login with:', { email: lowercasedEmail });
+
       try {
-        await dispatch(login({ email })).unwrap(); // ignore error
-        console.log('Login successful');
+        await dispatch(login({ email: lowercasedEmail })).unwrap();
         router.push('/profile');
-      } catch (err) {
-        console.error('Login failed:', err);
+      } catch (err: unknown) {
+        if (typeof err === 'string') {
+          setError(err);
+        } else if (
+          typeof err === 'object' &&
+          err !== null &&
+          'message' in err
+        ) {
+          setError((err as { message: string }).message);
+        } else {
+          setError('An unknown error occurred.');
+        }
       }
-    } else {
-      console.error('Email is required');
     }
   };
 
@@ -49,6 +59,8 @@ export default function Login() {
           placeholder="Email"
         />
       </View>
+
+      {error && <Text style={styles.error}>{error}</Text>}
 
       {/* log in button */}
       <View style={styles.buttonWrapper}>

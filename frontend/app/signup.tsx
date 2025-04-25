@@ -17,22 +17,29 @@ export default function SignUp() {
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [error, setError] = useState('');
 
   const { promptAsync, request } = useGoogleAuth();
 
   const handleSignUp = async () => {
     if (name && email) {
-      console.log('Attempting to sign up with:', { name, email });
+      const lowercasedEmail = email.toLowerCase();
       try {
-        await dispatch(signup({ name, email })).unwrap();
-        console.log('Sign up successful');
-
+        await dispatch(signup({ name, email: lowercasedEmail })).unwrap();
         router.push('/profile');
-      } catch (err) {
-        console.error('Sign up failed:', err);
+      } catch (err: unknown) {
+        if (typeof err === 'string') {
+          setError(err);
+        } else if (
+          typeof err === 'object' &&
+          err !== null &&
+          'message' in err
+        ) {
+          setError((err as { message: string }).message);
+        } else {
+          setError('An unknown error occurred.');
+        }
       }
-    } else {
-      console.error('Name and email are required');
     }
   };
 
@@ -64,6 +71,8 @@ export default function SignUp() {
           placeholder="Email"
         />
       </View>
+
+      {error && <Text style={styles.error}>{error}</Text>}
 
       {/* sign up button */}
       <View style={styles.buttonWrapper}>

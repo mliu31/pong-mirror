@@ -36,5 +36,10 @@ export const styles = StyleSheet.create({
   buttonText: {
     fontSize: 16,
     marginBottom: 5
+  },
+  error: {
+    color: 'red',
+    marginTop: 10,
+    fontSize: 14
   }
 });
