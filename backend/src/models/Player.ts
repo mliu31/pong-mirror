@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 export interface IPlayer extends Document {
+  _id: mongoose.Types.ObjectId;
   name: string;
   email: string;
   friends: string[];
