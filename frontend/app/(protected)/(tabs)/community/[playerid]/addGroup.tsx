@@ -16,7 +16,7 @@ import {
 //   }
 // });
 
-export function AddGroupPage() {
+export default function AddGroupPage() {
   return (
     <SafeAreaView>
       <View></View>
