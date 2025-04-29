@@ -1,4 +1,5 @@
 import Player from '../../models/Player';
+import { updateRanks } from '../leaderboard/rankingCurrent';
 
 // New player
 export const newPlayer = async (name: string, email: string) => {
@@ -14,17 +15,14 @@ export const newPlayer = async (name: string, email: string) => {
     newPlayerID = lastPlayer.userID + 1;
   }
 
-  // TODO: work around for the ranking issue
-
   const newPlayer = new Player({
-    userID: newPlayerID,
+    userID: newPlayerID, // TODO: remove
     name: name,
     email: email,
     friends: [],
-    elo: 1000, // TODO: default? read from player model
-    rank: 0
+    elo: 1000 // TODO: default? read from player model
   });
-
+  updateRanks();
   await newPlayer.save();
   return newPlayer;
 };
