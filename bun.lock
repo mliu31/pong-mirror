@@ -5,6 +5,7 @@
       "name": "carpooling",
       "dependencies": {
         "@expo/html-elements": "^0.4.3",
+        "@gluestack-ui/spinner": "^0.1.15",
         "connect-mongo": "^5.1.0",
         "react-native-gesture-handler": "~2.20.2",
         "react-native-reanimated": "~3.16.7",
@@ -498,6 +499,8 @@
     "@gluestack-ui/provider": ["@gluestack-ui/provider@0.1.19", "", { "dependencies": { "@react-native-aria/interactions": "0.2.16", "tsconfig": "7", "typescript": "^5.6.3" }, "peerDependencies": { "react": ">=16", "react-dom": ">=16" } }, "sha512-+MbL2VpGK7kkSNccgNeMay/nslDA4BzgjHFWwnys+dSvyCMgt7yfSxrfWziTvAyaQ4cRkq/lXCfJK0B1nuCZ4A=="],
 
     "@gluestack-ui/react-native-aria": ["@gluestack-ui/react-native-aria@0.1.7", "", { "dependencies": { "@react-native-aria/focus": "^0.2.9" }, "peerDependencies": { "react": ">=16", "react-dom": ">=16" } }, "sha512-mdK/M6RQafAYiHyJnDNjaE9+ttr9eg48f2InmO3rvcrjsdaLcu/vwHlwrO9N3xYcb3wb9z2+YZ4OIgtymFNTOw=="],
+
+    "@gluestack-ui/spinner": ["@gluestack-ui/spinner@0.1.15", "", { "peerDependencies": { "react": ">=16", "react-dom": ">=16" } }, "sha512-jkXOGhna05HM2tcPKbA+t+vqcVRgRowwC6ES0A9kY5fcuURH1V41UFx/YWyHdSsHwmWlIoCCdWycF78UbNVdPg=="],
 
     "@gluestack-ui/toast": ["@gluestack-ui/toast@1.0.9", "", { "dependencies": { "@gluestack-ui/hooks": "0.1.13", "@gluestack-ui/overlay": "^0.1.20", "@gluestack-ui/transitions": "^0.1.11", "@gluestack-ui/utils": "^0.1.14", "@react-native-aria/focus": "^0.2.9" }, "peerDependencies": { "react": ">=16", "react-dom": ">=16" } }, "sha512-aMlPczeoH/PZTMnhV29fqqW1Xc/9QmYEsR0bU9BfLyAGM9UMjW3vGe4yZSgxX7xjQ9C7+KO5WnTH0FmPoAbVtg=="],
 

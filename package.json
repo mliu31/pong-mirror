@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@expo/html-elements": "^0.4.3",
+    "@gluestack-ui/spinner": "^0.1.15",
     "connect-mongo": "^5.1.0",
     "react-native-gesture-handler": "~2.20.2",
     "react-native-reanimated": "~3.16.7"
