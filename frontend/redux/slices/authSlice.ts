@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import api from '../../api';
 import { Player } from '@/api/types';
+import { AxiosError } from 'axios';
 
 type NewPlayer = Pick<Player, 'name' | 'email'>;
 type LoginPlayer = Pick<Player, 'email'>;
@@ -22,9 +23,19 @@ const initialState: AuthApiState = {
 // signup
 export const signup = createAsyncThunk(
   'auth/signup',
-  async (data: NewPlayer) => {
-    const response = await api.post('/auth/signup', data);
-    return response.data;
+  async (data: NewPlayer, { rejectWithValue }) => {
+    try {
+      const response = await api.post('/auth/signup', data);
+      return response.data;
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+
+      if (err.response && err.response.data && err.response.data.message) {
+        return rejectWithValue(err.response.data.message);
+      }
+
+      return rejectWithValue('Sign up failed. Please try again.');
+    }
   }
 );
 
@@ -35,6 +46,15 @@ export const googleSignup = createAsyncThunk(
     const response = await api.post('/auth/googleSignup', {
       accessToken
     });
+    // check domain for dartmouth.edu
+    const data = response.data;
+    const email = data.email;
+    const domain = email?.split('@')[1];
+
+    if (domain !== 'dartmouth.edu') {
+      throw new Error('Unauthorized domain');
+    }
+
     return response.data;
   }
 );
@@ -42,9 +62,19 @@ export const googleSignup = createAsyncThunk(
 // login
 export const login = createAsyncThunk(
   'auth/login',
-  async (data: LoginPlayer) => {
-    const response = await api.post('/auth/login', data);
-    return response.data;
+  async (data: LoginPlayer, { rejectWithValue }) => {
+    try {
+      const response = await api.post('/auth/login', data);
+      return response.data;
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+
+      if (err.response && err.response.data && err.response.data.message) {
+        return rejectWithValue(err.response.data.message);
+      }
+
+      return rejectWithValue('Login failed. Please try again.');
+    }
   }
 );
 

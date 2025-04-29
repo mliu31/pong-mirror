@@ -1,7 +1,7 @@
 import mongoose, { Document, ObjectId } from 'mongoose';
 
 export interface IPlayer extends Document<ObjectId> {
-  userID: number;
+  userID: number; // TODO: remove
   name: string;
   email: string;
   friends: string[];
@@ -14,6 +14,7 @@ export interface IPlayer extends Document<ObjectId> {
 }
 
 const playerSchema = new mongoose.Schema<IPlayer>({
+  // TODO: remove userID
   userID: {
     type: Number,
     required: true,

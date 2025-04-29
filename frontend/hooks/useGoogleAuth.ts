@@ -27,9 +27,6 @@ export const useGoogleAuth = () => {
     if (response?.type === 'success') {
       const { authentication } = response;
 
-      console.log('Google Auth Response:', response); // check
-      console.log('Access Token:', authentication?.accessToken); // check
-
       if (authentication?.accessToken) {
         dispatch(googleSignup(authentication.accessToken))
           .unwrap()
