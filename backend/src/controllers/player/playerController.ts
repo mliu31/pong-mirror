@@ -8,7 +8,15 @@ export const newPlayer = async (name: string, email: string) => {
     throw new Error('Player already exists');
   }
 
+  // TODO: switch to using Mongo ids
+  const lastPlayer = await Player.findOne().sort({ userID: -1 });
+  let newPlayerID = 1;
+  if (lastPlayer) {
+    newPlayerID = lastPlayer.userID + 1;
+  }
+
   const newPlayer = new Player({
+    userID: newPlayerID, // TODO: remove
     name: name,
     email: email,
     friends: [],

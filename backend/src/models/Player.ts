@@ -14,6 +14,13 @@ export interface IPlayer extends Document {
 }
 
 const playerSchema = new mongoose.Schema<IPlayer>({
+  // TODO: remove userID
+  userID: {
+    type: Number,
+    required: true,
+    default: 0,
+    unique: true
+  },
   name: {
     type: String,
     required: true
