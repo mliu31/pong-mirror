@@ -20,6 +20,7 @@ import {
   ModalHeader
 } from '@/components/ui/modal';
 import QRCode from 'react-native-qrcode-svg';
+import { addPlayersToGame } from '@/api/games';
 
 export default function Route() {
   const { gameid } = useLocalSearchParams<{ gameid: string }>();
@@ -65,10 +66,13 @@ export default function Route() {
 
   const handleContinueButtonPress = () => {
     setIsUpdatingPlayers(true);
-    api.patch(`/games/${gameid}/players`, playerUpdates).then(() => {
-      setIsUpdatingPlayers(false);
-      router.push(`/game/${gameid}/teamBuilder`);
-    });
+    const selectedPlayerIds = Object.keys(playerUpdates).filter(
+      (playerId) => playerUpdates[playerId] // convert playerUpdates to array of pids
+    );
+    console.log(selectedPlayerIds);
+    addPlayersToGame(gameid, selectedPlayerIds);
+    setIsUpdatingPlayers(false);
+    router.push(`/game/${gameid}/teamBuilder`);
   };
 
   const navigation = useNavigation();

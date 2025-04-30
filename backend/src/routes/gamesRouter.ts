@@ -1,11 +1,10 @@
 import {
+  addPlayersToGame,
   createGame,
   getGame,
   joinGame,
-  PlayerUpdateRecord,
   setGameWinner,
-  setPlayerTeam,
-  updatePlayersInGame
+  setPlayerTeam
 } from '../controllers/game/gameController';
 import express from 'express';
 import { requireLoggedInHandler } from './authRouter';
@@ -37,22 +36,10 @@ router.get('/:gameid', async (req, res) => {
   return void res.json(game);
 });
 
-const isPlayerUpdateRecord = (obj: unknown): obj is PlayerUpdateRecord =>
-  typeof obj === 'object' &&
-  obj !== null &&
-  Object.values(obj).every((v) => typeof v === 'boolean');
-
 router.patch('/:id/players', async (req, res) => {
   const { id: gameId } = req.params;
-
-  const playerUpdates = req.body;
-  if (!isPlayerUpdateRecord(playerUpdates)) {
-    return void res
-      .status(400)
-      .send('Invalid request body, expected Record<string, boolean>');
-  }
-
-  return void res.json(await updatePlayersInGame(gameId, playerUpdates));
+  const pids = req.body;
+  return void res.json(await addPlayersToGame(gameId, pids));
 });
 
 router.post('/:gameid/join', async (req, res) => {

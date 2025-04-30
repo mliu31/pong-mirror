@@ -13,32 +13,15 @@ export const createGame = (/*loggedInPlayer: IPlayer*/) =>
 export const getGame = async (gameId: string) =>
   Game.findById(gameId).populate('players.player');
 
-export type PlayerUpdateRecord = Record<string, boolean>;
-
-// TODO: do we want to add validation that no more than 4 players are in a game?
-export const updatePlayersInGame = async (
-  gameId: string,
-  playerUpdates: PlayerUpdateRecord
-) => {
+export const addPlayersToGame = async (gameId: string, pids: string[]) => {
   const game = await Game.findById(gameId);
   if (game === null) throw new Error('Game not found');
 
-  for (const [playerId, isPlaying] of Object.entries(playerUpdates)) {
-    const matchedPlayerIndex = game.players.findIndex(
-      (playerEntry) => playerEntry.player._id.toString() === playerId
-    );
-    if (matchedPlayerIndex === -1) {
-      if (isPlaying) {
-        // player is not in the game, but they should be.
-        const player = await Player.findById(playerId);
-        if (player === null)
-          throw new Error(`Could not find a player with id ${playerId}`);
-        game.players.push({ player, team: null });
-      }
-    } else if (!isPlaying) {
-      // player is in the game, but they should not be.
-      game.players.splice(matchedPlayerIndex, 1);
-    }
+  for (const pid of pids) {
+    const player = await Player.findById(pid);
+    if (player === null)
+      throw new Error(`Could not find a player with id ${pid}`);
+    game.players.push({ player, team: null });
   }
   await game.save();
   return game.players;
@@ -93,6 +76,4 @@ export const setGameWinner = async (gameId: string, team: string) => {
 };
 
 export const joinGame = async (gameId: string, player: IPlayer) =>
-  updatePlayersInGame(gameId, {
-    [player['_id'].toString()]: true
-  });
+  addPlayersToGame(gameId, [player._id.toString()]);
