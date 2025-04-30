@@ -4,7 +4,7 @@ import Team from '../../models/Team';
 import { calculateElo, createTeam } from '../teams/teamController';
 
 // create tournament
-export const createTournamnet = (tournamentName: string) => {
+export const createTournament = (tournamentName: string) => {
   const tournament = Tournament.create({
     name: tournamentName,
     teams: []
@@ -79,12 +79,8 @@ export const reseedTeams = async (tournamendId: string) => {
   return tournament;
 };
 
-// add player to Team
-export const addPlayer = async (
-  tournamentId: string,
-  teamId: string,
-  playerId: string
-) => {
+// remove tean
+export const removeTeam = async (tournamentId: string, teamId: string) => {
   const tournament = await Tournament.findById(tournamentId);
 
   if (!tournament) throw new Error('404 Tournament not found');
@@ -93,28 +89,15 @@ export const addPlayer = async (
 
   if (!team) throw new Error('404 Team not found');
 
-  const player = await Player.findById(playerId);
+  const teamIndex = tournament.teams.findIndex(
+    (id) => id.toString() === teamId
+  );
 
-  if (!player) throw new Error('404 Player not found');
+  tournament.teams.splice(teamIndex, 1);
 
-  if (team.players.length > 1) {
-    throw new Error('Already two players in the team');
-  }
-
-  team.players.push(playerId);
-
-  team.save();
-
-  reseedTeams(tournamentId);
-
-  return team;
+  tournament.save();
 };
-
-// remove player
-export const removePlayer = async (tourn)
 
 // start tournament
 
 // end tournament
-
-// get a tournament by id
