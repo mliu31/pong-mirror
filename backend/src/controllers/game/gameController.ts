@@ -1,5 +1,6 @@
 import { isValidTeam } from '../../constants/TEAM';
 import Game from '../../models/Game';
+import Invite from '../../models/Invite';
 import Player, { IPlayer /*, { IPlayer } */ } from '../../models/Player';
 
 export const createGame = (/*loggedInPlayer: IPlayer*/) =>
@@ -12,6 +13,30 @@ export const createGame = (/*loggedInPlayer: IPlayer*/) =>
 
 export const getGame = async (gameId: string) =>
   Game.findById(gameId).populate('players.player');
+
+export const invitePlayers = async (gameid: string, pids: string[]) => {
+  const game = await Game.findById(gameid);
+  if (!game) {
+    throw new Error('Game not found');
+  }
+
+  await Invite.deleteMany({ gameId: gameid }); // clear previous invites for game
+
+  // bulk-create new pending invites
+  const docs = [];
+  for (const pid of pids) {
+    const player = await Player.findById(pid);
+    if (!player) {
+      throw new Error(`Invalid player ID: ${pid}`);
+    }
+    docs.push({
+      gameId: gameid,
+      playerId: pid,
+      status: 'pending'
+    });
+  }
+  await Invite.insertMany(docs);
+};
 
 export const addPlayersToGame = async (gameId: string, pids: string[]) => {
   const game = await Game.findById(gameId);

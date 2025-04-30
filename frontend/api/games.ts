@@ -7,6 +7,9 @@ export const createGame = async () => await api.post('/games');
 export const getGame = async (gameid: string) =>
   await api.get<Game>(`/games/${gameid}`);
 
+export const invitePlayersToGame = async (gameid: string, pids: string[]) =>
+  api.put(`/games/${gameid}/invite`, pids);
+
 export const addPlayersToGame = async (gameid: string, pids: string[]) =>
   api.patch(`/games/${gameid}/players`, pids);
 

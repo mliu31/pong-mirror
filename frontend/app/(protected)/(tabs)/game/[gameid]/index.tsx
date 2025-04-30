@@ -2,7 +2,6 @@ import { router, useLocalSearchParams, useNavigation } from 'expo-router';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { useEffect, useState } from 'react';
-import api from '@/api';
 import { Player } from '@/api/types';
 import { getAllPlayers } from '@/api/players';
 import { Button, ButtonText } from '@/components/ui/button';
@@ -20,7 +19,7 @@ import {
   ModalHeader
 } from '@/components/ui/modal';
 import QRCode from 'react-native-qrcode-svg';
-import { addPlayersToGame } from '@/api/games';
+import { invitePlayersToGame } from '@/api/games';
 
 export default function Route() {
   const { gameid } = useLocalSearchParams<{ gameid: string }>();
@@ -69,10 +68,9 @@ export default function Route() {
     const selectedPlayerIds = Object.keys(playerUpdates).filter(
       (playerId) => playerUpdates[playerId] // convert playerUpdates to array of pids
     );
-    console.log(selectedPlayerIds);
-    addPlayersToGame(gameid, selectedPlayerIds);
+    invitePlayersToGame(gameid, selectedPlayerIds);
     setIsUpdatingPlayers(false);
-    router.push(`/game/${gameid}/teamBuilder`);
+    router.push(`/game/${gameid}/invite`);
   };
 
   const navigation = useNavigation();

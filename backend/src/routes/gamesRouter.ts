@@ -2,6 +2,7 @@ import {
   addPlayersToGame,
   createGame,
   getGame,
+  invitePlayers,
   joinGame,
   setGameWinner,
   setPlayerTeam
@@ -30,18 +31,28 @@ router.post('/', async (/*req*/ _, res) => {
   res.json({ id: game._id });
 });
 
+// get game
 router.get('/:gameid', async (req, res) => {
   const game = await getGame(req.params.gameid);
   if (game === null) return void res.status(404).send('Game not found');
   return void res.json(game);
 });
 
+router.put('/:id/invite', async (req, res) => {
+  const { id: gameid } = req.params;
+  const pids = req.body;
+
+  return void res.json(await invitePlayers(gameid, pids));
+});
+
+// add players to game
 router.patch('/:id/players', async (req, res) => {
   const { id: gameId } = req.params;
   const pids = req.body;
   return void res.json(await addPlayersToGame(gameId, pids));
 });
 
+// add currently logged in player to game
 router.post('/:gameid/join', async (req, res) => {
   const { gameid } = req.params;
   const player = req.session.player;
@@ -51,12 +62,14 @@ router.post('/:gameid/join', async (req, res) => {
   return void res.json(await joinGame(gameid, player));
 });
 
+// set player team
 router.put('/:gameid/players/:pid/team/:team', async (req, res) => {
   const { gameid, pid, team } = req.params;
   const game = await setPlayerTeam(gameid, pid, team);
   res.json(game);
 });
 
+// set game winner
 router.patch('/:gameid/winner/:team', async (req, res) => {
   const { gameid, team } = req.params;
   return void (res.json(await setGameWinner(gameid, team)),
