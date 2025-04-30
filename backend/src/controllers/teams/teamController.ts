@@ -16,6 +16,30 @@ export const createTeam = async (playerId: string) => {
   return team;
 };
 
+// add player to team
+export const addPlayer = async (teamId: string, playerId: string) => {
+  const team = await Team.findById(teamId);
+  if (!team) {
+    throw new Error('404 team not found');
+  }
+
+  const player = await Player.findById(playerId);
+  if (!player) {
+    throw new Error('404 player not found');
+  }
+  if (team.players.length > 1) {
+    throw new Error('Team is full');
+  }
+  if (team.players.includes(playerId)) {
+    throw new Error('Player already in team');
+  }
+  team.players.push(playerId);
+
+  team.save();
+
+  return team;
+};
+
 // calculate elo
 
 export const calculateElo = async (teamId: string) => {

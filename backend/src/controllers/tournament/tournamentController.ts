@@ -111,6 +111,7 @@ export const addPlayer = async (
 };
 
 // remove player
+export const removePlayer = async (tourn)
 
 // start tournament
 
