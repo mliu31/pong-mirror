@@ -1,19 +1,20 @@
 import {
   createGame,
   getGame,
+  joinGame,
   PlayerUpdateRecord,
   setGameWinner,
   setPlayerTeam,
-  updateElo,
   updatePlayersInGame
 } from '../controllers/game/gameController';
 import express from 'express';
-// import { requireLoggedInHandler } from './authRouter';
+import { requireLoggedInHandler } from './authRouter';
+import { updateElo } from '../controllers/game/eloUpdate';
 
 const router = express.Router();
 
 // TODO: Uncomment this once frontend login is implemented
-// router.use(requireLoggedInHandler);
+router.use(requireLoggedInHandler);
 
 router.post('/', async (/*req*/ _, res) => {
   // TODO: Uncomment this once frontend login is implemented
@@ -23,6 +24,9 @@ router.post('/', async (/*req*/ _, res) => {
   //     'Logged-in player not found, this route should be protected!'
   //   );
   // }
+  // TODO: the idea here is to track who the "admin" of a game is,
+  // and restrict player assignment to that user.
+  // also, we'd only have to notify the admin of the game when another player joins.
   const game = await createGame(/* player */);
   res.json({ id: game._id });
 });
@@ -49,6 +53,15 @@ router.patch('/:id/players', async (req, res) => {
   }
 
   return void res.json(await updatePlayersInGame(gameId, playerUpdates));
+});
+
+router.post('/:gameid/join', async (req, res) => {
+  const { gameid } = req.params;
+  const player = req.session.player;
+  if (player === undefined) {
+    return void res.status(401).send('Unauthorized');
+  }
+  return void res.json(await joinGame(gameid, player));
 });
 
 router.put('/:gameid/players/:pid/team/:team', async (req, res) => {

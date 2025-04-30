@@ -1,7 +1,6 @@
 import { isValidTeam } from '../../constants/TEAM';
 import Game from '../../models/Game';
-import Player /*, { IPlayer } */ from '../../models/Player';
-import { updateElo } from './eloUpdate';
+import Player, { IPlayer /*, { IPlayer } */ } from '../../models/Player';
 
 export const createGame = (/*loggedInPlayer: IPlayer*/) =>
   Game.create({
@@ -15,6 +14,8 @@ export const getGame = async (gameId: string) =>
   Game.findById(gameId).populate('players.player');
 
 export type PlayerUpdateRecord = Record<string, boolean>;
+
+// TODO: do we want to add validation that no more than 4 players are in a game?
 export const updatePlayersInGame = async (
   gameId: string,
   playerUpdates: PlayerUpdateRecord
@@ -91,4 +92,7 @@ export const setGameWinner = async (gameId: string, team: string) => {
   }
 };
 
-export { updateElo };
+export const joinGame = async (gameId: string, player: IPlayer) =>
+  updatePlayersInGame(gameId, {
+    [player['_id'].toString()]: true
+  });
