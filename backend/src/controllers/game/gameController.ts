@@ -31,11 +31,15 @@ export const invitePlayers = async (gameid: string, pids: string[]) => {
     }
     docs.push({
       gameId: gameid,
-      playerId: pid,
-      status: 'pending'
+      playerId: pid
     });
   }
   await Invite.insertMany(docs);
+};
+
+export const getInvites = async (gameid: string) => {
+  const invites = await Invite.find({ gameId: gameid });
+  return invites;
 };
 
 export const addPlayersToGame = async (gameId: string, pids: string[]) => {

@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 const { Schema, model, Types } = mongoose;
+import INVITE from '../constants/INVITE';
 
 const inviteSchema = new Schema({
   gameId: {
@@ -16,8 +17,9 @@ const inviteSchema = new Schema({
   },
   status: {
     type: String,
-    enum: ['pending', 'accepted', 'declined'],
-    default: 'pending'
+    enum: Object.values(INVITE),
+    default: INVITE.PENDING,
+    index: true
   },
   createdAt: {
     type: Date,

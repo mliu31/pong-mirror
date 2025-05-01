@@ -63,14 +63,14 @@ export default function Route() {
     []
   );
 
-  const handleContinueButtonPress = () => {
+  const handleContinueButtonPress = async () => {
     setIsUpdatingPlayers(true);
     const selectedPlayerIds = Object.keys(playerUpdates).filter(
       (playerId) => playerUpdates[playerId] // convert playerUpdates to array of pids
     );
-    invitePlayersToGame(gameid, selectedPlayerIds);
+    await invitePlayersToGame(gameid, selectedPlayerIds);
     setIsUpdatingPlayers(false);
-    router.push(`/game/${gameid}/invite`);
+    router.push(`/game/${gameid}/confirm`);
   };
 
   const navigation = useNavigation();

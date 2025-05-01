@@ -8,10 +8,13 @@ export const getGame = async (gameid: string) =>
   await api.get<Game>(`/games/${gameid}`);
 
 export const invitePlayersToGame = async (gameid: string, pids: string[]) =>
-  api.put(`/games/${gameid}/invite`, pids);
+  await api.put(`/games/${gameid}/invite`, pids);
+
+export const getInvites = async (gameid: string) =>
+  await api.get(`/games/${gameid}/invite`);
 
 export const addPlayersToGame = async (gameid: string, pids: string[]) =>
-  api.patch(`/games/${gameid}/players`, pids);
+  await api.patch(`/games/${gameid}/players`, pids);
 
 export const updatePlayerTeam = async (
   pid: string,
