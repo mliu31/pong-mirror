@@ -4,17 +4,25 @@ import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import Friends from '@/components/Friends/Friends';
 import LogoutButton from '@/components/LogoutButton';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 export default function Profile() {
-  // For now, using a hardcoded player ID.
-  // TODO: Replace this with the logged-in user's ID when authentication is implemented.
-  const playerId = '67b3935b7cf6fef618ed4891';
+  const playerId = useSelector(
+    (state: RootState) => state.auth.basicPlayerInfo?._id
+  );
 
   const [player, setPlayer] = useState<Player | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!playerId) {
+      setLoading(false);
+      console.error('UserId is invalid');
+      return;
+    }
+
     getPlayer(playerId)
       .then((response) => {
         setPlayer(response.data);

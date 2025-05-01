@@ -72,7 +72,7 @@ export default function SignUp() {
         />
       </View>
 
-      {error && <Text style={styles.error}>{error}</Text>}
+      <Text>{error && <Text style={styles.error}>{error}</Text>}</Text>
 
       {/* sign up button */}
       <View style={styles.buttonWrapper}>
