@@ -1,22 +1,23 @@
 import { useEffect, useState } from 'react';
-import { View, FlatList } from 'react-native';
+import { View } from 'react-native';
 import { Button, ButtonText } from '@/components/ui/button';
 import { ThemedText } from '@/components/ThemedText';
 import { useLocalSearchParams, router } from 'expo-router';
-import { getInvites } from '@/api/games';
+import { getGameInvites } from '@/api/invite';
 import INVITE from '@/constants/INVITE';
 
 export interface Invite {
   playerId: number;
   status: typeof INVITE;
 }
+
 export default function Confirm() {
   const { gameid } = useLocalSearchParams<{ gameid: string }>();
   const [invites, setInvites] = useState<Invite[]>([]);
 
   useEffect(() => {
     const fetchInvites = async () => {
-      const res = await getInvites(gameid);
+      const res = await getGameInvites(gameid);
       setInvites(res.data);
     };
     fetchInvites();
@@ -24,9 +25,9 @@ export default function Confirm() {
     return () => clearInterval(interval);
   }, [gameid]);
 
-  const acceptedInvitesCount = invites.filter(
-    (invite) => invite.status.toString() === INVITE.ACCEPTED
-  ).length;
+  // const acceptedInvitesCount = invites.filter(
+  //   (invite) => invite.status.toString() === INVITE.ACCEPTED
+  // ).length;
 
   return (
     <View>

@@ -3,14 +3,16 @@ import session from 'express-session';
 import mongoose from 'mongoose';
 import env from './util/env';
 import cors from 'cors';
-import authRouter from './routes/authRouter.js';
 import { IPlayer } from './models/Player';
+import MongoStore from 'connect-mongo';
+import corsOptions from './util/corsOptions';
+
+import authRouter from './routes/authRouter.js';
 import gamesRouter from './routes/gamesRouter';
 import playersRouter from './routes/playersRouter';
 import leaderboardRouter from './routes/leaderboardRouter';
-import MongoStore from 'connect-mongo';
-import corsOptions from './util/corsOptions';
 import groupRouter from './routes/groupRouter';
+import inviteRouter from './routes/inviteRouter';
 
 // if we can't connect to the database, exit immediately - don't let Express start listening.
 // this handler must be registered before calling mongoose.connect.
@@ -53,5 +55,6 @@ app.use('/games', gamesRouter);
 app.use('/players', playersRouter);
 app.use('/leaderboard', leaderboardRouter);
 app.use('/groups', groupRouter);
+app.use('/invite', inviteRouter);
 
 export default app;

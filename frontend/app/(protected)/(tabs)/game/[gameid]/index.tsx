@@ -19,7 +19,7 @@ import {
   ModalHeader
 } from '@/components/ui/modal';
 import QRCode from 'react-native-qrcode-svg';
-import { invitePlayersToGame } from '@/api/games';
+import { invitePlayersToGame } from '@/api/invite';
 
 export default function Route() {
   const { gameid } = useLocalSearchParams<{ gameid: string }>();

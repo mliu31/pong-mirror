@@ -2,8 +2,6 @@ import {
   addPlayersToGame,
   createGame,
   getGame,
-  getInvites,
-  invitePlayers,
   joinGame,
   setGameWinner,
   setPlayerTeam
@@ -37,24 +35,6 @@ router.get('/:gameid', async (req, res) => {
   const game = await getGame(req.params.gameid);
   if (game === null) return void res.status(404).send('Game not found');
   return void res.json(game);
-});
-
-router.put('/:id/invite', async (req, res) => {
-  const { id: gameid } = req.params;
-  const pids = req.body;
-
-  return void res.json(await invitePlayers(gameid, pids));
-});
-
-router.get('/:id/invite', async (req, res) => {
-  const { id: gameid } = req.params;
-  try {
-    const invites = await getInvites(gameid);
-    return void res.json(invites);
-  } catch (error) {
-    console.error('Error fetching invites:', error);
-    return void res.status(500).send('Failed to fetch invites');
-  }
 });
 
 // add players to game
