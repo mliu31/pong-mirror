@@ -38,9 +38,16 @@ export default function Invite() {
     } else {
       console.error('currentPlayerId is undefined');
     }
+    setInvites((prevInvites) =>
+      prevInvites.filter((invite) => invite.gameId !== gameid)
+    );
   };
 
-  return (
+  return invites.length === 0 ? (
+    <View style={{ marginBottom: 10 }}>
+      <ThemedText>No pending invites</ThemedText>
+    </View>
+  ) : (
     <FlatList
       data={invites}
       keyExtractor={(invite) => invite.gameId.toString()}
