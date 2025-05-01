@@ -42,4 +42,12 @@ export const setPlayerInvite = async (
   pid: string,
   gameid: string,
   decision: InviteValue
-) => {};
+) => {
+  const invite = await Invite.findOne({ playerId: pid, gameId: gameid });
+  if (!invite) {
+    throw new Error('Invite not found');
+  }
+
+  invite.status = decision;
+  await invite.save();
+};

@@ -48,7 +48,7 @@ router.get('/player/:id', async (req, res) => {
   }
 });
 
-router.put('/player/:pid/game/:gid/decision/:status', async (req, res) => {
+router.put('/player/:pid/game/:gid/status/:status', async (req, res) => {
   const { pid, gid, status } = req.params;
 
   try {

@@ -14,4 +14,4 @@ export const setPlayerInvite = async (
   pid: string,
   gameid: string,
   status: InviteValue
-) => await api.put(`invite/player/${pid}/game/${gameid}/decision/${status}`);
+) => await api.put(`invite/player/${pid}/game/${gameid}/status/${status}`);
