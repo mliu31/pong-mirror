@@ -1,10 +1,10 @@
 // Fetches appropriate data for leaderboard depending on tab
 
 import Player from '../../models/Player';
-//import mongoose from 'mongoose';
+import { Types } from 'mongoose';
 
 export interface LeaderboardItem {
-  userID: number;
+  _id: Types.ObjectId;
   name: string;
   elo: number;
   rank: number;
@@ -18,9 +18,16 @@ async function getTopPlayers(limit: number): Promise<LeaderboardItem[]> {
   const players = await Player.find({})
     .sort({ rank: 1 })
     .limit(limit)
-    .select('userID name elo rank')
+    .select('_id name elo rank')
     .lean();
-  return players as LeaderboardItem[];
+
+  // need to map to leaderboard structure
+  return players.map((player) => ({
+    _id: player._id as unknown as Types.ObjectId,
+    name: player.name,
+    elo: player.elo,
+    rank: player.rank
+  }));
 }
 
 /**
@@ -36,9 +43,15 @@ async function getPlayersInRankRange(
     rank: { $gte: startRank, $lte: endRank }
   })
     .sort({ rank: 1 })
-    .select('userID name elo rank')
+    .select('_id name elo rank')
     .lean();
-  return players as LeaderboardItem[];
+
+  return players.map((player) => ({
+    _id: player._id as unknown as Types.ObjectId,
+    name: player.name,
+    elo: player.elo,
+    rank: player.rank
+  }));
 }
 
 /**
@@ -56,14 +69,16 @@ export async function fetchTopLeaderboard(): Promise<{
  * Fetch the league leaderboard
  * Players surrounding current user ranking +- 10 are retrieved
  */
-export async function fetchLeagueLeaderboard(userId: number): Promise<{
+export async function fetchLeagueLeaderboard(userId: string): Promise<{
   players: LeaderboardItem[];
   currentUser?: LeaderboardItem;
 }> {
   // Retrieve current player rank
-  const currentPlayer = await Player.findOne({ userID: userId })
+  const objectId = new Types.ObjectId(userId); // ObjectId
+  const currentPlayer = await Player.findOne({ _id: objectId })
     .select('rank')
     .lean();
+
   if (!currentPlayer) {
     throw new Error('User not found');
   }
@@ -73,19 +88,19 @@ export async function fetchLeagueLeaderboard(userId: number): Promise<{
   }
 
   const userRank: number = currentPlayer.rank;
-
   const startRank = Math.max(userRank - 10, 1);
   const endRank = userRank + 10;
 
   const players = await getPlayersInRankRange(startRank, endRank);
-  const currentUser = players.find((player) => player.userID === userId);
+  const currentUser = players.find((player) => player._id.equals(objectId));
+
   return { players, currentUser };
 }
 
 /**
  * Aggregate function that fetches all leaderboards
  */
-export async function fetchLeaderboard(tab: 'Top' | 'League', userId: number) {
+export async function fetchLeaderboard(tab: 'Top' | 'League', userId: string) {
   if (tab === 'Top') {
     return await fetchTopLeaderboard();
   } else {

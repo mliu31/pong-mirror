@@ -3,6 +3,7 @@ import { RequestHandler } from 'express';
 import Player from '../models/Player';
 import { updateRanks } from '../controllers/leaderboard/rankingCurrent';
 import { fetchLeaderboard } from '../controllers/leaderboard/leaderboardFetch';
+import mongoose from 'mongoose';
 
 void Player;
 
@@ -27,17 +28,15 @@ router.post('/update-ranks', async (_, res) => {
 router.get('/', (async (req, res) => {
   try {
     const tab = req.query.tab as 'Top' | 'League';
-    const userIdParam = req.query.userId as string;
-    if (!tab || !userIdParam) {
+    const userId = req.query.userId as string;
+    if (!tab || !userId) {
       return res
         .status(400)
         .json({ error: 'Missing required query parameters: tab, userId' });
     }
-    const userId = parseInt(userIdParam, 10);
-    if (isNaN(userId)) {
-      return res
-        .status(400)
-        .json({ error: 'Invalid userId, must be a number.' });
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ error: 'Invalid userId format' });
     }
 
     const leaderboardData = await fetchLeaderboard(tab, userId);

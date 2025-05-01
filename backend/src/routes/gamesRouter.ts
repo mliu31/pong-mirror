@@ -15,18 +15,18 @@ const router = express.Router();
 // TODO: Uncomment this once frontend login is implemented
 router.use(requireLoggedInHandler);
 
-router.post('/', async (/*req*/ _, res) => {
+router.post('/', async (req, res) => {
   // TODO: Uncomment this once frontend login is implemented
-  // const player = req.session.player;
-  // if (player === undefined) {
-  //   throw new Error(
-  //     'Logged-in player not found, this route should be protected!'
-  //   );
-  // }
+  const player = req.session.player;
+  if (player === undefined) {
+    throw new Error(
+      'Logged-in player not found, this route should be protected!'
+    );
+  }
   // TODO: the idea here is to track who the "admin" of a game is,
   // and restrict player assignment to that user.
   // also, we'd only have to notify the admin of the game when another player joins.
-  const game = await createGame(/* player */);
+  const game = await createGame(player);
   res.json({ id: game._id });
 });
 

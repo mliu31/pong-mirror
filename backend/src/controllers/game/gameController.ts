@@ -2,12 +2,9 @@ import { isValidTeam } from '../../constants/TEAM';
 import Game from '../../models/Game';
 import Player, { IPlayer } from '../../models/Player';
 
-export const createGame = (/*loggedInPlayer: IPlayer*/) =>
+export const createGame = (loggedInPlayer: IPlayer) =>
   Game.create({
-    players: [
-      // TODO: Uncomment this once frontend login is implemented
-      // { player: loggedInPlayer, team: null }
-    ]
+    players: [{ player: loggedInPlayer, team: null }]
   });
 
 export const getGame = async (gameId: string) =>

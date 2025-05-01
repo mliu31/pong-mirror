@@ -60,7 +60,7 @@ export default function Login() {
         />
       </View>
 
-      {error && <Text style={styles.error}>{error}</Text>}
+      <Text>{error && <Text style={styles.error}>{error}</Text>}</Text>
 
       {/* log in button */}
       <View style={styles.buttonWrapper}>

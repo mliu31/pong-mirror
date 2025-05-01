@@ -6,12 +6,11 @@ import {
   removePlayerFriend
 } from '../controllers/player/playerController';
 
-// import { requireLoggedInHandler } from './authRouter';
+import { requireLoggedInHandler } from './authRouter';
 
 const router = express.Router();
 
-// TODO: Uncomment this once frontend login is implemented
-// router.use(requireLoggedInHandler);
+router.use(requireLoggedInHandler);
 
 router.get('/', async (_, res) => {
   res.json(await getAllPlayers());

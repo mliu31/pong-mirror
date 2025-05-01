@@ -28,7 +28,7 @@ const LeaderboardRanking: React.FC<LeaderboardRankingProps> = ({ items }) => {
     <FlatList
       contentContainerStyle={styles.container}
       data={items}
-      keyExtractor={(item) => `${item.userID}-${item.rank}`}
+      keyExtractor={(item) => `${item._id}-${item.rank}`}
       renderItem={renderItem}
     />
   );
