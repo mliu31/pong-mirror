@@ -10,16 +10,9 @@ import {
 
 const router = express.Router();
 
-router.post('/', async (req, res) => {
+router.put('/createTournament/:name', async (req, res) => {
   try {
-    const { name } = req.body;
-    if (!name) {
-      return void res
-        .status(400)
-        .json({ error: 'Tournament name is required' });
-    }
-
-    const tournament = await createTournament(name);
+    const tournament = await createTournament(req.params.name);
 
     res.status(201).json(tournament);
   } catch (error) {
