@@ -1,10 +1,10 @@
 // Fetches appropriate data for leaderboard depending on tab
 
 import Player from '../../models/Player';
-import mongoose from 'mongoose';
+import { Types } from 'mongoose';
 
 export interface LeaderboardItem {
-  _id: mongoose.Types.ObjectId;
+  _id: Types.ObjectId;
   name: string;
   elo: number;
   rank: number;
@@ -20,7 +20,14 @@ async function getTopPlayers(limit: number): Promise<LeaderboardItem[]> {
     .limit(limit)
     .select('_id name elo rank')
     .lean();
-  return players as LeaderboardItem[];
+
+  // neep to map to leaderboard structure
+  return players.map((player) => ({
+    _id: player._id as unknown as Types.ObjectId,
+    name: player.name,
+    elo: player.elo,
+    rank: player.rank
+  }));
 }
 
 /**
@@ -38,7 +45,13 @@ async function getPlayersInRankRange(
     .sort({ rank: 1 })
     .select('_id name elo rank')
     .lean();
-  return players as LeaderboardItem[];
+
+  return players.map((player) => ({
+    _id: player._id as unknown as Types.ObjectId,
+    name: player.name,
+    elo: player.elo,
+    rank: player.rank
+  }));
 }
 
 /**
@@ -61,10 +74,11 @@ export async function fetchLeagueLeaderboard(userId: string): Promise<{
   currentUser?: LeaderboardItem;
 }> {
   // Retrieve current player rank
-  const objectId = new mongoose.Types.ObjectId(userId);
+  const objectId = new Types.ObjectId(userId); // ObjectId
   const currentPlayer = await Player.findOne({ _id: objectId })
     .select('rank')
     .lean();
+
   if (!currentPlayer) {
     throw new Error('User not found');
   }
@@ -74,12 +88,12 @@ export async function fetchLeagueLeaderboard(userId: string): Promise<{
   }
 
   const userRank: number = currentPlayer.rank;
-
   const startRank = Math.max(userRank - 10, 1);
   const endRank = userRank + 10;
 
   const players = await getPlayersInRankRange(startRank, endRank);
   const currentUser = players.find((player) => player._id.equals(objectId));
+
   return { players, currentUser };
 }
 

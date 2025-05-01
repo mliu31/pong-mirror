@@ -9,11 +9,13 @@ import {
 import LeaderboardNav from '@/components/leaderboard/leaderboard-nav';
 import LeaderboardRanking from '@/components/leaderboard/leaderboard-core';
 import { fetchLeaderboard } from '@/api/leaderboard';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 type Tab = 'Top' | 'League';
 
 export interface LeaderboardItem {
-  userID: number;
+  _id: string;
   name: string;
   elo: number;
   rank: number;
@@ -29,11 +31,21 @@ const LeaderboardScreen: React.FC = () => {
   // Error state for API failures
   const [error, setError] = useState<string | null>(null);
 
-  // TODO: Get actual user ID from auth context
-  const currentUserId = 1; // Temporary hardcoded user ID
+  const currentUserId = useSelector(
+    (state: RootState) => state.auth.basicPlayerInfo?._id
+  );
+  // console.log('currentUserId:', currentUserId);
 
   // Effect hook to fetch leaderboard data whenever tab changes
   useEffect(() => {
+    if (!currentUserId) {
+      setItems([]);
+      setError(null);
+      setIsLoading(false);
+      console.error('UserId is invalid');
+      return;
+    }
+
     const loadLeaderboard = async () => {
       try {
         setIsLoading(true);

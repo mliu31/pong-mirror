@@ -25,10 +25,7 @@ router.post('/signup', async (req, res) => {
 
     res.json({
       message: 'Sign up successful!',
-      player: {
-        name: player.name,
-        email: player.email
-      }
+      player
     });
   } catch (err) {
     console.error(err);
@@ -95,10 +92,7 @@ router.post('/login', async (req, res) => {
     req.session.player = player;
     res.json({
       message: 'Login successful',
-      player: {
-        name: player.name,
-        email: player.email
-      }
+      player
     });
   } catch (err) {
     console.error(err);

@@ -6,7 +6,7 @@ import Player from '../../models/Player';
 export async function updateRanks(): Promise<void> {
   try {
     // Get all players sorted by elo in descending order
-    const players = await Player.find().sort({ elo: -1 });
+    const players = await Player.find().sort({ elo: -1 }).lean();
 
     // Simply assign ranks 1,2,3... based on sorted elo
     const updates = players.map((player, index) => ({

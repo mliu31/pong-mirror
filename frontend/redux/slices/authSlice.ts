@@ -26,7 +26,7 @@ export const signup = createAsyncThunk(
   async (data: NewPlayer, { rejectWithValue }) => {
     try {
       const response = await api.post('/auth/signup', data);
-      return response.data;
+      return response.data.player;
     } catch (error) {
       const err = error as AxiosError<{ message: string }>;
 
@@ -65,7 +65,7 @@ export const login = createAsyncThunk(
   async (data: LoginPlayer, { rejectWithValue }) => {
     try {
       const response = await api.post('/auth/login', data);
-      return response.data;
+      return response.data.player;
     } catch (error) {
       const err = error as AxiosError<{ message: string }>;
 
@@ -95,6 +95,7 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(signup.fulfilled, (state, action: PayloadAction<Player>) => {
+        console.log('Signup fulfilled payload:', action.payload); // testing
         state.basicPlayerInfo = action.payload;
         state.status = 'idle';
         state.error = null;
@@ -109,6 +110,7 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(login.fulfilled, (state, action: PayloadAction<Player>) => {
+        console.log('Login fulfilled payload:', action.payload); // testing
         state.basicPlayerInfo = action.payload;
         state.status = 'idle';
         state.error = null;

@@ -3,7 +3,7 @@ import api from '.';
 // Define the shape of the API response from the backend
 interface LeaderboardResponse {
   players: {
-    userID: number;
+    _id: string;
     name: string;
     elo: number;
     rank: number;
@@ -19,7 +19,7 @@ interface UpdateRanksResponse {
  */
 export const fetchLeaderboard = async (
   tab: 'Top' | 'League',
-  userId: number
+  userId: string
 ): Promise<LeaderboardResponse> => {
   try {
     const { data } = await api.get<LeaderboardResponse>('/leaderboard', {

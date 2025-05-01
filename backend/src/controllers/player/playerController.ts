@@ -12,7 +12,7 @@ export const newPlayer = async (name: string, email: string) => {
     name: name,
     email: email,
     friends: [],
-    elo: 1000 // TODO: default? read from player model
+    elo: 1000 // TODO: read from player model
   });
   updateRanks();
   await newPlayer.save();

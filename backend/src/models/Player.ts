@@ -1,7 +1,6 @@
 import mongoose, { Document, ObjectId } from 'mongoose';
 
 export interface IPlayer extends Document<ObjectId> {
-  userID: number; // TODO: remove
   name: string;
   email: string;
   friends: string[];
