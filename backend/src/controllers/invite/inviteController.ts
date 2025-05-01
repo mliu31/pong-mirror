@@ -49,5 +49,6 @@ export const setPlayerInvite = async (
   }
 
   invite.status = decision;
+  invite.respondedAt = new Date();
   await invite.save();
 };

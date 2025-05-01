@@ -5,9 +5,10 @@ import { ThemedText } from '@/components/ThemedText';
 import { useLocalSearchParams, router } from 'expo-router';
 import { getGameInvites } from '@/api/invite';
 import INVITE from '@/constants/INVITE';
+import { addPlayersToGame } from '@/api/games';
 
 export interface GameInvite {
-  playerId: number;
+  playerId: string;
   status: typeof INVITE;
 }
 
@@ -25,9 +26,17 @@ export default function Confirm() {
     return () => clearInterval(interval);
   }, [gameid]);
 
-  // const acceptedInvitesCount = invites.filter(
-  //   (invite) => invite.status.toString() === INVITE.ACCEPTED
-  // ).length;
+  const acceptedInvitesCount = invites.filter(
+    (invite) => invite.status.toString() === INVITE.ACCEPTED
+  ).length;
+
+  const addPlayersToGameHandler = async () => {
+    await addPlayersToGame(
+      gameid,
+      invites.map((invite) => invite.playerId)
+    );
+    router.push('./teamBuilder');
+  };
 
   return (
     <View>
@@ -41,7 +50,16 @@ export default function Confirm() {
         keyExtractor={(item) => item.playerId.toString()}
         renderItem={({ item }) => <Text>Player ID: {item.playerId}</Text>}
       /> */}
-      <Button onPress={() => router.back()}>
+      <Button
+        onPress={addPlayersToGameHandler}
+        disabled={acceptedInvitesCount !== invites.length}
+        action={
+          acceptedInvitesCount !== invites.length ? 'secondary' : 'primary'
+        }
+        className={
+          acceptedInvitesCount !== invites.length ? '' : 'bg-success-300'
+        }
+      >
         <ButtonText>Continue</ButtonText>
       </Button>
     </View>

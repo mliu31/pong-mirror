@@ -183,8 +183,8 @@ export default function Route() {
       </ScrollView>
 
       <Button
-        disabled={shouldDisableContinueButton}
         onPress={handleContinueButtonPress}
+        disabled={shouldDisableContinueButton}
         action={shouldDisableContinueButton ? 'secondary' : 'primary'}
         className={shouldDisableContinueButton ? '' : 'bg-success-300'}
       >

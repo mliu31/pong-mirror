@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
-import { View, Text, FlatList } from 'react-native';
+import { View, FlatList } from 'react-native';
 import { Button, ButtonText } from '@/components/ui/button';
-import { router } from 'expo-router';
 import INVITE, { InviteValue } from '@/constants/INVITE';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
@@ -52,14 +51,8 @@ export default function Invite() {
       data={invites}
       keyExtractor={(invite) => invite.gameId.toString()}
       renderItem={({ item: invite }) => (
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginBottom: 10
-          }}
-        >
-          <ThemedText style={{ flex: 1 }}>Game: {invite.gameId}</ThemedText>
+        <View>
+          <ThemedText>Game: {invite.gameId}</ThemedText>
           <Button
             onPress={() =>
               handleGameAcceptReject(invite.gameId, INVITE.ACCEPTED)
