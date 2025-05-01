@@ -4,6 +4,4 @@ const INVITE = Object.freeze({
   DECLINED: 'DECLINED'
 });
 
-export type InviteValue = (typeof INVITE)[keyof typeof INVITE];
-
 export default INVITE;
