@@ -169,7 +169,6 @@ export default function Route() {
   return (
     // TODO: add searchbar
     <ThemedView className="flex-1 justify-center space-y-4">
-      {/* <ScrollView className="flex-1"> */}
       <VStack space="md" className="flex-1">
         <FlatList
           data={allPlayers}
@@ -178,7 +177,6 @@ export default function Route() {
           renderItem={renderItem}
         />
       </VStack>
-      {/* </ScrollView> */}
 
       <Button
         disabled={shouldDisableContinueButton}
