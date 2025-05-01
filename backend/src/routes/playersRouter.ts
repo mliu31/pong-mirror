@@ -10,7 +10,6 @@ import { requireLoggedInHandler } from './authRouter';
 
 const router = express.Router();
 
-// TODO: Uncomment this once frontend login is implemented
 router.use(requireLoggedInHandler);
 
 router.get('/', async (_, res) => {

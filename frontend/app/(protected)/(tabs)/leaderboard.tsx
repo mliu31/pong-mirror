@@ -34,7 +34,6 @@ const LeaderboardScreen: React.FC = () => {
   const currentUserId = useSelector(
     (state: RootState) => state.auth.basicPlayerInfo?._id
   );
-  // console.log('currentUserId:', currentUserId);
 
   // Effect hook to fetch leaderboard data whenever tab changes
   useEffect(() => {

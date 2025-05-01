@@ -21,7 +21,7 @@ async function getTopPlayers(limit: number): Promise<LeaderboardItem[]> {
     .select('_id name elo rank')
     .lean();
 
-  // neep to map to leaderboard structure
+  // need to map to leaderboard structure
   return players.map((player) => ({
     _id: player._id as unknown as Types.ObjectId,
     name: player.name,

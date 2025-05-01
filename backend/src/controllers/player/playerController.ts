@@ -11,8 +11,7 @@ export const newPlayer = async (name: string, email: string) => {
   const newPlayer = new Player({
     name: name,
     email: email,
-    friends: [],
-    elo: 1000 // TODO: read from player model
+    friends: []
   });
   updateRanks();
   await newPlayer.save();
