@@ -1,4 +1,4 @@
-import INVITE from '../../constants/INVITE';
+import INVITE, { InviteValue } from '../../constants/INVITE';
 import Game from '../../models/Game';
 import Invite from '../../models/Invite';
 import Player from '../../models/Player';
@@ -37,3 +37,9 @@ export const getPlayerInvites = async (pid: string) => {
   const invites = await Invite.find({ playerId: pid, status: INVITE.PENDING });
   return invites;
 };
+
+export const setPlayerInvite = async (
+  pid: string,
+  gameid: string,
+  decision: InviteValue
+) => {};

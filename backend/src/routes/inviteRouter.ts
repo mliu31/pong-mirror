@@ -2,8 +2,10 @@ import express from 'express';
 import {
   getGameInvites,
   invitePlayers,
-  getPlayerInvites
+  getPlayerInvites,
+  setPlayerInvite
 } from '../controllers/invite/inviteController';
+import { InviteValue } from '../constants/INVITE';
 
 const router = express.Router();
 
@@ -43,6 +45,19 @@ router.get('/player/:id', async (req, res) => {
   } catch (error) {
     console.error('Error fetching player invites:', error);
     return void res.status(500).send('Failed to fetch player invites');
+  }
+});
+
+router.put('/player/:pid/game/:gid/decision/:status', async (req, res) => {
+  const { pid, gid, status } = req.params;
+
+  try {
+    // Assuming there's a function to handle player decisions for invites
+    await setPlayerInvite(pid, gid, status as InviteValue);
+    return void res.json({ message: 'Decision recorded successfully' });
+  } catch (error) {
+    console.error('Error recording decision:', error);
+    return void res.status(500).send('Failed to record decision');
   }
 });
 

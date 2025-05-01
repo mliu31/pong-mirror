@@ -1,3 +1,4 @@
+import { InviteValue } from '@/constants/INVITE';
 import api from '.';
 
 export const invitePlayersToGame = async (gameid: string, pids: string[]) =>
@@ -12,5 +13,5 @@ export const getPlayerInvites = async (pid: string) =>
 export const setPlayerInvite = async (
   pid: string,
   gameid: string,
-  accept: boolean
-) => await api.put(`invite/player/${pid}/game/${gameid}/decision/${accept}`);
+  status: InviteValue
+) => await api.put(`invite/player/${pid}/game/${gameid}/decision/${status}`);

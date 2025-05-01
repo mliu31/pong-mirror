@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 import { View, Text, FlatList } from 'react-native';
 import { Button, ButtonText } from '@/components/ui/button';
 import { router } from 'expo-router';
-import INVITE from '@/constants/INVITE';
+import INVITE, { InviteValue } from '@/constants/INVITE';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
-import { getPlayerInvites } from '@/api/invite';
+import { getPlayerInvites, setPlayerInvite } from '@/api/invite';
 import { ThemedText } from '@/components/ThemedText';
 
 export interface PlayerInvite {
@@ -29,9 +29,16 @@ export default function Invite() {
     if (currentPlayerId) fetchInvites(currentPlayerId);
   }, [currentPlayerId]);
 
-  if (!invites.length) return <Text>You have no invitations.</Text>;
-
-  const handleGameAcceptReject = (gameid: string, accept: boolean) => {};
+  const handleGameAcceptReject = async (
+    gameid: string,
+    status: InviteValue
+  ) => {
+    if (currentPlayerId) {
+      await setPlayerInvite(currentPlayerId, gameid, status);
+    } else {
+      console.error('currentPlayerId is undefined');
+    }
+  };
 
   return (
     <FlatList
@@ -47,12 +54,18 @@ export default function Invite() {
         >
           <ThemedText style={{ flex: 1 }}>Game: {invite.gameId}</ThemedText>
           <Button
-            onPress={() => handleGameAcceptReject(invite.gameId, true)}
+            onPress={() =>
+              handleGameAcceptReject(invite.gameId, INVITE.ACCEPTED)
+            }
             style={{ marginRight: 5 }}
           >
             <ButtonText>accept</ButtonText>
           </Button>
-          <Button onPress={() => handleGameAcceptReject(invite.gameId, false)}>
+          <Button
+            onPress={() =>
+              handleGameAcceptReject(invite.gameId, INVITE.DECLINED)
+            }
+          >
             <ButtonText>deny</ButtonText>
           </Button>
         </View>
