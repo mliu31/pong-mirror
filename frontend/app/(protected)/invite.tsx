@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { View, Text, FlatList } from 'react-native';
-import { Button } from '@/components/ui/button';
-import api from '@/api'; // axios instance pointed at your backend
+import { Button, ButtonText } from '@/components/ui/button';
 import { router } from 'expo-router';
 import INVITE from '@/constants/INVITE';
 import { useSelector } from 'react-redux';
@@ -10,44 +9,54 @@ import { getPlayerInvites } from '@/api/invite';
 import { ThemedText } from '@/components/ThemedText';
 
 export interface PlayerInvite {
-  gameId: number;
+  gameId: string;
   status: typeof INVITE;
 }
 
 export default function Invite() {
   const [invites, setInvites] = useState<PlayerInvite[]>([]);
 
-  // const currentPlayerId = useSelector((state: RootState) => {
-  //   console.log(state.auth?.basicPlayerInfo); // Check if `basicPlayerInfo` exists
-  //   return state.auth.basicPlayerInfo?._id;
-  // });
+  const currentPlayerId = useSelector((state: RootState) => {
+    return state.auth.basicPlayerInfo?._id;
+  });
 
   const fetchInvites = async (pid: string) => {
     const res = await getPlayerInvites(pid);
-    console.log(res.data);
     setInvites(res.data);
   };
 
-  const currentPlayerId = '67b3935b7cf6fef618ed4890';
   useEffect(() => {
-    console.log('logged in playerId:', currentPlayerId);
     if (currentPlayerId) fetchInvites(currentPlayerId);
   }, [currentPlayerId]);
 
-  // const respond = async (id: string, accept: boolean) => {
-  //   await api.post(`/invitations/${id}/${accept ? 'accept' : 'decline'}`);
-  //   fetchInvites();
-  // };
-
   if (!invites.length) return <Text>You have no invitations.</Text>;
 
+  const handleGameAcceptReject = (gameid: string, accept: boolean) => {};
+
   return (
-    <View>
-      {invites.map((invite) => (
-        <ThemedText key={invite.gameId}>
-          game: {invite.gameId}, Status: {invite.status.toString()}
-        </ThemedText>
-      ))}
-    </View>
+    <FlatList
+      data={invites}
+      keyExtractor={(invite) => invite.gameId.toString()}
+      renderItem={({ item: invite }) => (
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginBottom: 10
+          }}
+        >
+          <ThemedText style={{ flex: 1 }}>Game: {invite.gameId}</ThemedText>
+          <Button
+            onPress={() => handleGameAcceptReject(invite.gameId, true)}
+            style={{ marginRight: 5 }}
+          >
+            <ButtonText>accept</ButtonText>
+          </Button>
+          <Button onPress={() => handleGameAcceptReject(invite.gameId, false)}>
+            <ButtonText>deny</ButtonText>
+          </Button>
+        </View>
+      )}
+    />
   );
 }
