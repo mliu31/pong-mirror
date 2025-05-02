@@ -21,7 +21,7 @@ router.put('/createTournament/:name', async (req, res) => {
   }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/getTournament/:id', async (req, res) => {
   try {
     const tournament = await getTournament(req.params.id);
 
@@ -46,10 +46,9 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-router.post('/:id/teams', async (req, res) => {
+router.post('/addTeam/:id/teams/:playerId', async (req, res) => {
   try {
-    const { playerId } = req.body;
-    const tournament = await addTeam(req.params.id, playerId);
+    const tournament = await addTeam(req.params.id, req.params.playerId);
 
     res.json(tournament);
   } catch (error) {
@@ -69,7 +68,7 @@ router.put('/:id/seed', async (req, res) => {
   }
 });
 
-router.delete('/:tournamentId/teams/:teamId', async (req, res) => {
+router.delete('/removeTeam/:tournamentId/teams/:teamId', async (req, res) => {
   try {
     const { tournamentId, teamId } = req.params;
 

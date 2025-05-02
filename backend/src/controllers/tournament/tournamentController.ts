@@ -1,7 +1,11 @@
 import Tournament from '../../models/Tournament';
 import Player from '../../models/Player';
 import Team from '../../models/Team';
-import { calculateElo, createTeam } from '../teams/teamController';
+import {
+  addPlayerTeam,
+  calculateElo,
+  createTeam
+} from '../teams/teamController';
 
 // create tournament
 export const createTournament = (tournamentName: string) => {
@@ -40,11 +44,20 @@ export const addTeam = async (tournamentId: string, playerId: string) => {
 
   if (!tournament) throw new Error('404 Tournament not found');
 
+  for (const teamId of tournament.teams) {
+    const team = await Team.findById(teamId);
+    if (!team) throw new Error('404 Tournament not found');
+    if (team.players.includes(playerId))
+      throw new Error('Player already in tournament');
+  }
+
   const team = await createTeam(playerId);
 
   if (!team) throw new Error('Error creating team');
 
   tournament.teams.push(team.id);
+
+  reseedTeams(tournamentId);
 
   tournament.save();
 
@@ -89,13 +102,51 @@ export const removeTeam = async (tournamentId: string, teamId: string) => {
 
   if (!team) throw new Error('404 Team not found');
 
-  const teamIndex = tournament.teams.findIndex(
-    (id) => id.toString() === teamId
-  );
+  const teamIndex = tournament.teams.indexOf(teamId);
 
   tournament.teams.splice(teamIndex, 1);
 
-  tournament.save();
+  await reseedTeams(tournamentId);
+
+  await tournament.save();
+
+  return tournament;
+};
+
+// add player to team
+
+export const addPlayer = async (
+  tournamentId: string,
+  teamId: string,
+  playerId: string
+) => {
+  const tournament = await Tournament.findById(tournamentId);
+
+  if (!tournament) throw new Error('404 Tournament not found');
+
+  const team = await Team.findById(teamId);
+
+  if (!team) throw new Error('404 Team not found');
+
+  const player = await Player.findById(playerId);
+
+  if (!player) throw new Error('404 Player not found');
+
+  if (team.players.length > 1) throw new Error('Team is full');
+
+  for (const teamId of tournament.teams) {
+    const t = await Team.findById(teamId);
+    if (!t) throw new Error('404 Tournament not found');
+    if (t.players.includes(playerId))
+      throw new Error('Player already in tournament');
+  }
+
+  const newTeam = await addPlayerTeam(teamId, playerId);
+  if (!newTeam) throw new Error('Error adding to team');
+
+  await reseedTeams(tournamentId);
+
+  return newTeam;
 };
 
 // start tournament

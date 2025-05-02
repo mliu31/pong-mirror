@@ -17,7 +17,7 @@ export const createTeam = async (playerId: string) => {
 };
 
 // add player to team
-export const addPlayer = async (teamId: string, playerId: string) => {
+export const addPlayerTeam = async (teamId: string, playerId: string) => {
   const team = await Team.findById(teamId);
   if (!team) {
     throw new Error('404 team not found');
@@ -35,7 +35,7 @@ export const addPlayer = async (teamId: string, playerId: string) => {
   }
   team.players.push(playerId);
 
-  team.save();
+  await team.save();
 
   return team;
 };
