@@ -6,15 +6,11 @@ import { useLocalSearchParams, router } from 'expo-router';
 import { getGameInvites } from '@/api/invite';
 import INVITE from '@/constants/INVITE';
 import { addPlayersToGame } from '@/api/games';
-
-export interface GameInvite {
-  playerId: string;
-  status: typeof INVITE;
-}
+import { IInvite } from '@/api/types';
 
 export default function Confirm() {
   const { gameid } = useLocalSearchParams<{ gameid: string }>();
-  const [invites, setInvites] = useState<GameInvite[]>([]);
+  const [invites, setInvites] = useState<IInvite[]>([]);
 
   useEffect(() => {
     const fetchInvites = async () => {

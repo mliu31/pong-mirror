@@ -2,7 +2,7 @@ import { router, useLocalSearchParams, useNavigation } from 'expo-router';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { useEffect, useState } from 'react';
-import { Player } from '@/api/types';
+import { IPlayer } from '@/api/types';
 import { getAllPlayers } from '@/api/players';
 import { Button, ButtonText } from '@/components/ui/button';
 import { useToast, Toast, ToastTitle } from '@/components/ui/toast';
@@ -23,9 +23,9 @@ import { invitePlayersToGame } from '@/api/invite';
 
 export default function Route() {
   const { gameid } = useLocalSearchParams<{ gameid: string }>();
-  const [allPlayers, setAllPlayers] = useState<Player[] | null>(null);
+  const [allPlayers, setAllPlayers] = useState<IPlayer[] | null>(null);
   const [playerUpdates, setPlayerUpdates] = useState<
-    Record<Player['_id'], boolean>
+    Record<IPlayer['_id'], boolean>
   >({});
   const [numSelectedPlayers, setNumSelectedPlayers] = useState(0);
   const [isUpdatingPlayers, setIsUpdatingPlayers] = useState(false);
@@ -131,7 +131,7 @@ export default function Route() {
     );
   }
 
-  const renderItem = ({ item: player }: { item: Player }) => {
+  const renderItem = ({ item: player }: { item: IPlayer }) => {
     const playerButtonPressHandler = () => {
       // If trying to select and already at 4 players
       const isSelected = playerUpdates[player._id] === true; // allow for deselection

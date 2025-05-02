@@ -1,14 +1,15 @@
+import { InviteValue } from '@/constants/INVITE';
 import { TeamValue } from '@/constants/TEAM';
 
-export interface Game {
+export interface IGame {
   _id: string;
   players: {
-    player: Player;
+    player: IPlayer;
     team: TeamValue;
   }[];
 }
 
-export interface Player {
+export interface IPlayer {
   _id: string;
   name: string;
   email: string;
@@ -18,4 +19,12 @@ export interface Player {
   groups: string[];
   gamesPlayed: number;
   wins: number;
+}
+
+export interface IInvite {
+  gameId: string;
+  playerId: string;
+  status: InviteValue;
+  createdAt: Date;
+  respondedAt: Date | null;
 }

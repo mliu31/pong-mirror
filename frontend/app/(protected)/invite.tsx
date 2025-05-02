@@ -2,18 +2,14 @@ import { useEffect, useState } from 'react';
 import { View, FlatList } from 'react-native';
 import { Button, ButtonText } from '@/components/ui/button';
 import INVITE, { InviteValue } from '@/constants/INVITE';
+import type { IInvite } from '@/api/types';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { getPlayerInvites, setPlayerInvite } from '@/api/invite';
 import { ThemedText } from '@/components/ThemedText';
 
-export interface PlayerInvite {
-  gameId: string;
-  status: typeof INVITE;
-}
-
 export default function Invite() {
-  const [invites, setInvites] = useState<PlayerInvite[]>([]);
+  const [invites, setInvites] = useState<IInvite[]>([]);
 
   const currentPlayerId = useSelector((state: RootState) => {
     return state.auth.basicPlayerInfo?._id;
@@ -43,7 +39,7 @@ export default function Invite() {
   };
 
   return invites.length === 0 ? (
-    <View style={{ marginBottom: 10 }}>
+    <View>
       <ThemedText>No pending invites</ThemedText>
     </View>
   ) : (
