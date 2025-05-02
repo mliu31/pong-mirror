@@ -1,13 +1,12 @@
 import { ThemedText } from '@/components/ThemedText';
 import { useLocalSearchParams, router } from 'expo-router';
-// import ClickWinner from './clickWinner';
 import { Box } from '@/components/ui/box';
 import { Button, ButtonText } from '@/components/ui/button';
 import { ThemedView } from '@/components/ThemedView';
 import TeamChips from '@/components/TeamChips';
 import TeamBoxes from '@/components/TeamBoxes';
 import { useState } from 'react';
-import { Player } from '@/api/types';
+import { IPlayer } from '@/api/types';
 import { Dimensions, Pressable } from 'react-native';
 import TEAM, { TeamValue } from '@/constants/TEAM';
 import { setGameWinner } from '@/api/games';
@@ -51,8 +50,8 @@ export default function WinnerScreen() {
         {/* chips and continue button */}
         <Box className="absolute w-full h-full top-0 left-0">
           <TeamChips
-            leftTeam={JSON.parse(leftTeam) as Player[]}
-            rightTeam={JSON.parse(rightTeam) as Player[]}
+            leftTeam={JSON.parse(leftTeam) as IPlayer[]}
+            rightTeam={JSON.parse(rightTeam) as IPlayer[]}
             teamBoxHeight={teamBoxHeight}
             showLeftBorder={winner === TEAM.LEFT}
             showRightBorder={winner === TEAM.RIGHT}

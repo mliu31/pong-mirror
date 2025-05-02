@@ -13,7 +13,6 @@ const router = express.Router();
 router.put('/game/:id', async (req, res) => {
   const { id: gameid } = req.params;
   const pids = req.body;
-  console.log('made it ot router');
   try {
     await invitePlayers(gameid, pids);
     return void res.json({ message: 'Players invited successfully' });

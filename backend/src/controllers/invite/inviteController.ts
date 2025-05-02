@@ -3,7 +3,6 @@ import Game from '../../models/Game';
 import Invite from '../../models/Invite';
 import Player from '../../models/Player';
 
-// PUT /games/:gameid/invite, pids in req body
 export const invitePlayers = async (gameid: string, pids: string[]) => {
   const game = await Game.findById(gameid);
   if (!game) {
@@ -27,7 +26,6 @@ export const invitePlayers = async (gameid: string, pids: string[]) => {
   await Invite.insertMany(docs);
 };
 
-// GET /games/:gameId/invite
 export const getGameInvites = async (gameid: string) => {
   const invites = await Invite.find({ gameId: gameid });
   return invites;

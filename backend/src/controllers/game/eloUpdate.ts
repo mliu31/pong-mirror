@@ -1,5 +1,5 @@
 import Game from '../../models/Game';
-import Player /*, { IPlayer } */ from '../../models/Player';
+import Player from '../../models/Player';
 
 const getKFactor = (playerElo: number): number => {
   if (playerElo < 1500) {
