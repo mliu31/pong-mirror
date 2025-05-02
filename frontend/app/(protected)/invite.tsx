@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { getPlayerInvites, setPlayerInvite } from '@/api/invite';
 import { ThemedText } from '@/components/ThemedText';
+import { router } from 'expo-router';
 
 export default function Invite() {
   const [invites, setInvites] = useState<IInvite[]>([]);
@@ -41,6 +42,9 @@ export default function Invite() {
   return invites.length === 0 ? (
     <View>
       <ThemedText>No pending invites</ThemedText>
+      <Button onPress={() => router.replace('/')}>
+        <ButtonText>Go to Homepage</ButtonText>
+      </Button>
     </View>
   ) : (
     <FlatList
