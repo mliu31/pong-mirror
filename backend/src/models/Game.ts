@@ -22,7 +22,24 @@ const gameSchema = new mongoose.Schema({
     type: String,
     enum: ['LEFT', 'RIGHT', null],
     default: null
-  }
+  },
+  eloChanges: [
+    {
+      player: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Player',
+        required: true
+      },
+      oldElo: {
+        type: Number,
+        required: true
+      },
+      newElo: {
+        type: Number,
+        required: true
+      }
+    }
+  ]
 });
 
 export default mongoose.model('Game', gameSchema);
