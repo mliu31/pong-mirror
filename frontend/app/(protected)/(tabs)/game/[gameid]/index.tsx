@@ -132,8 +132,11 @@ export default function Route() {
   const renderItem = ({ item: player }: { item: Player }) => {
     const playerButtonPressHandler = () => {
       // If trying to select and already at 4 players
+      // TODO: confirming three players + the player selecting are being
+      // added to the game
       const isSelected = playerUpdates[player._id] === true; // allow for deselection
-      if (numSelectedPlayers === 4 && !isSelected) {
+      // self + three others
+      if (numSelectedPlayers === 3 && !isSelected) {
         handleToast();
         return;
       }

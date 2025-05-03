@@ -6,6 +6,12 @@ export interface Game {
     player: Player;
     team: TeamValue;
   }[];
+  winner: string;
+  eloChanges: {
+    player: Player;
+    oldElo: number;
+    newElo: number;
+  }[];
 }
 
 export interface Player {

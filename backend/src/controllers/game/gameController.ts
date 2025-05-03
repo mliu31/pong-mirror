@@ -8,7 +8,9 @@ export const createGame = (loggedInPlayer: IPlayer) =>
   });
 
 export const getGame = async (gameId: string) =>
-  Game.findById(gameId).populate('players.player');
+  Game.findById(gameId)
+    .populate('players.player')
+    .populate('eloChanges.player');
 
 export type PlayerUpdateRecord = Record<string, boolean>;
 

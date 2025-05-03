@@ -24,7 +24,7 @@ export default function WinnerScreen() {
 
   const handleConfirm = () => {
     if (winner) setGameWinner(gameid, winner);
-    router.replace('/game');
+    router.push(`/game/${gameid}/summary`);
   };
 
   // set winner depending on L/R screen pressed
