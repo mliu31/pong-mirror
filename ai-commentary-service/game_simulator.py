@@ -2,12 +2,126 @@ import pygame
 import json
 import time
 import math
+import random
 from typing import List, Dict, Tuple, Literal
 
 # Types
 CupStatus = Literal['FULL', 'HALF', 'EMPTY']
 Team = Literal['RED', 'BLUE']
 ActionType = Literal['serve', 'rally', 'hit', 'sink']
+
+class CommentaryManager:
+    def __init__(self):
+        self.commentary_history = []
+        self.last_commentary_time = 0
+        self.commentary_cooldown = 1.0  # Reduced cooldown for more frequent commentary
+        
+        # Predefined commentary templates
+        self.commentary_templates = {
+            'hit': [
+                "Player {player} hits a cup! Team {team} is on fire!",
+                "What a shot by {player}! That cup is half full now!",
+                "{player} with a solid hit! Team {team} is making their move!",
+                "Nice aim by {player}! That cup is looking half empty!",
+                "Team {team}'s {player} with a precise hit!"
+            ],
+            'sink': [
+                "INCREDIBLE! {player} sinks it! Team {team} is dominating!",
+                "BOOM! {player} with the perfect shot!",
+                "Team {team}'s {player} just made it look easy!",
+                "That's a SINK! {player} is on fire!",
+                "Team {team} is unstoppable! {player} with another perfect shot!"
+            ],
+            'rally': [
+                "The ball is flying back and forth!",
+                "What a rally between the teams!",
+                "The tension is building in this rally!",
+                "Both teams showing great skill!",
+                "This rally is getting intense!"
+            ],
+            'serve': [
+                "Team {team} starting strong with {player}'s serve!",
+                "{player} takes the first shot!",
+                "Here we go! {player} with the opening serve!",
+                "Team {team} begins the game with {player}'s serve!",
+                "The game is on! {player} with the first throw!"
+            ]
+        }
+        
+        # Special situation templates
+        self.special_templates = {
+            'comeback': [
+                "Team {team} is making an incredible comeback!",
+                "Watch out! Team {team} is catching up!",
+                "The momentum is shifting in Team {team}'s favor!"
+            ],
+            'domination': [
+                "Team {team} is absolutely dominating!",
+                "This is a masterclass by Team {team}!",
+                "Team {team} is unstoppable right now!"
+            ],
+            'close_game': [
+                "This is anyone's game!",
+                "The tension is palpable!",
+                "What a close match we have here!"
+            ]
+        }
+        
+    def generate_commentary(self, action: Dict, game_state: Dict) -> str:
+        """Generate commentary based on the current action and game state"""
+        current_time = time.time()
+        if current_time - self.last_commentary_time < self.commentary_cooldown:
+            return None
+            
+        self.last_commentary_time = current_time
+        
+        action_type = action['type']
+        player = action['player']
+        team = "Team 1" if player in ['A', 'B'] else "Team 2"
+        
+        # Check for special situations
+        special_commentary = self._check_special_situations(game_state, team)
+        if special_commentary and random.random() < 0.3:  # 30% chance to use special commentary
+            return special_commentary
+        
+        # Get template for the current action
+        templates = self.commentary_templates.get(action_type, [])
+        if not templates:
+            return None
+            
+        # Select and format a random template
+        template = random.choice(templates)
+        commentary = template.format(player=player, team=team)
+        
+        # Add to history
+        self.commentary_history.append(commentary)
+        if len(self.commentary_history) > 5:
+            self.commentary_history.pop(0)
+            
+        return commentary
+    
+    def _check_special_situations(self, game_state: Dict, current_team: str) -> str:
+        """Check for special game situations and return appropriate commentary"""
+        red_empty = game_state['red_empty']
+        blue_empty = game_state['blue_empty']
+        
+        # Check for domination
+        if current_team == "Team 1" and red_empty >= 3 and red_empty > blue_empty:
+            return random.choice(self.special_templates['domination']).format(team=current_team)
+        elif current_team == "Team 2" and blue_empty >= 3 and blue_empty > red_empty:
+            return random.choice(self.special_templates['domination']).format(team=current_team)
+            
+        # Check for comeback
+        if current_team == "Team 1" and red_empty > blue_empty and red_empty >= 2:
+            return random.choice(self.special_templates['comeback']).format(team=current_team)
+        elif current_team == "Team 2" and blue_empty > red_empty and blue_empty >= 2:
+            return random.choice(self.special_templates['comeback']).format(team=current_team)
+            
+        # Check for close game
+        if abs(red_empty - blue_empty) <= 1:
+            return random.choice(self.special_templates['close_game'])
+            
+        return None
 
 class Cup:
     def __init__(self, x: float, y: float, status: CupStatus = 'FULL'):
@@ -101,6 +215,12 @@ class PongSimulator:
         # Font
         self.font = pygame.font.Font(None, 36)
         self.small_font = pygame.font.Font(None, 24)
+        
+        # Initialize commentary manager without API key
+        self.commentary_manager = CommentaryManager()
+        self.current_commentary = None
+        self.commentary_fade_time = 0
+        self.commentary_duration = 2.0
 
     def initialize_cups(self, team: Team) -> List[Cup]:
         cups = []
@@ -221,6 +341,24 @@ class PongSimulator:
                 self.ball_trail.pop(0)
 
     def process_action(self, action: Dict):
+        # Get current game state for commentary
+        game_state = {
+            'red_full': sum(1 for cup in self.red_cups if cup.status == 'FULL'),
+            'red_half': sum(1 for cup in self.red_cups if cup.status == 'HALF'),
+            'red_empty': sum(1 for cup in self.red_cups if cup.status == 'EMPTY'),
+            'blue_full': sum(1 for cup in self.blue_cups if cup.status == 'FULL'),
+            'blue_half': sum(1 for cup in self.blue_cups if cup.status == 'HALF'),
+            'blue_empty': sum(1 for cup in self.blue_cups if cup.status == 'EMPTY')
+        }
+        
+        # Only generate commentary for significant actions
+        if action['type'] in ['hit', 'sink']:
+            commentary = self.commentary_manager.generate_commentary(action, game_state)
+            if commentary:
+                self.current_commentary = commentary
+                self.commentary_fade_time = time.time() + self.commentary_duration
+        
+        # Process the action as before
         action_type = action['type']
         player = action['player']
         
@@ -320,6 +458,40 @@ class PongSimulator:
         controls_text = f"Speed: {self.playback_speed}x - {'Paused' if self.is_paused else 'Playing'}"
         text_surface = self.font.render(controls_text, True, (255, 255, 255))
         self.screen.blit(text_surface, (10, self.height - 80))
+
+        # Draw current commentary if it exists and hasn't expired
+        if self.current_commentary and time.time() < self.commentary_fade_time:
+            # Calculate fade effect
+            time_left = self.commentary_fade_time - time.time()
+            alpha = min(255, int(255 * (time_left / 0.5)))  # Fade out in last 0.5 seconds
+            
+            # Create a surface for the commentary with transparency
+            commentary_surface = pygame.Surface((self.width - 40, 60), pygame.SRCALPHA)
+            commentary_surface.fill((0, 0, 0, 128))  # Semi-transparent black background
+            
+            # Render the commentary text with word wrapping
+            words = self.current_commentary.split()
+            lines = []
+            current_line = []
+            
+            for word in words:
+                test_line = ' '.join(current_line + [word])
+                if self.font.size(test_line)[0] < self.width - 80:  # Leave margin
+                    current_line.append(word)
+                else:
+                    lines.append(' '.join(current_line))
+                    current_line = [word]
+            if current_line:
+                lines.append(' '.join(current_line))
+            
+            # Draw each line
+            for i, line in enumerate(lines):
+                text_surface = self.font.render(line, True, (255, 255, 255))
+                text_rect = text_surface.get_rect(center=(self.width//2, 20 + i * 25))
+                commentary_surface.blit(text_surface, text_rect)
+            
+            # Draw the commentary surface on the main screen
+            self.screen.blit(commentary_surface, (20, self.height - 100))
 
     def run(self):
         running = True
