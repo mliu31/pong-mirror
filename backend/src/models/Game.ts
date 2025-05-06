@@ -20,6 +20,12 @@ const gameSchema = new mongoose.Schema({
     type: String,
     enum: ['LEFT', 'RIGHT', null],
     default: null
+  },
+  captain: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Player',
+    required: true,
+    default: null
   }
 });
 

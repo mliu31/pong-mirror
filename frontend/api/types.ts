@@ -7,6 +7,7 @@ export interface IGame {
     player: IPlayer;
     team: TeamValue;
   }[];
+  captain: IPlayer;
 }
 
 export interface IPlayer {

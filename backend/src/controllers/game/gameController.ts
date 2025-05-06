@@ -4,7 +4,8 @@ import Player, { IPlayer } from '../../models/Player';
 
 export const createGame = (loggedInPlayer: IPlayer) =>
   Game.create({
-    players: [{ player: loggedInPlayer, team: null }]
+    players: [{ player: loggedInPlayer, team: null }],
+    captain: loggedInPlayer
   });
 
 export const getGame = async (gameId: string) =>

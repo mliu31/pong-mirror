@@ -16,7 +16,6 @@ const router = express.Router();
 router.use(requireLoggedInHandler);
 
 router.post('/', async (req, res) => {
-  // TODO: Uncomment this once frontend login is implemented
   const player = req.session.player;
   if (player === undefined) {
     throw new Error(
