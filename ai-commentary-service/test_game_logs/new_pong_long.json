@@ -37,8 +37,7 @@
   { "timestamp": 61, "type": "rally", "player": "A" },
   { "timestamp": 64, "type": "rally", "player": "C" },
   { "timestamp": 66, "type": "rally", "player": "B" },
-  { "timestamp": 68, "type": "rally", "player": "D" },
-  { "timestamp": 70, "type": "sink", "player": "A" },
+  { "timestamp": 70, "type": "sink", "player": "D" },
 
   { "timestamp": 73, "type": "serve", "player": "C" },
   { "timestamp": 75, "type": "rally", "player": "B" },
