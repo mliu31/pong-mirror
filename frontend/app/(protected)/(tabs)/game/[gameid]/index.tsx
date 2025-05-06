@@ -20,14 +20,20 @@ import {
 } from '@/components/ui/modal';
 import QRCode from 'react-native-qrcode-svg';
 import { invitePlayersToGame } from '@/api/invite';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 export default function Route() {
   const { gameid } = useLocalSearchParams<{ gameid: string }>();
-  const [allPlayers, setAllPlayers] = useState<IPlayer[] | null>(null);
+  const playerId = useSelector(
+    (state: RootState) => state.auth.basicPlayerInfo?._id
+  );
+
+  const [allPlayers, setAllPlayers] = useState<IPlayer[]>();
   const [playerUpdates, setPlayerUpdates] = useState<
     Record<IPlayer['_id'], boolean>
-  >({});
-  const [numSelectedPlayers, setNumSelectedPlayers] = useState(0);
+  >({ [playerId]: true });
+  const [numSelectedPlayers, setNumSelectedPlayers] = useState(1);
   const [isUpdatingPlayers, setIsUpdatingPlayers] = useState(false);
   const shouldDisableContinueButton =
     numSelectedPlayers < 2 || isUpdatingPlayers;
@@ -58,17 +64,22 @@ export default function Route() {
     });
   };
 
-  useEffect(
-    () => void getAllPlayers().then(({ data }) => setAllPlayers(data)),
-    []
-  );
+  useEffect(() => {
+    void getAllPlayers().then(({ data }) => {
+      // move logged in user to the top of list
+      const filteredPlayers = data.filter((player) => player._id !== playerId);
+      const currentPlayer = data.find((player) => player._id === playerId);
+      setAllPlayers([currentPlayer, ...filteredPlayers]);
+    });
+  }, []);
 
   const handleContinueButtonPress = async () => {
     setIsUpdatingPlayers(true);
     const selectedPlayerIds = Object.keys(playerUpdates).filter(
       (playerId) => playerUpdates[playerId] // convert playerUpdates to array of pids
     );
-    await invitePlayersToGame(gameid, selectedPlayerIds);
+    const filteredPlayerIds = selectedPlayerIds.filter((id) => id !== playerId); // remove team captain (current user)
+    await invitePlayersToGame(gameid, filteredPlayerIds);
     setIsUpdatingPlayers(false);
     router.push(`/game/${gameid}/confirm`);
   };
@@ -133,6 +144,8 @@ export default function Route() {
 
   const renderItem = ({ item: player }: { item: IPlayer }) => {
     const playerButtonPressHandler = () => {
+      if (player._id === playerId) return;
+
       // If trying to select and already at 4 players
       const isSelected = playerUpdates[player._id] === true; // allow for deselection
       if (numSelectedPlayers === 4 && !isSelected) {
