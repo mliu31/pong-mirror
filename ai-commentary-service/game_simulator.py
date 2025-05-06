@@ -546,5 +546,5 @@ class PongSimulator:
         pygame.quit()
 
 if __name__ == "__main__":
-    simulator = PongSimulator("test_game_logs/pong_short (1).json")
+    simulator = PongSimulator("test_game_logs/new_pong_long.json")
     simulator.run()
