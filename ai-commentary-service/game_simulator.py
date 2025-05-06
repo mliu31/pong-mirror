@@ -99,33 +99,58 @@ class PongSimulator:
 
     def initialize_cups(self, team: Team) -> List[Cup]:
         cups = []
-        # Tree formation with additional cup at the bottom
-        rows = [1, 2, 3, 4, 1]  # Tree formation
-        start_y = 150 if team == 'RED' else 450
-        base_x = 400 if team == 'RED' else 800  # Base position for the tree
+        # Define the exact positions for each cup in the tree formation
+        # Each tuple is (x_offset, y_offset) relative to the base position
+        if team == 'RED':
+            base_x = 300  # Left side base position
+            base_y = 300  # Vertical center
+            # Left tree formation (pointing right): 1,4,3,2,1
+            positions = [
+                # Left tip (1 cup)
+                (-160, 0),  # Left x
+                # Second row (4 cups)
+                (-80, -120),  # Top x
+                (-80, -40),   # Top middle x
+                (-80, 40),    # Bottom middle x
+                (-80, 120),   # Bottom x
+                # Third row (3 cups)
+                (0, -80),     # Top x
+                (0, 0),       # Middle x
+                (0, 80),      # Bottom x
+                # Fourth row (2 cups)
+                (80, -40),    # Top x
+                (80, 40),     # Bottom x
+                # Right tip (1 cup)
+                (160, 0),     # Right x
+            ]
+        else:
+            base_x = 900  # Right side base position
+            base_y = 300  # Vertical center
+            # Right tree formation (pointing left): 1,2,3,4,1
+            positions = [
+                # Right tip (1 cup)
+                (-160, 0),  # Right x
+                # Second row (2 cups)
+                (-80, -40),  # Top x
+                (-80, 40),   # Bottom x
+                # Third row (3 cups)
+                (0, -80),   # Top x
+                (0, 0),     # Middle x
+                (0, 80),    # Bottom x
+                # Fourth row (4 cups)
+                (80, -120),  # Top x
+                (80, -40),   # Top middle x
+                (80, 40),    # Bottom middle x
+                (80, 120),   # Bottom x
+                # Left tip (1 cup)
+                (160, 0),    # Left x
+            ]
         
-        for row_idx, cups_in_row in enumerate(rows):
-            # For the additional cup at the bottom
-            if row_idx == 4:
-                x = base_x
-                y = start_y + (row_idx * 50)
-                cups.append(Cup(x, y))
-                continue
-            
-            # For the tree formation
-            row_width = cups_in_row * 60
-            x_offset = (row_width - 60) / 2
-            
-            # Adjust x position based on team to make trees point towards each other
-            if team == 'RED':
-                x_start = base_x - x_offset
-            else:
-                x_start = base_x - x_offset  # Changed to match left tree's calculation
-            
-            for i in range(cups_in_row):
-                x = x_start + (i * 60)
-                y = start_y + (row_idx * 50)
-                cups.append(Cup(x, y))
+        # Create cups at each position
+        for x_offset, y_offset in positions:
+            x = base_x + x_offset
+            y = base_y + y_offset
+            cups.append(Cup(x, y))
         
         return cups
 
