@@ -100,7 +100,9 @@ const PlayerChip = ({
         translationY.value = withSpring(position.y);
         onSnapSide?.(pid, TEAM.RIGHT);
       }
-    });
+    })
+    // app will crash if this is not set
+    .runOnJS(true);
 
   const animatedChip = (
     <Animated.View

@@ -3,7 +3,7 @@ import * as WebBrowser from 'expo-web-browser';
 import { useAppDispatch } from '../redux/redux-hooks';
 import { useRouter } from 'expo-router';
 import { Platform } from 'react-native';
-import { WEB_CLIENT_ID } from '../constants/auth';
+import { IOS_CLIENT_ID, WEB_CLIENT_ID } from '../constants/auth';
 import { useEffect } from 'react';
 import { googleSignup } from '../redux/slices/authSlice';
 
@@ -19,6 +19,7 @@ export const useGoogleAuth = () => {
 
   const [request, response, promptAsync] = Google.useAuthRequest({
     webClientId: WEB_CLIENT_ID,
+    iosClientId: IOS_CLIENT_ID,
     redirectUri,
     scopes: ['profile', 'email']
   });

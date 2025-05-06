@@ -171,17 +171,15 @@ export default function Route() {
 
   return (
     // TODO: add searchbar
-    <ThemedView className="flex-1 justify-center p-4 space-y-4">
-      <ScrollView className="flex-1">
-        <VStack space="md" className="flex-1">
-          <FlatList
-            data={allPlayers}
-            className="flex-1"
-            keyExtractor={(player) => player._id}
-            renderItem={renderItem}
-          />
-        </VStack>
-      </ScrollView>
+    <ThemedView className="flex-1 justify-center space-y-4">
+      <VStack space="md" className="flex-1">
+        <FlatList
+          data={allPlayers}
+          className="flex-1"
+          keyExtractor={(player) => player._id}
+          renderItem={renderItem}
+        />
+      </VStack>
 
       <Button
         disabled={shouldDisableContinueButton}

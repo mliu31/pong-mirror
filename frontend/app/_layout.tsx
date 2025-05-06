@@ -19,6 +19,7 @@ import { IoProvider } from '@/context/IoContext';
 import { Provider as ReduxProvider } from 'react-redux';
 import store, { persistor } from '../redux/store';
 import { PersistGate } from 'redux-persist/integration/react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -40,25 +41,27 @@ export default function RootLayout() {
   }
 
   return (
-    <ReduxProvider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <GluestackUIProvider mode={colorScheme === 'dark' ? 'dark' : 'light'}>
-          <IoProvider>
-            <ThemeProvider
-              value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
-            >
-              <Stack>
-                <Stack.Screen
-                  name="(protected)"
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen name="+not-found" />
-              </Stack>
-              <StatusBar style="auto" />
-            </ThemeProvider>
-          </IoProvider>
-        </GluestackUIProvider>
-      </PersistGate>
-    </ReduxProvider>
+    <GestureHandlerRootView>
+      <ReduxProvider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <GluestackUIProvider mode={colorScheme === 'dark' ? 'dark' : 'light'}>
+            <IoProvider>
+              <ThemeProvider
+                value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
+              >
+                <Stack>
+                  <Stack.Screen
+                    name="(protected)"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen name="+not-found" />
+                </Stack>
+                <StatusBar style="auto" />
+              </ThemeProvider>
+            </IoProvider>
+          </GluestackUIProvider>
+        </PersistGate>
+      </ReduxProvider>
+    </GestureHandlerRootView>
   );
 }
