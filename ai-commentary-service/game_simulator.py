@@ -65,6 +65,11 @@ class PongSimulator:
         self.ball_target = [0, 0]
         self.ball_speed = 0
         self.ball_visible = False
+        self.ball_trail = []
+        self.ball_bounce = 0
+        self.ball_arc_height = 0  # Maximum height of the ball's arc
+        self.ball_progress = 0    # Progress along the path (0 to 1)
+        self.ball_path = []       # List of points along the ball's path
         
         # Player positions
         self.player_positions = {
@@ -167,31 +172,53 @@ class PongSimulator:
             return cup
         return None
 
+    def calculate_arc_path(self, start_pos, end_pos, height=100, points=20):
+        """Calculate a curved path for the ball to follow"""
+        path = []
+        for i in range(points + 1):
+            t = i / points
+            # Quadratic bezier curve for the arc
+            x = start_pos[0] + (end_pos[0] - start_pos[0]) * t
+            y = start_pos[1] + (end_pos[1] - start_pos[1]) * t
+            # Add arc height (parabolic curve)
+            arc = height * math.sin(math.pi * t)
+            path.append((x, y - arc))
+        return path
+
     def move_ball(self, start_pos, end_pos, duration):
         self.ball_pos = list(start_pos)
         self.ball_target = list(end_pos)
         self.ball_speed = 1.0 / duration
         self.ball_visible = True
+        self.ball_trail = []
+        self.ball_progress = 0
+        
+        # Calculate the arc height based on distance
+        distance = math.sqrt((end_pos[0] - start_pos[0])**2 + (end_pos[1] - start_pos[1])**2)
+        self.ball_arc_height = min(distance * 0.3, 150)  # Arc height proportional to distance
+        
+        # Calculate the ball's path
+        self.ball_path = self.calculate_arc_path(start_pos, end_pos, self.ball_arc_height)
 
     def update_ball_position(self, dt):
         if not self.ball_visible:
             return
 
-        dx = self.ball_target[0] - self.ball_pos[0]
-        dy = self.ball_target[1] - self.ball_pos[1]
-        distance = math.sqrt(dx * dx + dy * dy)
-        
-        if distance < 5:
+        # Update progress along the path
+        self.ball_progress += self.ball_speed * dt
+        if self.ball_progress >= 1.0:
             self.ball_visible = False
             return
-        
-        move_distance = self.ball_speed * dt
-        if move_distance > distance:
-            move_distance = distance
-        
-        ratio = move_distance / distance
-        self.ball_pos[0] += dx * ratio
-        self.ball_pos[1] += dy * ratio
+
+        # Get current position along the path
+        path_index = int(self.ball_progress * (len(self.ball_path) - 1))
+        if path_index < len(self.ball_path):
+            self.ball_pos = list(self.ball_path[path_index])
+            
+            # Add current position to trail
+            self.ball_trail.append((self.ball_pos[0], self.ball_pos[1]))
+            if len(self.ball_trail) > 15:  # Increased trail length
+                self.ball_trail.pop(0)
 
     def process_action(self, action: Dict):
         action_type = action['type']
@@ -207,24 +234,23 @@ class PongSimulator:
             self.move_ball(start_pos, (target_cup.x, target_cup.y), 1.0)
             
         elif action_type == 'rally':
-            # Ball moves between players
+            # Ball moves between players with a high arc
             start_pos = self.player_positions[player]
-            # Find next player in sequence
             next_player = 'C' if player == 'A' else 'D' if player == 'B' else 'A' if player == 'C' else 'B'
             end_pos = self.player_positions[next_player]
-            self.move_ball(start_pos, end_pos, 0.5)
+            self.move_ball(start_pos, end_pos, 0.8)  # Slower for rally
             
         elif action_type == 'hit':
             hit_team = 'BLUE' if player in self.TEAM_1_PLAYERS else 'RED'
             hit_cup = self.update_random_cup(hit_team, 'HALF')
             if hit_cup:
-                self.move_ball(self.player_positions[player], (hit_cup.x, hit_cup.y), 0.5)
+                self.move_ball(self.player_positions[player], (hit_cup.x, hit_cup.y), 0.6)
                 
         elif action_type == 'sink':
             sink_team = 'BLUE' if player in self.TEAM_1_PLAYERS else 'RED'
             sink_cup = self.update_random_cup(sink_team, 'EMPTY')
             if sink_cup:
-                self.move_ball(self.player_positions[player], (sink_cup.x, sink_cup.y), 0.5)
+                self.move_ball(self.player_positions[player], (sink_cup.x, sink_cup.y), 0.6)
 
     def draw(self):
         # Draw table halves
@@ -245,8 +271,24 @@ class PongSimulator:
             text = self.small_font.render(player, True, (255, 255, 255))
             self.screen.blit(text, (pos[0] - 5, pos[1] - 10))
         
-        # Draw ball
+        # Draw the ball trail with gradient
+        for i, (trail_x, trail_y) in enumerate(self.ball_trail):
+            # Calculate gradient color based on position in trail
+            alpha = int(255 * (i / len(self.ball_trail)))
+            size = int(8 * (i / len(self.ball_trail)))
+            trail_surface = pygame.Surface((20, 20), pygame.SRCALPHA)
+            pygame.draw.circle(trail_surface, (255, 255, 255, alpha), (10, 10), size)
+            self.screen.blit(trail_surface, (trail_x - 10, trail_y - 10))
+
+        # Draw the ball with enhanced glow
         if self.ball_visible:
+            # Draw multiple glow layers for better effect
+            for radius, alpha in [(20, 50), (15, 100), (10, 150)]:
+                glow_surface = pygame.Surface((radius*2, radius*2), pygame.SRCALPHA)
+                pygame.draw.circle(glow_surface, (255, 255, 255, alpha), (radius, radius), radius)
+                self.screen.blit(glow_surface, (self.ball_pos[0] - radius, self.ball_pos[1] - radius))
+            
+            # Draw the ball
             pygame.draw.circle(self.screen, (255, 255, 255), 
                              (int(self.ball_pos[0]), int(self.ball_pos[1])), 8)
         
