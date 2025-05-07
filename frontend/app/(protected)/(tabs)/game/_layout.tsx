@@ -16,20 +16,25 @@ export default function GameLayout() {
           title: 'Add Players'
         }}
       />
-
+      <Stack.Screen
+        name="[gameid]/confirm"
+        options={{
+          title: 'Wait for Confirmation'
+        }}
+      />
       <Stack.Screen
         name="[gameid]/teamBuilder"
         options={{
           title: 'Form Teams'
         }}
       />
-
       <Stack.Screen
         name="[gameid]/inProgress"
         options={{
           title: 'Game Started'
         }}
       />
+      cd
       <Stack.Screen
         name="[gameid]/winner"
         options={{

@@ -1,7 +1,9 @@
 import { useAppSelector } from '@/redux/redux-hooks';
-import { Redirect, router, Slot, usePathname } from 'expo-router';
+import { Redirect, router, Slot, Stack, usePathname } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { getPlayerInvites } from '@/api/invite';
+import { Ionicons } from '@expo/vector-icons';
+import { Button } from '@/components/ui/button';
 
 export default function ProtectedLayout() {
   // TODO: flesh out route protection
@@ -55,5 +57,27 @@ export default function ProtectedLayout() {
   }
 
   // no pending invites → render whatever protected screen they asked for
-  return <Slot></Slot>;
+  return (
+    <Stack>
+      {/* tab navigator, no header */}
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+
+      {/* invite screen */}
+      <Stack.Screen
+        name="invite"
+        options={{
+          title: 'Pending Invites',
+          headerRight: () => (
+            <Button
+              onPress={() => router.replace('/')}
+              style={{ paddingHorizontal: 16 }}
+            >
+              <Ionicons name="close" size={24} />
+            </Button>
+          )
+        }}
+      />
+      <Slot />
+    </Stack>
+  );
 }

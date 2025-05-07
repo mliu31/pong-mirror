@@ -78,7 +78,7 @@ export default function Route() {
     const selectedPlayerIds = Object.keys(playerUpdates).filter(
       (playerId) => playerUpdates[playerId] // convert playerUpdates to array of pids
     );
-    const filteredPlayerIds = selectedPlayerIds.filter((id) => id !== playerId); // remove team captain (current user)
+    const filteredPlayerIds = selectedPlayerIds.filter((id) => id !== playerId); // don't invite captain bc alr in game
     await invitePlayersToGame(gameid, filteredPlayerIds);
     setIsUpdatingPlayers(false);
     router.push(`/game/${gameid}/confirm`);
