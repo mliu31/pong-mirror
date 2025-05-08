@@ -56,7 +56,12 @@ export default function Route() {
       render: ({ id }) => {
         const uniqueToastId = 'toast-' + id;
         return (
-          <Toast nativeID={uniqueToastId} action="error" variant="solid">
+          <Toast
+            nativeID={uniqueToastId}
+            action="error"
+            variant="solid"
+            className="bg-red-400"
+          >
             <ToastTitle>Max 4 players in a game</ToastTitle>
           </Toast>
         );
@@ -92,7 +97,7 @@ export default function Route() {
       <>
         <Button
           size="lg"
-          className="rounded-full p-2  mr-4 w-10 h-10"
+          className="rounded-full p-2 mr-4 w-10 h-10"
           onPress={() => {
             setShowModal(true);
           }}
@@ -172,7 +177,7 @@ export default function Route() {
         action="primary"
         onPress={playerButtonPressHandler}
         variant={playerUpdates[player._id] === true ? 'solid' : 'outline'}
-        className={`border-0 border-b rounded-none ${
+        className={`border-0 border-t rounded-none ${
           playerUpdates[player._id] === true ? 'border-black' : ''
         }`}
       >
@@ -199,9 +204,9 @@ export default function Route() {
         onPress={handleContinueButtonPress}
         disabled={shouldDisableContinueButton}
         action={shouldDisableContinueButton ? 'secondary' : 'primary'}
-        className={shouldDisableContinueButton ? '' : 'bg-success-300'}
+        className={shouldDisableContinueButton ? '' : 'bg-green-700'}
       >
-        <ButtonText>Continue</ButtonText>
+        <ButtonText className="text-gray-300">Continue</ButtonText>
       </Button>
     </ThemedView>
   );
