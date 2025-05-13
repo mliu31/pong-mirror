@@ -1,6 +1,6 @@
-import { Types } from 'mongoose';
 import Game from '../../models/Game';
 import Player /*, { IPlayer } */ from '../../models/Player';
+// import { Types } from 'mongoose';
 
 const getKFactor = (playerElo: number): number => {
   if (playerElo < 1500) {
@@ -101,16 +101,17 @@ export const updateElo = async (gameid: string, winner: string) => {
     );
     foundGame.set('players', [...updatedWinners, ...updatedLosers]);
 
-    foundGame.players.forEach((playerEntry) => {
-      const updatedPlayerDoc = allPlayersDoc.find((p) =>
-        (p._id as unknown as Types.ObjectId).equals(
-          playerEntry.player as Types.ObjectId
-        )
-      );
-      if (updatedPlayerDoc) {
-        playerEntry.newElo = updatedPlayerDoc.elo;
-      }
-    });
+    // TODO: update player object with newElo
+    // foundGame.players.forEach((playerEntry) => {
+    //   const updatedPlayerDoc = allPlayersDoc.find((p) =>
+    //     (p._id as unknown as Types.ObjectId).equals(
+    //       playerEntry.player as Types.ObjectId
+    //     )
+    //   );
+    //   if (updatedPlayerDoc) {
+    //     playerEntry.newElo = updatedPlayerDoc.elo;
+    //   }
+    // });
 
     await foundGame.save();
     return allPlayersDoc;
