@@ -5,7 +5,10 @@ export interface Game {
   players: {
     player: Player;
     team: TeamValue;
+    oldElo: number;
+    newElo: number;
   }[];
+  winner: string;
 }
 
 export interface Player {

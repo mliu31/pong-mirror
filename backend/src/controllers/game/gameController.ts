@@ -1,10 +1,18 @@
 import { isValidTeam } from '../../constants/TEAM';
 import Game from '../../models/Game';
 import Player, { IPlayer } from '../../models/Player';
+import { updateElo } from './eloUpdate';
 
 export const createGame = (loggedInPlayer: IPlayer) =>
   Game.create({
-    players: [{ player: loggedInPlayer, team: null }]
+    players: [
+      {
+        player: loggedInPlayer,
+        team: null,
+        oldElo: loggedInPlayer.elo,
+        newElo: null
+      }
+    ]
   });
 
 export const getGame = async (gameId: string) =>
@@ -37,6 +45,7 @@ export const updatePlayersInGame = async (
       game.players.splice(matchedPlayerIndex, 1);
     }
   }
+
   await game.save();
   return game.players;
 };
@@ -59,11 +68,13 @@ export const setPlayerTeam = async (
     if (!player) {
       throw new Error('Player not found');
     }
+
     if (isValidTeam(team)) {
       player.team = team;
     } else {
       throw new Error('Invalid team value');
     }
+
     await game.save();
     return game;
   } catch (e) {
@@ -83,7 +94,11 @@ export const setGameWinner = async (gameId: string, team: string) => {
       throw new Error('Invalid team value');
     }
     await game.save();
-    return game;
+
+    const eloMap = await updateElo(gameId, team);
+    return { game, eloMap };
+
+    // return game;
   } catch (e) {
     throw new Error('Internal server error' + e);
   }

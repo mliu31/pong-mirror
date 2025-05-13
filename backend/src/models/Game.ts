@@ -13,7 +13,9 @@ const gameSchema = new mongoose.Schema({
         type: String,
         enum: Object.values(TEAM),
         default: null
-      }
+      },
+      oldElo: Number,
+      newElo: Number
     }
   ],
   winner: {
