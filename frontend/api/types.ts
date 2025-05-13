@@ -5,13 +5,10 @@ export interface Game {
   players: {
     player: Player;
     team: TeamValue;
-  }[];
-  winner: string;
-  eloChanges: {
-    player: Player;
     oldElo: number;
     newElo: number;
   }[];
+  winner: string;
 }
 
 export interface Player {
