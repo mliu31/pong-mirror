@@ -4,13 +4,10 @@ import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import Friends from '@/components/Friends/Friends';
 import LogoutButton from '@/components/LogoutButton';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
+import useLoggedInPlayer from '@/hooks/useLoggedInPlayer';
 
 export default function Profile() {
-  const playerId = useSelector(
-    (state: RootState) => state.auth.basicPlayerInfo?._id
-  );
+  const playerId = useLoggedInPlayer()._id;
 
   const [player, setPlayer] = useState<Player | null>(null);
   const [loading, setLoading] = useState<boolean>(true);

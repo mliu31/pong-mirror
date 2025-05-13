@@ -11,6 +11,7 @@ import LeaderboardRanking from '@/components/leaderboard/leaderboard-core';
 import { fetchLeaderboard } from '@/api/leaderboard';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
+import useLoggedInPlayer from '@/hooks/useLoggedInPlayer';
 
 type Tab = 'Top' | 'League';
 
@@ -31,9 +32,7 @@ const LeaderboardScreen: React.FC = () => {
   // Error state for API failures
   const [error, setError] = useState<string | null>(null);
 
-  const currentUserId = useSelector(
-    (state: RootState) => state.auth.basicPlayerInfo?._id
-  );
+  const currentUserId = useLoggedInPlayer()._id;
 
   // Effect hook to fetch leaderboard data whenever tab changes
   useEffect(() => {
