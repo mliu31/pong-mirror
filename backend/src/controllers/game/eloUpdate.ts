@@ -20,6 +20,7 @@ export const updateElo = async (gameid: string, winner: string) => {
     }
 
     // Find player ids
+    const allPlayers = foundGame.players.map((player) => player._id);
     const winningPlayers = foundGame.players.filter(
       (player) => player.team === winner
     );
@@ -28,6 +29,7 @@ export const updateElo = async (gameid: string, winner: string) => {
     );
 
     // Fetch player objects
+    const allPlayersDoc = await Player.find({ _id: { $in: allPlayers } });
     const winningPlayerDocs = await Player.find({
       _id: { $in: winningPlayers.map((p) => p.player) }
     });
@@ -70,8 +72,7 @@ export const updateElo = async (gameid: string, winner: string) => {
           $inc: { wins: 1, gamesPlayed: 1 },
           $set: { elo: newElo }
         });
-        console.log(`${player.player}: ${oldElo} → ${newElo}`);
-
+        // console.log(`${player.player}: ${oldElo} → ${newElo}`);
         return {
           player: player.player,
           team: player.team,
@@ -89,8 +90,7 @@ export const updateElo = async (gameid: string, winner: string) => {
           $inc: { gamesPlayed: 1 },
           $set: { elo: newElo }
         });
-        console.log(`${player.player}: ${oldElo} → ${newElo}`);
-
+        // console.log(`${player.player}: ${oldElo} → ${newElo}`);
         return {
           player: player.player,
           team: player.team,
@@ -99,13 +99,10 @@ export const updateElo = async (gameid: string, winner: string) => {
         };
       })
     );
+    foundGame.set('players', [...updatedWinners, ...updatedLosers]);
 
-    foundGame.set('players', [...updatedWinners, ...updatedLosers]); // ✅ Correct
-
-    const allPlayersId = foundGame.players.map((player) => player._id);
-    const allPlayers = await Player.find({ _id: { $in: allPlayersId } });
     foundGame.players.forEach((playerEntry) => {
-      const updatedPlayerDoc = allPlayers.find((p) =>
+      const updatedPlayerDoc = allPlayersDoc.find((p) =>
         (p._id as unknown as Types.ObjectId).equals(
           playerEntry.player as Types.ObjectId
         )
@@ -116,7 +113,7 @@ export const updateElo = async (gameid: string, winner: string) => {
     });
 
     await foundGame.save();
-    return allPlayers;
+    return allPlayersDoc;
   } catch (error) {
     throw new Error('Internal server error: ' + error);
   }
