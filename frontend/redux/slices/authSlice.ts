@@ -6,7 +6,7 @@ import { AxiosError } from 'axios';
 type NewPlayer = Pick<Player, 'name' | 'email'>;
 type LoginPlayer = Pick<Player, 'email'>;
 
-interface AuthApiState {
+export interface AuthApiState {
   basicPlayerInfo?: Player | null;
   status: 'idle' | 'loading' | 'failed';
   error: string | null;
