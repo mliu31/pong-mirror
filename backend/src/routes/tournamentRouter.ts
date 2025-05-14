@@ -5,7 +5,8 @@ import {
   deleteTournament,
   addTeam,
   reseedTeams,
-  removeTeam
+  removeTeam,
+  getAllTeams
 } from '../controllers/tournament/tournamentController';
 
 const router = express.Router();
@@ -77,6 +78,16 @@ router.delete('/removeTeam/:tournamentId/teams/:teamId', async (req, res) => {
     res.json({ message: 'Team removed from tournament successfully' });
   } catch (error) {
     console.error('Error removing team from tournament:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+router.get('/:id/teams', async (req, res) => {
+  try {
+    const teams = await getAllTeams(req.params.id);
+    res.json(teams);
+  } catch (error) {
+    console.error('Error fetching tournament teams:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });

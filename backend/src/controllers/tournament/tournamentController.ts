@@ -152,3 +152,12 @@ export const addPlayer = async (
 // start tournament
 
 // end tournament
+
+// get all teams in tournament
+export const getAllTeams = async (tournamentId: string) => {
+  const tournament = await Tournament.findById(tournamentId);
+
+  if (!tournament) throw new Error('404 Tournament not found');
+
+  return tournament.teams;
+};
