@@ -19,7 +19,7 @@ export default function TabLayout() {
   useEffect(() => {
     if (!rootNavigationState?.key) return; // waiting for router
     if (!basicPlayerInfo) {
-      router.replace('/login');
+      router.replace('/signup');
     }
   }, [basicPlayerInfo, rootNavigationState, router]);
 

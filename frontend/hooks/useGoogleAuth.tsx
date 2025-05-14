@@ -49,8 +49,7 @@ export const useGoogleAuth = () => {
                 <Toast nativeID={id} action="error" variant="solid">
                   <ToastTitle>Sign-in Failed</ToastTitle>
                   <ToastDescription>
-                    {err?.message ||
-                      'Please sign in with a @dartmouth.edu account'}
+                    {err?.message || 'Something went wrong'}
                   </ToastDescription>
                 </Toast>
               )
