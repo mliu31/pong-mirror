@@ -5,7 +5,10 @@ import {
 } from '@react-navigation/native';
 import '@/global.css';
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
-import { useFonts } from 'expo-font';
+import {
+  useFonts,
+  AlumniSansCollegiateOne_400Regular
+} from '@expo-google-fonts/alumni-sans-collegiate-one';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
@@ -27,7 +30,8 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
-    SpaceMono: spaceMono
+    SpaceMono: spaceMono,
+    AlumniSansCollegiateOne_400Regular
   });
 
   useEffect(() => {
