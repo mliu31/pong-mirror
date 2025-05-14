@@ -6,12 +6,19 @@ import { Platform } from 'react-native';
 import { IOS_CLIENT_ID, WEB_CLIENT_ID } from '../constants/auth';
 import { useEffect } from 'react';
 import { googleSignup } from '../redux/slices/authSlice';
+import {
+  useToast,
+  Toast,
+  ToastTitle,
+  ToastDescription
+} from '@/components/ui/toast';
 
 WebBrowser.maybeCompleteAuthSession();
 
 export const useGoogleAuth = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const toast = useToast();
 
   const redirectUri = Platform.select({
     web: 'http://localhost:8081/profile'
@@ -36,6 +43,18 @@ export const useGoogleAuth = () => {
           })
           .catch((err) => {
             console.error('Google signup failed:', err);
+            toast.show({
+              duration: 3000,
+              render: ({ id }) => (
+                <Toast nativeID={id} action="error" variant="solid">
+                  <ToastTitle>Sign-in Failed</ToastTitle>
+                  <ToastDescription>
+                    {err?.message ||
+                      'Please sign in with a @dartmouth.edu account'}
+                  </ToastDescription>
+                </Toast>
+              )
+            });
           });
       }
     } else if (response?.type === 'error') {
