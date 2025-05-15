@@ -1,21 +1,18 @@
 import { useEffect, useState } from 'react';
 import { router, useLocalSearchParams } from 'expo-router';
-import {
-  View,
-  Text,
-  ActivityIndicator,
-  StyleSheet,
-  FlatList,
-  Button
-} from 'react-native';
-import { Game } from '@/api/types';
+import { Dimensions, FlatList } from 'react-native';
+import { ThemedView } from '@/components/ThemedView';
+import { ThemedText } from '@/components/ThemedText';
+import { Button, ButtonText } from '@/components/ui/button';
+import { Box } from '@/components/ui/box';
 import { getGame } from '@/api/games';
+import { Game } from '@/api/types';
+import PlayerCircle from '@/components/PlayerCircle';
 
 export default function SummaryScreen() {
   const local = useLocalSearchParams();
 
   const [game, setGame] = useState<Game | null>(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     getGame(local.gameid as string)
@@ -31,87 +28,91 @@ export default function SummaryScreen() {
       })
       .catch((err) => {
         console.error('Failed to fetch game:', err);
-      })
-      .finally(() => {
-        setLoading(false);
       });
   }, [local.gameid]);
 
-  if (loading) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
-
   if (!game) {
     return (
-      <View style={{ padding: 20 }}>
-        <Text>Game not found.</Text>
-      </View>
+      <ThemedView className="p-5">
+        <ThemedText>Game not found.</ThemedText>
+      </ThemedView>
     );
   }
 
+  const screenHeight = Dimensions.get('window').height;
+  const numPlayers = game.players.length;
+  const circleSize = Math.min((screenHeight - 300) / numPlayers, 100);
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Game Summary</Text>
-      <Text style={styles.winner}>
-        {game.winner ? `${game.winner} team won` : 'No winner'}
-      </Text>
+    <ThemedView className="flex-1 px-6 pt-10 pb-6">
+      {/* Announce the winning team */}
+      <Box className="items-center mt-10">
+        <ThemedText className="text-xl font-semibold text-success-700 text-center">
+          🎉 The {game.winner} team won!
+        </ThemedText>
+      </Box>
 
+      {/* List players and their elo changes */}
       <FlatList
         data={game.players}
         keyExtractor={(item) => item.player._id}
-        renderItem={({ item }) => (
-          <View style={styles.row}>
-            <Text style={styles.name}>{item.player.name}</Text>
-            <Text style={styles.team}>Team: {item.team}</Text>
-          </View>
-        )}
-      />
-
-      <Text style={styles.header}>Elo Changes</Text>
-      <FlatList
-        data={game.players}
-        keyExtractor={(item) => item.player._id}
+        contentContainerStyle={{
+          flexGrow: 1,
+          justifyContent: 'center',
+          paddingBottom: 20
+        }}
         renderItem={({ item }) => {
           const oldElo = item.oldElo ?? 1200;
           const newElo = item.newElo ?? 'N/A';
           const change = (item.newElo ?? 0) - (item.oldElo ?? 0);
 
           return (
-            <View style={styles.row}>
-              <Text style={styles.name}>{item.player.name}</Text>
-              <Text style={styles.elo}>
-                {oldElo} → {newElo} ({change >= 0 ? '+' : ''}
-                {change})
-              </Text>
-            </View>
+            <Box
+              className="py-2"
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: circleSize + 20
+              }}
+              key={item.player._id}
+            >
+              <Box className="flex-row items-center space-x-6 justify-center">
+                <PlayerCircle
+                  name={item.player.name}
+                  size={circleSize}
+                  bgLightColor={
+                    item.team === game.winner ? '#65b684' : '#e5e7eb'
+                  }
+                  bgDarkColor={
+                    item.team === game.winner ? '#65b684' : '#374151'
+                  }
+                  textLightColor={
+                    item.team === game.winner ? '#ffffff' : '#374151'
+                  }
+                  textDarkColor={
+                    item.team === game.winner ? '#ffffff' : '#e5e7eb'
+                  }
+                />
+                <ThemedText className="text-base font-bold text-typography-900">
+                  {oldElo} → {newElo} ({change >= 0 ? '+' : ''}
+                  {change})
+                </ThemedText>
+              </Box>
+            </Box>
           );
         }}
       />
-      <Button title="Done" onPress={() => router.push('/profile')} />
-    </View>
+
+      <Box className="mt-8">
+        <Button
+          action="primary"
+          variant="solid"
+          size="md"
+          onPress={() => router.push('/profile')}
+        >
+          <ButtonText>Done</ButtonText>
+        </Button>
+      </Box>
+    </ThemedView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { padding: 20, backgroundColor: '#fff' },
-  centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  header: { fontSize: 24, fontWeight: 'bold', marginBottom: 16 },
-  winner: { fontSize: 18, fontStyle: 'italic', marginBottom: 12 },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc'
-  },
-  name: { fontSize: 16 },
-  team: { fontSize: 16 },
-  elo: {
-    fontSize: 16,
-    fontWeight: 'bold'
-  }
-});
