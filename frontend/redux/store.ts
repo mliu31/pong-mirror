@@ -12,15 +12,18 @@ import {
   REGISTER,
   REHYDRATE
 } from 'redux-persist';
-import authReducer from './slices/authSlice';
+import authReducer, { AuthApiState } from './slices/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { PersistPartial } from 'redux-persist/es/persistReducer';
 
 const authPersistConfig = {
   key: 'auth',
   storage: AsyncStorage
 };
 
-export const store = configureStore({
+export const store = configureStore<{
+  auth: AuthApiState & PersistPartial;
+}>({
   reducer: {
     auth: persistReducer(authPersistConfig, authReducer) // handles authenticating (signing/logging in) a player
   },
