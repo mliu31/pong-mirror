@@ -11,7 +11,7 @@ export default function ProtectedLayout() {
     return (
       <Redirect
         href={{
-          pathname: '/login',
+          pathname: '/signup',
           params: {
             next: pathname
           }
