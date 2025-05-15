@@ -9,6 +9,7 @@ import {
 } from '../controllers/game/gameController';
 import express from 'express';
 import { requireLoggedInHandler } from './authRouter';
+import { updateElo } from '../controllers/game/eloUpdate';
 
 const router = express.Router();
 
@@ -71,7 +72,8 @@ router.put('/:gameid/players/:pid/team/:team', async (req, res) => {
 
 router.patch('/:gameid/winner/:team', async (req, res) => {
   const { gameid, team } = req.params;
-  return void res.json(await setGameWinner(gameid, team));
+  return void (res.json(await setGameWinner(gameid, team)),
+  res.json(await updateElo(gameid, team)));
 });
 
 export default router;
