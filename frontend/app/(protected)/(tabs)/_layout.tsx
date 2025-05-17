@@ -1,6 +1,5 @@
 import { Tabs, useRootNavigationState, useRouter } from 'expo-router';
-import React, { useEffect } from 'react';
-import { Platform } from 'react-native';
+import { useEffect } from 'react';
 import { HapticTab } from '@/components/HapticTab';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
@@ -81,6 +80,15 @@ export default function TabLayout() {
           title: 'Profile',
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="person.circle.fill" color={color} />
+          )
+        }}
+      />
+      <Tabs.Screen
+        name="lobby"
+        options={{
+          title: 'Lobby',
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={28} name="plus" color={color} />
           )
         }}
       />

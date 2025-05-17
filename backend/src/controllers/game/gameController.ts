@@ -7,8 +7,10 @@ export const createGame = (loggedInPlayer: IPlayer) =>
     players: [{ player: loggedInPlayer, team: null }]
   });
 
-export const getGame = async (gameId: string) =>
-  Game.findById(gameId).populate('players.player');
+export const getGame = (gameId: string) =>
+  Game.findById(gameId)
+    .populate('players.player')
+    .catch(() => null);
 
 export type PlayerUpdateRecord = Record<string, boolean>;
 
