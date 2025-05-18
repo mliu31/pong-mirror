@@ -66,15 +66,17 @@ export default function ProtectedLayout() {
       <Stack.Screen
         name="invite"
         options={{
-          title: 'Pending Invites',
-          headerRight: () => (
-            <Button
-              onPress={() => router.replace('/')}
-              style={{ paddingHorizontal: 16 }}
-            >
-              <Ionicons name="close" size={24} />
-            </Button>
-          )
+          title: 'Pending Invites'
+
+          // TODO: cleaner way to close bar -- need react query (pass number of invites between _layout.tsx and invite.tsx)
+          // headerRight: () => (
+          //   <Button
+          //     onPress={() => router.replace('/')}
+          //     style={{ paddingHorizontal: 16 }}
+          //   >
+          //     <Ionicons name="close" size={24} />
+          //   </Button>
+          // )
         }}
       />
       <Slot />

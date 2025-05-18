@@ -4,10 +4,10 @@ import { TeamValue } from '@/constants/TEAM';
 export interface IGame {
   _id: string;
   players: {
-    player: IPlayer;
+    player: string;
     team: TeamValue;
   }[];
-  captain: IPlayer;
+  captain: string;
 }
 
 export interface IPlayer {

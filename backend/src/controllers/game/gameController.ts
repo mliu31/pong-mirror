@@ -2,10 +2,10 @@ import { isValidTeam } from '../../constants/TEAM';
 import Game from '../../models/Game';
 import Player, { IPlayer } from '../../models/Player';
 
-export const createGame = (loggedInPlayer: IPlayer) =>
+export const createGame = (loggedInPlayerId: string) =>
   Game.create({
-    players: [{ player: loggedInPlayer, team: null }],
-    captain: loggedInPlayer
+    players: [{ player: loggedInPlayerId, team: null }],
+    captain: loggedInPlayerId
   });
 
 export const getGame = async (gameId: string) =>
