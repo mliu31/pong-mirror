@@ -4,24 +4,38 @@ import Invite from '../../models/Invite';
 import Player from '../../models/Player';
 
 export const invitePlayers = async (gameid: string, pids: string[]) => {
+  // find game
   const game = await Game.findById(gameid);
   if (!game) {
     throw new Error('Game not found');
   }
 
-  await Invite.deleteMany({ gameId: gameid }); // clear previous invites for game
+  // find preexisting invites
+  const existingInvites = await Invite.find({
+    gameId: gameid,
+    playerId: { $in: pids }
+  });
 
-  // bulk-create new pending invites
+  const existingPlayerIds = new Set(
+    existingInvites.map((invite) => invite.playerId.toString())
+  );
+
+  // clear previous invites that don't match existing invite
+  await Invite.deleteMany({ gameId: gameid, playerId: { $nin: pids } });
+
+  // bulk-create new invites
   const docs = [];
   for (const pid of pids) {
-    const player = await Player.findById(pid);
-    if (!player) {
-      throw new Error(`Invalid player ID: ${pid}`);
+    if (!existingPlayerIds.has(pid)) {
+      const player = await Player.findById(pid);
+      if (!player) {
+        throw new Error(`Invalid player ID: ${pid}`);
+      }
+      docs.push({
+        gameId: gameid,
+        playerId: pid
+      });
     }
-    docs.push({
-      gameId: gameid,
-      playerId: pid
-    });
   }
   await Invite.insertMany(docs);
 };

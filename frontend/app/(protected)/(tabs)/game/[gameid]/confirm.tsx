@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { FlatList, View } from 'react-native';
+import { FlatList } from 'react-native';
 import { Button, ButtonText } from '@/components/ui/button';
 import { ThemedText } from '@/components/ThemedText';
 import { useLocalSearchParams, router } from 'expo-router';
@@ -9,6 +9,7 @@ import { addPlayersToGame } from '@/api/games';
 import { IInvite, IPlayer } from '@/api/types';
 import { getPlayer } from '@/api/players';
 import { Box } from '@/components/ui/box';
+import { ThemedView } from '@/components/ThemedView';
 
 export default function Confirm() {
   const { gameid } = useLocalSearchParams<{ gameid: string }>();
@@ -61,8 +62,8 @@ export default function Confirm() {
 
   const renderItem = ({ item }: { item: IInvite }) => {
     return (
-      <Box className="flex flex-row justify-between items-center p-7 pt-0">
-        <ThemedText className="text-base">
+      <Box className="flex flex-row justify-between items-center p-3 pt-0">
+        <ThemedText className="text-base text-lg">
           {invitees[item.playerId]?.name}
         </ThemedText>
 
@@ -78,8 +79,8 @@ export default function Confirm() {
   };
 
   return (
-    <View>
-      <Box className="flex-row p-7 justify-start">
+    <ThemedView className="flex-1 justify-center p-4 space-y-4">
+      <Box className="flex-row p-3 justify-start">
         <ThemedText className="font-bold text-xl">Player</ThemedText>
         <ThemedText className="ml-auto font-bold text-xl">Status</ThemedText>
       </Box>
@@ -100,6 +101,6 @@ export default function Confirm() {
       >
         <ButtonText>Continue</ButtonText>
       </Button>
-    </View>
+    </ThemedView>
   );
 }
