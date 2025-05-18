@@ -62,7 +62,7 @@ export default function Confirm() {
 
   const renderItem = ({ item }: { item: IInvite }) => {
     return (
-      <Box className="flex flex-row justify-between items-center space-y-4">
+      <Box className="flex flex-row justify-between items-center pb-3">
         <ThemedText className="text-base text-lg">
           {invitees[item.playerId]?.name}
         </ThemedText>
@@ -80,7 +80,7 @@ export default function Confirm() {
 
   return (
     <ThemedView className="flex-1 p-5 space-y-4">
-      <Box className="flex-row pb-3 justify-start">
+      <Box className="flex-row justify-start pb-3">
         <ThemedText className="font-bold text-xl">Player</ThemedText>
         <ThemedText className="ml-auto font-bold text-xl">Status</ThemedText>
       </Box>

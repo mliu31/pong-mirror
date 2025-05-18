@@ -15,55 +15,34 @@ import { Icon, CheckIcon, SlashIcon } from '@/components/ui/icon';
 
 export default function Invite() {
   const [invites, setInvites] = useState<IInvite[]>([]);
-  const [gameToCaptId, setGameToCaptId] = useState<Record<string, string>>({});
-  const [captIdToName, setCaptIdToName] = useState<Record<string, string>>({});
+  const [gameInviteToCaptName, setGameInviteToCaptName] = useState<
+    Record<string, string>
+  >({});
 
   const currentPlayerId = useSelector((state: RootState) => {
     return state.auth.basicPlayerInfo?._id;
   });
 
-  // get the invites for the current player
-  const fetchInvites = async (pid: string) => {
-    const res = await getPlayerInvites(pid);
-    setInvites(res.data);
-  };
-
   // when get logged in player, fetch invites
   useEffect(() => {
-    if (currentPlayerId) fetchInvites(currentPlayerId);
+    if (!currentPlayerId) return;
+
+    (async () => {
+      const { data: invites } = await getPlayerInvites(currentPlayerId);
+      setInvites(invites);
+
+      const gameToCapt = await Promise.all(
+        invites.map(async (invite) => {
+          const { data: game } = await getGame(invite.gameId);
+          const { data: player } = await getPlayer(game.captain);
+
+          return [game._id as string, player.name as string];
+        })
+      );
+
+      setGameInviteToCaptName(Object.fromEntries(gameToCapt));
+    })();
   }, [currentPlayerId]);
-
-  // get captains for each game in invites
-  useEffect(() => {
-    // get captains
-    const fetchGames = async (gameIds: string[]) => {
-      const gameCapts: Record<string, string> = {};
-      for (const gameId of gameIds) {
-        const res = await getGame(gameId);
-        gameCapts[gameId] = res.data.captain;
-      }
-      setGameToCaptId(gameCapts);
-    };
-
-    // get captain names
-    const fetchCapts = async () => {
-      const captNames: Record<string, string> = {};
-      for (const captId of Object.values(gameToCaptId)) {
-        const res = await getPlayer(captId);
-        captNames[captId] = res.data.name;
-      }
-      setCaptIdToName(captNames);
-    };
-    const fetchCaptNames = async (gameIds: string[]) => {
-      await fetchGames(gameIds);
-      await fetchCapts();
-    };
-
-    if (invites.length > 0) {
-      const gameIds = invites.map((invite) => invite.gameId);
-      fetchCaptNames(gameIds);
-    }
-  }, [gameToCaptId, invites]);
 
   const handleGameAcceptReject = async (
     gameid: string,
@@ -80,9 +59,9 @@ export default function Invite() {
   };
 
   const renderItem = ({ item }: { item: IInvite }) => (
-    <ThemedView className="flex-row items-center">
+    <ThemedView className="flex-row items-center pb-4">
       <ThemedText className="flex-1 text-base text-lg">
-        {`${captIdToName[gameToCaptId[item.gameId]]}'s game`}
+        {`${gameInviteToCaptName[item.gameId]}'s game`}
       </ThemedText>
 
       <ThemedView className="flex-row space-x-2 ml-auto">
