@@ -33,17 +33,17 @@ declare module 'express-session' {
   }
 }
 
-app.use(
-  session({
-    secret: env.SECRET_KEY,
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false },
-    store: MongoStore.create({
-      clientPromise: Promise.resolve(mongoose.connection.getClient())
-    })
+export const sessionMiddleware = session({
+  secret: env.SECRET_KEY,
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false },
+  store: MongoStore.create({
+    clientPromise: Promise.resolve(mongoose.connection.getClient())
   })
-);
+});
+
+app.use(sessionMiddleware);
 
 app.get('/', async (_, res) => {
   res.send(`Hello World!`);

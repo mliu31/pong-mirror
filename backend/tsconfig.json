@@ -1,21 +1,23 @@
 {
-  "include": ["src"],
+  "include": [
+    "src"
+  ],
   "compilerOptions": {
     "outDir": "dist",
     "target": "ES2022",
-    "lib": ["ES2022"],
+    "lib": [
+      "ES2022"
+    ],
     "module": "ESNext",
     "skipLibCheck": true,
-
     "moduleResolution": "node",
     "esModuleInterop": true,
     "isolatedModules": true,
     "moduleDetection": "force",
-
-    /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
-  }
+  },
+  "extends": "expo/tsconfig.base"
 }

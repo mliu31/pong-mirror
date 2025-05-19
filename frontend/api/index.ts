@@ -4,7 +4,7 @@ import { logout } from '@/redux/slices/authSlice';
 
 const api = axios.create({
   baseURL: 'http://localhost:3000', // TODO: read from .env
-  withCredentials: true
+  withCredentials: false
 });
 
 // if we ever get a 401, clear auth state immediately

@@ -1,3 +1,5 @@
+import NotificationProvider from '@/components/NotificationProvider';
+import { IoProvider } from '@/context/IoContext';
 import { useAppSelector } from '@/redux/redux-hooks';
 import { Slot, usePathname, useRouter } from 'expo-router';
 import { useEffect } from 'react';
@@ -28,5 +30,11 @@ export default function ProtectedLayout() {
     return null;
   }
 
-  return <Slot></Slot>;
+  return (
+    <IoProvider>
+      <NotificationProvider>
+        <Slot></Slot>
+      </NotificationProvider>
+    </IoProvider>
+  );
 }
