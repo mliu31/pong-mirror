@@ -23,7 +23,7 @@ export default function Confirm() {
       setInvites(res.data);
     };
     fetchInvites();
-    const interval = setInterval(fetchInvites, 5000); // poll every 5s
+    const interval = setInterval(fetchInvites, 3000); // poll every 3s
     return () => clearInterval(interval);
   }, [gameid]);
 

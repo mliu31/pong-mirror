@@ -41,7 +41,7 @@ export default function ProtectedLayout() {
     };
 
     checkInvites();
-    const intervalId = setInterval(checkInvites, 2000); // check every 2s
+    const intervalId = setInterval(checkInvites, 3000); // check every 3s
 
     return () => {
       clearInterval(intervalId); // cleanup
