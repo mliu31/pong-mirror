@@ -24,7 +24,6 @@ import { PersistGate } from 'redux-persist/integration/react';
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: spaceMono
   });
@@ -42,11 +41,9 @@ export default function RootLayout() {
   return (
     <ReduxProvider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <GluestackUIProvider mode={colorScheme === 'dark' ? 'dark' : 'light'}>
+        <GluestackUIProvider mode={'dark'}>
           <IoProvider>
-            <ThemeProvider
-              value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
-            >
+            <ThemeProvider value={DarkTheme}>
               <Stack>
                 <Stack.Screen
                   name="(protected)"
