@@ -18,7 +18,7 @@ const gameSchema = new mongoose.Schema({
   ],
   winner: {
     type: String,
-    enum: ['LEFT', 'RIGHT', null],
+    enum: Object.values(TEAM),
     default: null
   },
   captain: {
