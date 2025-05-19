@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { FlatList } from 'react-native';
 import { Button, ButtonText } from '@/components/ui/button';
 import INVITE, { InviteValue } from '@/constants/INVITE';
@@ -7,14 +7,15 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { getPlayerInvites, setPlayerInvite } from '@/api/invite';
 import { ThemedText } from '@/components/ThemedText';
-import { router } from 'expo-router';
 import { getGame } from '@/api/games';
 import { getPlayer } from '@/api/players';
 import { ThemedView } from '@/components/ThemedView';
 import { Icon, CheckIcon, SlashIcon } from '@/components/ui/icon';
+import InviteContext from '@/context/InviteContext';
 
 export default function Invite() {
-  const [invites, setInvites] = useState<IInvite[]>([]);
+  // const [invites, setInvites] = useState<IInvite[]>([]);
+  const { invites, setInvites } = useContext(InviteContext);
   const [gameInviteToCaptName, setGameInviteToCaptName] = useState<
     Record<string, string>
   >({});
@@ -29,7 +30,6 @@ export default function Invite() {
 
     (async () => {
       const { data: invites } = await getPlayerInvites(currentPlayerId);
-      setInvites(invites);
 
       const gameToCapt = await Promise.all(
         invites.map(async (invite) => {
@@ -42,7 +42,7 @@ export default function Invite() {
 
       setGameInviteToCaptName(Object.fromEntries(gameToCapt));
     })();
-  }, [currentPlayerId]);
+  }, [invites, currentPlayerId]);
 
   const handleGameAcceptReject = async (
     gameid: string,
@@ -53,9 +53,7 @@ export default function Invite() {
     } else {
       console.error('currentPlayerId is undefined');
     }
-    setInvites((prevInvites) =>
-      prevInvites.filter((invite) => invite.gameId !== gameid)
-    );
+    setInvites(invites.filter((invite: IInvite) => invite.gameId !== gameid));
   };
 
   const renderItem = ({ item }: { item: IInvite }) => (
@@ -89,10 +87,10 @@ export default function Invite() {
     <ThemedView className="flex-1 p-4">
       {invites.length === 0 ? (
         <ThemedView className="flex-1 justify-between">
-          <ThemedText className="text-lg pb-4">No pending invites</ThemedText>
-          <Button onPress={() => router.replace('/')}>
+          <ThemedText className="text-lg pb-4">None pending</ThemedText>
+          {/* <Button onPress={() => router.replace('/')}>
             <ButtonText>Exit</ButtonText>
-          </Button>
+          </Button> */}
         </ThemedView>
       ) : (
         <FlatList
