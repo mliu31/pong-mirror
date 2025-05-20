@@ -12,7 +12,6 @@
     "preview": "bun run build && bun run dist/index.js"
   },
   "dependencies": {
-    "@expo-google-fonts/alumni-sans-collegiate-one": "^0.3.0",
     "@types/express-session": "^1.18.1",
     "connect-mongo": "^5.1.0",
     "cors": "^2.8.5",
