@@ -10,7 +10,7 @@ import { useToast, Toast, ToastTitle } from './ui/toast';
 import { Link } from 'expo-router';
 import { useIo } from '@/context/IoContext';
 
-const NotificationProvider: FC<PropsWithChildren> = ({ children }) => {
+const MessageProvider: FC<PropsWithChildren> = ({ children }) => {
   const toast = useToast();
   const showNotification = useCallback(
     (title: ReactNode, destination?: ComponentProps<typeof Link>['href']) =>
@@ -52,4 +52,4 @@ const NotificationProvider: FC<PropsWithChildren> = ({ children }) => {
   return children;
 };
 
-export default NotificationProvider;
+export default MessageProvider;
