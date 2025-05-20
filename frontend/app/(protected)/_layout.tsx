@@ -14,7 +14,6 @@ export default function ProtectedLayout() {
     // the protected route may still be rendering while going to singup, ignore if this is the case;
     // otherwise next will be signup.
     if (!basicPlayerInfo && pathname !== '/signup') {
-      console.log('going to signup, will return to', pathname);
       router.push({
         pathname: '/signup',
         params: {
