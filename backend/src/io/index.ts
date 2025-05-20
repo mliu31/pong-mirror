@@ -1,9 +1,8 @@
 import { Handshake, Server } from 'socket.io';
-import corsOptions from './util/corsOptions';
-import { sessionMiddleware } from './app';
+import corsOptions from '../util/corsOptions';
+import { sessionMiddleware } from '../app';
 
 import sharedSession from 'express-socket.io-session';
-import { IPlayer } from './models/Player';
 
 const io = new Server({
   cors: corsOptions
@@ -38,6 +37,3 @@ io.on('connection', (socket) => {
 });
 
 export default io;
-
-export const notifyPlayer = (player: IPlayer, event: string, data: unknown) =>
-  io.to(player._id.toString()).emit(event, data);
