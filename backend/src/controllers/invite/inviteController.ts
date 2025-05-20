@@ -40,13 +40,16 @@ export const invitePlayers = async (gameid: string, pids: string[]) => {
   await Invite.insertMany(docs);
 };
 
-export const getGameInvites = async (gameid: string) => {
-  const invites = await Invite.find({ gameId: gameid });
-  return invites;
-};
+export const getGameInvites = async (gameid: string) =>
+  await Invite.find({ gameId: gameid });
 
 export const getPlayerInvites = async (pid: string) => {
-  const invites = await Invite.find({ playerId: pid, status: INVITE.PENDING });
+  const invites = await Invite.find({ playerId: pid, status: INVITE.PENDING })
+    .populate({
+      path: 'gameId',
+      populate: { path: 'captain', model: 'Player' }
+    })
+    .exec();
   return invites;
 };
 

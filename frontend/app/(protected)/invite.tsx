@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import { FlatList } from 'react-native';
 import { Button, ButtonText } from '@/components/ui/button';
 import INVITE, { InviteValue } from '@/constants/INVITE';
@@ -7,18 +7,12 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { getPlayerInvites, setPlayerInvite } from '@/api/invite';
 import { ThemedText } from '@/components/ThemedText';
-import { getGame } from '@/api/games';
-import { getPlayer } from '@/api/players';
 import { ThemedView } from '@/components/ThemedView';
 import { Icon, CheckIcon, SlashIcon } from '@/components/ui/icon';
 import InviteContext from '@/context/InviteContext';
 
 export default function Invite() {
-  // const [invites, setInvites] = useState<IInvite[]>([]);
   const { invites, setInvites } = useContext(InviteContext);
-  const [gameInviteToCaptName, setGameInviteToCaptName] = useState<
-    Record<string, string>
-  >({});
 
   const currentPlayerId = useSelector((state: RootState) => {
     return state.auth.basicPlayerInfo?._id;
@@ -30,19 +24,9 @@ export default function Invite() {
 
     (async () => {
       const { data: invites } = await getPlayerInvites(currentPlayerId);
-
-      const gameToCapt = await Promise.all(
-        invites.map(async (invite) => {
-          const { data: game } = await getGame(invite.gameId);
-          const { data: player } = await getPlayer(game.captain);
-
-          return [game._id as string, player.name as string];
-        })
-      );
-
-      setGameInviteToCaptName(Object.fromEntries(gameToCapt));
+      setInvites(invites);
     })();
-  }, [invites, currentPlayerId]);
+  }, [currentPlayerId, setInvites]);
 
   const handleGameAcceptReject = async (
     gameid: string,
@@ -53,18 +37,22 @@ export default function Invite() {
     } else {
       console.error('currentPlayerId is undefined');
     }
-    setInvites(invites.filter((invite: IInvite) => invite.gameId !== gameid));
+    setInvites(
+      invites.filter((invite: IInvite) => invite.gameId._id !== gameid)
+    );
   };
 
   const renderItem = ({ item }: { item: IInvite }) => (
     <ThemedView className="flex-row items-center pb-4">
       <ThemedText className="flex-1 text-base text-lg">
-        {`${gameInviteToCaptName[item.gameId]}'s game`}
+        {`${item.gameId.captain.name}'s game`}
       </ThemedText>
 
       <ThemedView className="flex-row space-x-2 ml-auto">
         <Button
-          onPress={() => handleGameAcceptReject(item.gameId, INVITE.ACCEPTED)}
+          onPress={() =>
+            handleGameAcceptReject(item.gameId._id.toString(), INVITE.ACCEPTED)
+          }
           className="bg-green-700"
         >
           <ButtonText>
@@ -72,7 +60,9 @@ export default function Invite() {
           </ButtonText>
         </Button>
         <Button
-          onPress={() => handleGameAcceptReject(item.gameId, INVITE.DECLINED)}
+          onPress={() =>
+            handleGameAcceptReject(item.gameId._id.toString(), INVITE.DECLINED)
+          }
           className="bg-red-500"
         >
           <ButtonText>
@@ -95,7 +85,7 @@ export default function Invite() {
       ) : (
         <FlatList
           data={invites}
-          keyExtractor={(invite) => invite.gameId.toString()}
+          keyExtractor={(invite) => invite._id.toString()}
           renderItem={renderItem}
         />
       )}

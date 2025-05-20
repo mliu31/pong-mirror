@@ -7,7 +7,7 @@ export interface IGame {
     player: IPlayer;
     team: TeamValue;
   }[];
-  captain: string;
+  captain: IPlayer;
 }
 
 export interface IPlayer {
@@ -23,8 +23,9 @@ export interface IPlayer {
 }
 
 export interface IInvite {
-  gameId: string;
-  playerId: string;
+  _id: string;
+  gameId: IGame;
+  playerId: IPlayer;
   status: InviteValue;
   createdAt: Date;
   respondedAt: Date | null;

@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button';
 import { CloseIcon, Icon } from '@/components/ui/icon';
 
 export default function ProtectedLayout() {
-  // TODO: flesh out route protection
   const basicPlayerInfo = useAppSelector((state) => state.auth.basicPlayerInfo);
   const pid = basicPlayerInfo?._id;
   const [checking, setChecking] = useState(true);
@@ -96,7 +95,6 @@ export default function ProtectedLayout() {
                 : undefined
           }}
         />
-        <Slot />
       </Stack>
     </InvitesContext.Provider>
   );

@@ -29,14 +29,16 @@ export default function Confirm() {
 
   // fetch player info for each invite
   useEffect(() => {
-    Promise.all(invites.map((i) => getPlayer(i.playerId))).then((players) => {
-      players.forEach((player) => {
-        setInvitees((prev) => ({
-          ...prev,
-          [player.data._id]: player.data
-        }));
-      });
-    });
+    Promise.all(invites.map((i) => getPlayer(i.playerId.toString()))).then(
+      (players) => {
+        players.forEach((player) => {
+          setInvitees((prev) => ({
+            ...prev,
+            [player.data._id]: player.data
+          }));
+        });
+      }
+    );
   }, [invites]);
 
   // number of accepted invites
@@ -48,7 +50,7 @@ export default function Confirm() {
   const addPlayersToGameHandler = async () => {
     await addPlayersToGame(
       gameid,
-      invites.map((invite) => invite.playerId)
+      invites.map((invite) => invite.playerId.toString())
     );
     router.push('./teamBuilder');
   };
@@ -64,7 +66,7 @@ export default function Confirm() {
     return (
       <Box className="flex flex-row justify-between items-center pb-3">
         <ThemedText className="text-base text-lg">
-          {invitees[item.playerId]?.name}
+          {invitees[item.playerId.toString()]?.name}
         </ThemedText>
 
         <Box>
