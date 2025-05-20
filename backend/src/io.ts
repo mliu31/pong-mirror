@@ -35,10 +35,6 @@ io.on('connection', (socket) => {
     return socket.disconnect(true);
   }
   socket.join(player._id.toString());
-  notifyPlayer(player, 'notification', {
-    title: `You are connected to the server with id ${socket.id}`,
-    destination: '/invite'
-  });
 });
 
 export default io;
