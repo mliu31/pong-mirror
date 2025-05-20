@@ -13,8 +13,8 @@ import { useIo } from '@/context/IoContext';
 const NotificationProvider: FC<PropsWithChildren> = ({ children }) => {
   const toast = useToast();
   const showNotification = useCallback(
-    (title: ReactNode, destination?: ComponentProps<typeof Link>['href']) => {
-      const id = toast.show({
+    (title: ReactNode, destination?: ComponentProps<typeof Link>['href']) =>
+      toast.show({
         placement: 'top',
         render: ({ id }) => {
           const content = (
@@ -33,8 +33,7 @@ const NotificationProvider: FC<PropsWithChildren> = ({ children }) => {
             </Link>
           );
         }
-      });
-    },
+      }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
