@@ -15,7 +15,7 @@ export default function ProtectedLayout() {
   useEffect(() => {
     // the protected route may still be rendering while going to singup, ignore if this is the case;
     // otherwise next will be signup.
-    if (!basicPlayerInfo && pathname !== '/signup') {
+    if (basicPlayerInfo === null && pathname !== '/signup') {
       router.push({
         pathname: '/signup',
         params: {
