@@ -31,11 +31,5 @@ export default function ProtectedLayout() {
     return null;
   }
 
-  return (
-    <IoProvider>
-      <NotificationProvider>
-        <Slot></Slot>
-      </NotificationProvider>
-    </IoProvider>
-  );
+  return <Slot></Slot>;
 }
