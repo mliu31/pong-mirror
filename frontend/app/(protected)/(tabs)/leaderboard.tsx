@@ -9,8 +9,6 @@ import {
 import LeaderboardNav from '@/components/leaderboard/leaderboard-nav';
 import LeaderboardRanking from '@/components/leaderboard/leaderboard-core';
 import { fetchLeaderboard } from '@/api/leaderboard';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
 import useLoggedInPlayer from '@/hooks/useLoggedInPlayer';
 
 type Tab = 'Top' | 'League';

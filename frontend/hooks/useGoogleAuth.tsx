@@ -59,6 +59,7 @@ export const useGoogleAuth = () => {
     } else if (response?.type === 'error') {
       console.error('Google Auth Error:', response.error);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, response, router]);
 
   return { promptAsync, request };
