@@ -10,7 +10,7 @@ export interface IGame {
     newElo: number;
   }[];
   captain: IPlayer;
-  winner: IPlayer | null;
+  winner: TeamValue;
 }
 
 export interface IPlayer {

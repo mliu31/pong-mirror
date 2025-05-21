@@ -41,6 +41,12 @@ export default function GameLayout() {
           title: 'Record Results'
         }}
       />
+      <Stack.Screen
+        name="[gameid]/summary"
+        options={{
+          title: 'Game Summary'
+        }}
+      />
     </Stack>
   );
 }
