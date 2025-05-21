@@ -21,12 +21,12 @@ export default function WinnerScreen() {
   const { width } = Dimensions.get('window');
   const [winner, setWinner] = useState<TeamValue>();
 
-  const handleConfirm = () => {
-    if (winner) setGameWinner(gameid, winner);
-    router.replace('/game');
+  const handleConfirm = async () => {
+    if (winner) await setGameWinner(gameid, winner);
+    router.push(`/game/${gameid}/summary`);
   };
 
-  // set winner depending on L/R screen pressed
+  // set winner depending on L/R screen pressedr
   const handlePress = (event: { nativeEvent: { locationX: number } }) => {
     const x = event.nativeEvent.locationX;
     if (x < width / 2) {

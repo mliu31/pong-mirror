@@ -1,5 +1,5 @@
 import { useAppSelector } from '@/redux/redux-hooks';
-import { Redirect, router, Slot, Stack, usePathname } from 'expo-router';
+import { Redirect, router, Stack, usePathname } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { getPlayerInvites } from '@/api/invite';
 import { IInvite } from '@/api/types';
@@ -48,17 +48,67 @@ export default function ProtectedLayout() {
   }, [basicPlayerInfo, pathname, pid]);
 
   // show login screen if not logged in
+  useEffect(() => {
+    // the protected route may still be rendering while going to singup, ignore if this is the case;
+    // otherwise next will be signup.
+    // TODO fix (jordan)
+    if (!basicPlayerInfo && pathname !== '/signup') {
+      router.replace({
+        pathname: '/signup',
+        params: {
+          next: pathname
+        }
+      });
+    }
+  }, [basicPlayerInfo, pathname]);
+
+  useEffect(() => {
+    if (!basicPlayerInfo) {
+      setChecking(false);
+      return;
+    }
+
+    // Else, async check for invites
+    const checkInvites = async () => {
+      const pid = basicPlayerInfo?._id;
+      try {
+        // fetch pending invites for this player
+        const invites = (await getPlayerInvites(pid)).data;
+        setInvites(invites);
+        if (invites.length > 0 && pathname !== '/invite') {
+          // router.replace('/invite');  // redirects to invite screen
+          // return; // don’t fall through to <Slot />
+          // notify user of new invite
+        }
+      } catch (err) {
+        console.error('Invite‐check failed', err);
+      } finally {
+        setChecking(false);
+      }
+    };
+
+    checkInvites();
+    const intervalId = setInterval(checkInvites, 3000); // check every 3s
+
+    return () => {
+      clearInterval(intervalId); // cleanup
+    };
+  }, [basicPlayerInfo, pathname, pid]);
+
+  // if (!basicPlayerInfo) {
+  //   return (
+  //     <Redirect
+  //       href={{
+  //         pathname: '/signup',
+  //         params: { next: pathname }
+  //       }}
+  //     />
+  //   );
+  // }
+
   if (!basicPlayerInfo) {
-    return (
-      <Redirect
-        href={{
-          pathname: '/login',
-          params: {
-            next: pathname
-          }
-        }}
-      />
-    );
+    // user is not authenticated, show blank page while we wait for the above effect to kick in
+    return null;
   }
 
   // show nothing (or a loader) while we’re deciding page to show

@@ -6,8 +6,11 @@ export interface IGame {
   players: {
     player: IPlayer;
     team: TeamValue;
+    oldElo: number;
+    newElo: number;
   }[];
   captain: IPlayer;
+  winner: IPlayer | null;
 }
 
 export interface IPlayer {

@@ -1,12 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import api from '../../api';
 import { Player } from '@/api/types';
-import { AxiosError } from 'axios';
 
-type NewPlayer = Pick<Player, 'name' | 'email'>;
-type LoginPlayer = Pick<Player, 'email'>;
-
-interface AuthApiState {
+export interface AuthApiState {
   basicPlayerInfo?: Player | null;
   status: 'idle' | 'loading' | 'failed';
   error: string | null;
@@ -19,25 +15,6 @@ const initialState: AuthApiState = {
   error: null,
   isAuthenticated: false
 };
-
-// signup
-export const signup = createAsyncThunk(
-  'auth/signup',
-  async (data: NewPlayer, { rejectWithValue }) => {
-    try {
-      const response = await api.post('/auth/signup', data);
-      return response.data.player;
-    } catch (error) {
-      const err = error as AxiosError<{ message: string }>;
-
-      if (err.response && err.response.data && err.response.data.message) {
-        return rejectWithValue(err.response.data.message);
-      }
-
-      return rejectWithValue('Sign up failed. Please try again.');
-    }
-  }
-);
 
 // signup with Google
 export const googleSignup = createAsyncThunk(
@@ -59,25 +36,6 @@ export const googleSignup = createAsyncThunk(
   }
 );
 
-// login
-export const login = createAsyncThunk(
-  'auth/login',
-  async (data: LoginPlayer, { rejectWithValue }) => {
-    try {
-      const response = await api.post('/auth/login', data);
-      return response.data.player;
-    } catch (error) {
-      const err = error as AxiosError<{ message: string }>;
-
-      if (err.response && err.response.data && err.response.data.message) {
-        return rejectWithValue(err.response.data.message);
-      }
-
-      return rejectWithValue('Login failed. Please try again.');
-    }
-  }
-);
-
 //logout
 export const logout = createAsyncThunk('auth/logout', async () => {
   const response = await api.post('/auth/logout', {});
@@ -90,36 +48,6 @@ const authSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(signup.pending, (state) => {
-        state.status = 'loading';
-        state.error = null;
-      })
-      .addCase(signup.fulfilled, (state, action: PayloadAction<Player>) => {
-        console.log('Signup fulfilled payload:', action.payload); // testing
-        state.basicPlayerInfo = action.payload;
-        state.status = 'idle';
-        state.error = null;
-        state.isAuthenticated = true;
-      })
-      .addCase(signup.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.payload as string;
-      })
-      .addCase(login.pending, (state) => {
-        state.status = 'loading';
-        state.error = null;
-      })
-      .addCase(login.fulfilled, (state, action: PayloadAction<Player>) => {
-        console.log('Login fulfilled payload:', action.payload); // testing
-        state.basicPlayerInfo = action.payload;
-        state.status = 'idle';
-        state.error = null;
-        state.isAuthenticated = true;
-      })
-      .addCase(login.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.payload as string;
-      })
       .addCase(googleSignup.pending, (state) => {
         state.status = 'loading';
         state.error = null;

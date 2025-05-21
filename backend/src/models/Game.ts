@@ -13,7 +13,9 @@ const gameSchema = new mongoose.Schema({
         type: String,
         enum: Object.values(TEAM),
         default: null
-      }
+      },
+      oldElo: Number,
+      newElo: Number
     }
   ],
   winner: {
@@ -26,7 +28,24 @@ const gameSchema = new mongoose.Schema({
     ref: 'Player',
     required: true,
     default: null
-  }
+  },
+  eloChanges: [
+    {
+      player: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Player',
+        required: true
+      },
+      oldElo: {
+        type: Number,
+        required: true
+      },
+      newElo: {
+        type: Number,
+        required: true
+      }
+    }
+  ]
 });
 
 export default mongoose.model('Game', gameSchema);

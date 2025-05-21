@@ -13,8 +13,8 @@ export const newPlayer = async (name: string, email: string) => {
     email: email,
     friends: []
   });
-  updateRanks();
   await newPlayer.save();
+  await updateRanks();
   return newPlayer;
 };
 

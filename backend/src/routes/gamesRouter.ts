@@ -6,9 +6,9 @@ import {
   setGameWinner,
   setPlayerTeam
 } from '../controllers/game/gameController';
+import { getPlayer } from '../controllers/player/playerController';
 import express from 'express';
 import { requireLoggedInHandler } from './authRouter';
-import { updateElo } from '../controllers/game/eloUpdate';
 
 const router = express.Router();
 
@@ -22,7 +22,8 @@ router.post('/', async (req, res) => {
       'Logged-in player not found, this route should be protected!'
     );
   }
-  const game = await createGame(playerId as unknown as string);
+  const loggedInPlayer = await getPlayer(playerId as unknown as string);
+  const game = await createGame(loggedInPlayer);
   res.json({ id: game._id });
 });
 
@@ -60,8 +61,7 @@ router.put('/:gameid/players/:pid/team/:team', async (req, res) => {
 // set game winner
 router.patch('/:gameid/winner/:team', async (req, res) => {
   const { gameid, team } = req.params;
-  return void (res.json(await setGameWinner(gameid, team)),
-  res.json(await updateElo(gameid, team)));
+  return void res.json(await setGameWinner(gameid, team));
 });
 
 export default router;

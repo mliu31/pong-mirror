@@ -3,20 +3,17 @@ import { FlatList } from 'react-native';
 import { Button, ButtonText } from '@/components/ui/button';
 import INVITE, { InviteValue } from '@/constants/INVITE';
 import type { IInvite } from '@/api/types';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
 import { getPlayerInvites, setPlayerInvite } from '@/api/invite';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Icon, CheckIcon, SlashIcon } from '@/components/ui/icon';
 import InviteContext from '@/context/InviteContext';
+import useLoggedInPlayer from '@/hooks/useLoggedInPlayer';
 
 export default function Invite() {
   const { invites, setInvites } = useContext(InviteContext);
 
-  const currentPlayerId = useSelector((state: RootState) => {
-    return state.auth.basicPlayerInfo?._id;
-  });
+  const currentPlayerId = useLoggedInPlayer()._id;
 
   // when get logged in player, fetch invites
   useEffect(() => {

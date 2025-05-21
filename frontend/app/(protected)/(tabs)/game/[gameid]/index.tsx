@@ -7,7 +7,7 @@ import { getAllPlayers } from '@/api/players';
 import { Button, ButtonText } from '@/components/ui/button';
 import { useToast, Toast, ToastTitle } from '@/components/ui/toast';
 import { VStack } from '@/components/ui/vstack';
-import { FlatList, ScrollView, View } from 'react-native';
+import { FlatList, Platform, View } from 'react-native';
 import { QrCode as QrCodeIcon } from 'lucide-react-native';
 import { CloseIcon, Icon } from '@/components/ui/icon';
 import {
@@ -22,6 +22,7 @@ import QRCode from 'react-native-qrcode-svg';
 import { invitePlayersToGame } from '@/api/invite';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
+import { Searchbar } from 'react-native-paper';
 
 export default function Route() {
   const { gameid } = useLocalSearchParams<{ gameid: string }>();
@@ -37,6 +38,21 @@ export default function Route() {
   const [isUpdatingPlayers, setIsUpdatingPlayers] = useState(false);
   const shouldDisableContinueButton =
     numSelectedPlayers < 2 || isUpdatingPlayers;
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredPlayers, setFilteredPlayers] = useState<IPlayer[]>([]);
+
+  useEffect(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (allPlayers === undefined) return;
+
+    if (q === '') {
+      setFilteredPlayers(allPlayers);
+    } else {
+      setFilteredPlayers(
+        allPlayers?.filter((p) => p.name.toLowerCase().includes(q))
+      );
+    }
+  }, [searchQuery, allPlayers]);
 
   const toast = useToast();
   const [toastId, setToastId] = useState(0);
@@ -153,6 +169,7 @@ export default function Route() {
 
       // If trying to select and already at 4 players
       const isSelected = playerUpdates[player._id] === true; // allow for deselection
+      // self + three others
       if (numSelectedPlayers === 4 && !isSelected) {
         handleToast();
         return;
@@ -177,7 +194,7 @@ export default function Route() {
         action="primary"
         onPress={playerButtonPressHandler}
         variant={playerUpdates[player._id] === true ? 'solid' : 'outline'}
-        className={`border-0 border-t rounded-none ${
+        className={`border-0 rounded-none ${
           playerUpdates[player._id] === true ? 'border-black' : ''
         }`}
       >
@@ -187,26 +204,41 @@ export default function Route() {
   };
 
   return (
-    // TODO: add searchbar
-    <ThemedView className="flex-1 justify-center p-4 space-y-4">
-      <ScrollView className="flex-1">
-        <VStack space="md" className="flex-1">
-          <FlatList
-            data={allPlayers}
-            className="flex-1"
-            keyExtractor={(player) => player._id}
-            renderItem={renderItem}
-          />
-        </VStack>
-      </ScrollView>
+    <ThemedView className="flex-1 justify-center space-y-4 pb-4">
+      <Searchbar
+        placeholder="Search"
+        onChangeText={setSearchQuery}
+        value={searchQuery}
+        style={{
+          margin: 12,
+          marginBottom: 0,
+          borderRadius: 12
+        }}
+        inputStyle={{
+          fontFamily: 'sans-serif',
+          fontSize: 16,
+          fontWeight: '400'
+        }}
+      />
+      <VStack space="md" className="flex-1">
+        <FlatList
+          data={filteredPlayers}
+          className="flex-1"
+          keyExtractor={(player) => player._id}
+          renderItem={renderItem}
+          ItemSeparatorComponent={() => <View className="h-px bg-gray-500" />}
+        />
+      </VStack>
 
       <Button
         onPress={handleContinueButtonPress}
         disabled={shouldDisableContinueButton}
         action={shouldDisableContinueButton ? 'secondary' : 'primary'}
-        className={shouldDisableContinueButton ? '' : 'bg-green-700'}
+        className={`m-5 
+    ${shouldDisableContinueButton ? '' : 'bg-green-700'}
+  `}
       >
-        <ButtonText className="text-gray-300">Continue</ButtonText>
+        <ButtonText className="text-gray-3003">Continue</ButtonText>
       </Button>
     </ThemedView>
   );
