@@ -1,7 +1,7 @@
 import { Dimensions } from 'react-native';
 import { Box } from './ui/box';
 import PlayerChip from './PlayerChip';
-import { Player } from '@/api/types';
+import { IPlayer } from '@/api/types';
 import {
   CHIP_DIAM,
   CHIP_HEIGHT,
@@ -16,8 +16,8 @@ const TeamChips = ({
   showLeftBorder,
   showRightBorder
 }: {
-  leftTeam: Player[];
-  rightTeam: Player[];
+  leftTeam: IPlayer[];
+  rightTeam: IPlayer[];
   teamBoxHeight: number;
   showLeftBorder?: boolean;
   showRightBorder?: boolean;
@@ -29,7 +29,7 @@ const TeamChips = ({
   const rightX = width * 0.75 - CHIP_DIAM / 2;
 
   const renderTeam = (
-    team: Player[],
+    team: IPlayer[],
     isLeft: boolean,
     showBorder?: boolean
   ) => {

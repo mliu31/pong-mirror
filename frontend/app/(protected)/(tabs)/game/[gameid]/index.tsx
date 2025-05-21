@@ -33,7 +33,7 @@ export default function Route() {
   const [allPlayers, setAllPlayers] = useState<IPlayer[]>();
   const [playerUpdates, setPlayerUpdates] = useState<
     Record<IPlayer['_id'], boolean>
-  >({ [playerId]: true });
+  >({ [playerId as string]: true });
   const [numSelectedPlayers, setNumSelectedPlayers] = useState(1);
   const [isUpdatingPlayers, setIsUpdatingPlayers] = useState(false);
   const shouldDisableContinueButton =
