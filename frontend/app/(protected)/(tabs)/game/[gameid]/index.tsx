@@ -7,7 +7,7 @@ import { getAllPlayers } from '@/api/players';
 import { Button, ButtonText } from '@/components/ui/button';
 import { useToast, Toast, ToastTitle } from '@/components/ui/toast';
 import { VStack } from '@/components/ui/vstack';
-import { FlatList, Platform, View } from 'react-native';
+import { FlatList, View } from 'react-native';
 import { QrCode as QrCodeIcon } from 'lucide-react-native';
 import { CloseIcon, Icon } from '@/components/ui/icon';
 import {
@@ -92,7 +92,7 @@ export default function Route() {
       const currentPlayer = data.find((player) => player._id === playerId);
       setAllPlayers([currentPlayer, ...filteredPlayers]);
     });
-  }, []);
+  }, [playerId]);
 
   const handleContinueButtonPress = async () => {
     setIsUpdatingPlayers(true);

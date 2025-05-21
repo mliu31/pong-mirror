@@ -5,7 +5,7 @@ import {
   useFonts,
   AlumniSansCollegiateOne_400Regular
 } from '@expo-google-fonts/alumni-sans-collegiate-one';
-import { Slot, Stack } from 'expo-router';
+import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';

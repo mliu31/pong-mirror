@@ -1,5 +1,5 @@
 import { useAppSelector } from '@/redux/redux-hooks';
-import { Redirect, router, Stack, usePathname } from 'expo-router';
+import { router, Stack, usePathname } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { getPlayerInvites } from '@/api/invite';
 import { IInvite } from '@/api/types';
