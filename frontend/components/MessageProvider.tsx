@@ -38,10 +38,10 @@ const MessageProvider: FC<PropsWithChildren> = ({ children }) => {
     []
   );
   const io = useIo();
+
   useEffect(() => {
     if (io === undefined) return;
-    io.on('notification', (data: { title: string; destination?: string }) => {
-      const { title, destination } = data;
+    io.on('notification', ({ title, destination }) => {
       showNotification(
         title,
         destination as unknown as ComponentProps<typeof Link>['href']

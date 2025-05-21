@@ -1,13 +1,16 @@
 import io from '.';
 import { IPlayer } from '../models/Player';
-import { IOMessage, IONotification } from './messageTypes';
+import { IOEvent, IONotificationEvent } from './messageTypes';
 
-const ioMessagePlayer = (player: IPlayer, message: IOMessage) =>
-  io.to(player._id.toString()).emit(message.event, message.data);
+const ioMessagePlayer = <T extends IOEvent>(
+  player: IPlayer,
+  event: T['title'],
+  data: T['data']
+) => io.to(player._id.toString()).emit(event, data);
 
 export const notifyPlayer = (
   player: IPlayer,
-  notification: IONotification['data']
+  data: IONotificationEvent['data']
 ) => {
-  ioMessagePlayer(player, { event: 'notification', data: notification });
+  ioMessagePlayer(player, 'notification', data);
 };
