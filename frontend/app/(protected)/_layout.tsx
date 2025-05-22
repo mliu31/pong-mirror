@@ -16,7 +16,7 @@ export default function ProtectedLayout() {
     // the protected route may still be rendering while going to singup, ignore if this is the case;
     // otherwise next will be signup.
     if (basicPlayerInfo === null && pathname !== '/signup') {
-      router.push({
+      router.replace({
         pathname: '/signup',
         params: {
           next: pathname
@@ -26,7 +26,6 @@ export default function ProtectedLayout() {
   }, [basicPlayerInfo, pathname, router]);
 
   if (!basicPlayerInfo) {
-    // user is not authenticated, show blank page while we wait for the above effect to kick in
     return null;
   }
 
