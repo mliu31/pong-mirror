@@ -10,7 +10,7 @@ import { Icon, CheckIcon, SlashIcon } from '@/components/ui/icon';
 import InviteContext from '@/context/InviteContext';
 import useLoggedInPlayer from '@/hooks/useLoggedInPlayer';
 
-export default function Invite() {
+export default function InviteList() {
   const { invites, setInvites } = useContext(InviteContext);
 
   const currentPlayerId = useLoggedInPlayer()._id;
@@ -73,18 +73,23 @@ export default function Invite() {
   return (
     <ThemedView className="flex-1 p-4">
       {invites.length === 0 ? (
-        <ThemedView className="flex-1 justify-between">
-          <ThemedText className="text-lg pb-4">None pending</ThemedText>
-          {/* <Button onPress={() => router.replace('/')}>
-            <ButtonText>Exit</ButtonText>
-          </Button> */}
+        <ThemedView className="flex-1">
+          <ThemedText className="font-bold text-xl mb-5">
+            Pending Invites
+          </ThemedText>
+          <ThemedText className="">None pending</ThemedText>
         </ThemedView>
       ) : (
-        <FlatList
-          data={invites}
-          keyExtractor={(invite) => invite._id.toString()}
-          renderItem={renderItem}
-        />
+        <ThemedView className="flex-1">
+          <ThemedText className="font-bold text-xl mb-5">
+            Pending Invites
+          </ThemedText>
+          <FlatList
+            data={invites}
+            keyExtractor={(invite) => invite._id.toString()}
+            renderItem={renderItem}
+          />
+        </ThemedView>
       )}
     </ThemedView>
   );
