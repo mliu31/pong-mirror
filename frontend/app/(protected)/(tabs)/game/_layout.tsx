@@ -17,6 +17,12 @@ export default function GameLayout() {
         }}
       />
       <Stack.Screen
+        name="scanjoin"
+        options={{
+          title: 'Join Game via QR Code'
+        }}
+      />
+      <Stack.Screen
         name="[gameid]/index"
         options={{
           title: 'Add Players'

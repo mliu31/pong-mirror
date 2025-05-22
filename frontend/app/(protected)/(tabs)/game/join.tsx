@@ -7,17 +7,15 @@ import InviteList from '@/components/InviteList';
 export default function GameLandingScreen() {
   return (
     <ThemedView className="flex-1 relative">
-      <ThemedView className="flex-1">
-        <InviteList />
-        <Button
-          className="w-24 h-24 rounded-full bg-primary-500 items-center justify-center shadow-md absolute bottom-2 right-2"
-          onPress={() => {
-            router.push('/game/scanjoin');
-          }}
-        >
-          <MaterialCommunityIcons name="qrcode-scan" size={54} color="black" />
-        </Button>
-      </ThemedView>
+      <InviteList />
+      <Button
+        className="w-24 h-24 rounded-full bg-primary-500 items-center justify-center shadow-md absolute bottom-2 right-2"
+        onPress={() => {
+          router.push('/game/scanjoin');
+        }}
+      >
+        <MaterialCommunityIcons name="qrcode-scan" size={54} color="black" />
+      </Button>
     </ThemedView>
   );
 }
