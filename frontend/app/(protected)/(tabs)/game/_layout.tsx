@@ -11,6 +11,12 @@ export default function GameLayout() {
         }}
       />
       <Stack.Screen
+        name="join"
+        options={{
+          title: 'Join Game'
+        }}
+      />
+      <Stack.Screen
         name="[gameid]/index"
         options={{
           title: 'Add Players'
