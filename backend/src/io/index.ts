@@ -1,8 +1,8 @@
 import { Handshake, Server } from 'socket.io';
 import corsOptions from '../util/corsOptions';
-import { sessionMiddleware } from '../app';
 
 import sharedSession from 'express-socket.io-session';
+import sessionMiddleware from '../util/sessionMiddleware';
 
 const io = new Server({
   cors: corsOptions
