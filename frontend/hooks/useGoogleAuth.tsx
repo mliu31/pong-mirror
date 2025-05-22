@@ -41,6 +41,13 @@ export const useGoogleAuth = () => {
       ? localSearchParams.next
       : localSearchParams.next?.[0]
   ) as RelativePathString;
+  const nextParams = localSearchParams.nextParams
+    ? JSON.parse(
+        typeof localSearchParams.nextParams === 'string'
+          ? localSearchParams.nextParams
+          : localSearchParams.nextParams[0]
+      )
+    : {};
 
   useEffect(() => {
     if (response?.type === 'success') {
@@ -50,7 +57,10 @@ export const useGoogleAuth = () => {
         dispatch(googleSignup(authentication.accessToken))
           .unwrap()
           .then(() => {
-            router.replace(next ?? '/profile');
+            router.replace({
+              pathname: next ?? '/profile',
+              params: nextParams
+            });
           })
           .catch((err) => {
             console.error('Google signup failed:', err);

@@ -1,7 +1,12 @@
 import MessageProvider from '@/components/MessageProvider';
 import { IoProvider } from '@/context/IoContext';
 import { useAppSelector } from '@/redux/redux-hooks';
-import { Slot, usePathname, useRouter } from 'expo-router';
+import {
+  Slot,
+  useGlobalSearchParams,
+  usePathname,
+  useRouter
+} from 'expo-router';
 import { useEffect } from 'react';
 
 export default function ProtectedLayout() {
@@ -12,6 +17,8 @@ export default function ProtectedLayout() {
 
   const router = useRouter();
 
+  const searchParams = useGlobalSearchParams();
+
   useEffect(() => {
     // the protected route may still be rendering while going to singup, ignore if this is the case;
     // otherwise next will be signup.
@@ -19,11 +26,12 @@ export default function ProtectedLayout() {
       router.replace({
         pathname: '/signup',
         params: {
-          next: pathname
+          next: pathname,
+          nextParams: JSON.stringify(searchParams)
         }
       });
     }
-  }, [basicPlayerInfo, pathname, router]);
+  }, [basicPlayerInfo, pathname, router, searchParams]);
 
   if (!basicPlayerInfo) {
     return null;
