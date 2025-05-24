@@ -1,17 +1,24 @@
 import { View, FlatList } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState, useEffect } from 'react';
 import { useAppSelector } from '@/redux/redux-hooks';
-import { getAllTeams, addTeam, addPlayer } from '@/api/tournament';
+import {
+  getAllTeams,
+  addTeam,
+  addPlayer,
+  getTournament,
+  startTournament
+} from '@/api/tournament';
 import {
   Button,
   ButtonText,
-  Text,
   Card,
   CardHeader,
   CardContent,
   CardFooter
 } from '@gluestack-ui/themed';
+import { Toast, useToast } from '@/components/ui/toast';
+import { ThemedText } from '@/components/ThemedText';
 
 interface Team {
   id: string;
@@ -21,12 +28,28 @@ interface Team {
 
 export default function TournamentTeamsScreen() {
   const { tournamentId } = useLocalSearchParams();
+  const router = useRouter();
+  const toast = useToast();
   const [teams, setTeams] = useState<Team[]>([]);
+  const [tournamentStatus, setTournamentStatus] = useState<
+    'PENDING' | 'IN_PROGRESS' | 'COMPLETED'
+  >('PENDING');
+  const [isLoading, setIsLoading] = useState(false);
   const basicPlayerInfo = useAppSelector((state) => state.auth.basicPlayerInfo);
 
   useEffect(() => {
     fetchTeams();
+    fetchTournamentStatus();
   }, []);
+
+  const fetchTournamentStatus = async () => {
+    try {
+      const tournament = await getTournament(tournamentId as string);
+      setTournamentStatus(tournament.status);
+    } catch (error) {
+      console.error('Error fetching tournament status:', error);
+    }
+  };
 
   const fetchTeams = async () => {
     try {
@@ -54,31 +77,77 @@ export default function TournamentTeamsScreen() {
 
   const handleJoinTeam = async (teamId: string) => {
     try {
-      await addPlayer(teamId, basicPlayerInfo?._id || '');
+      await addPlayer(
+        tournamentId as string,
+        teamId,
+        basicPlayerInfo?._id || ''
+      );
       fetchTeams();
     } catch (error) {
       console.error('Error joining team:', error);
     }
   };
 
+  const handleStartTournament = async () => {
+    if (teams.length < 2) {
+      toast.show({
+        render: ({ id }) => (
+          <Toast
+            action="error"
+            variant="outline"
+            nativeID={'start-error-toast-' + id}
+            className="p-4 gap-6 border-error-500 w-full shadow-hard-5 max-w-[443px] flex-row justify-between"
+          >
+            <ThemedText>
+              Need at least 2 teams to start the tournament
+            </ThemedText>
+          </Toast>
+        )
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      await startTournament(tournamentId as string);
+      await fetchTournamentStatus();
+      // Navigate to the tournament bracket view
+      router.push(`/tournament/${tournamentId}`);
+    } catch (error) {
+      toast.show({
+        render: ({ id }) => (
+          <Toast
+            action="error"
+            variant="outline"
+            nativeID={'start-error-toast-' + id}
+            className="p-4 gap-6 border-error-500 w-full shadow-hard-5 max-w-[443px] flex-row justify-between"
+          >
+            <ThemedText>
+              Failed to start tournament. Please try again.
+            </ThemedText>
+          </Toast>
+        )
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const renderTeam = ({ item }: { item: Team }) => {
     const isFull = item.players.length >= 2;
-    const isPlayerInTeam = item.players.includes(basicPlayerInfo?.id || '');
+    const isPlayerInTeam = item.players.includes(basicPlayerInfo?._id || '');
 
     return (
       <Card className="mb-4">
         <CardHeader>
-          <Text className="text-lg font-bold">{item.name}</Text>
+          <ThemedText type="defaultSemiBold">{item.name}</ThemedText>
         </CardHeader>
         <CardContent>
-          <Text className="text-gray-600">
-            Players: {item.players.length}/2
-          </Text>
+          <ThemedText>Players: {item.players.length}/2</ThemedText>
         </CardContent>
-        {!isFull && !isPlayerInTeam && (
+        {!isFull && !isPlayerInTeam && tournamentStatus === 'PENDING' && (
           <CardFooter>
             <Button
-              size="sm"
               variant="solid"
               action="primary"
               onPress={() => handleJoinTeam(item.id)}
@@ -93,15 +162,37 @@ export default function TournamentTeamsScreen() {
 
   return (
     <View className="flex-1 p-5">
-      <Text className="text-2xl font-bold mb-6">Tournament Teams</Text>
-      <Button
-        size="lg"
-        variant="solid"
-        className="mb-6"
-        onPress={handleCreateTeam}
-      >
-        <ButtonText>Create New Team</ButtonText>
-      </Button>
+      <ThemedText type="title" className="mb-6">
+        Tournament Teams
+      </ThemedText>
+      {tournamentStatus === 'PENDING' && (
+        <>
+          <Button variant="solid" className="mb-6" onPress={handleCreateTeam}>
+            <ButtonText>Create New Team</ButtonText>
+          </Button>
+          <Button
+            variant="solid"
+            action="primary"
+            className="mb-6"
+            onPress={handleStartTournament}
+            isDisabled={isLoading}
+          >
+            <ButtonText>
+              {isLoading ? 'Starting...' : 'Start Tournament'}
+            </ButtonText>
+          </Button>
+        </>
+      )}
+      {tournamentStatus === 'IN_PROGRESS' && (
+        <ThemedText type="defaultSemiBold" className="mb-6 text-primary-500">
+          Tournament in progress
+        </ThemedText>
+      )}
+      {tournamentStatus === 'COMPLETED' && (
+        <ThemedText type="defaultSemiBold" className="mb-6 text-success-500">
+          Tournament completed
+        </ThemedText>
+      )}
       <FlatList
         data={teams}
         renderItem={renderTeam}

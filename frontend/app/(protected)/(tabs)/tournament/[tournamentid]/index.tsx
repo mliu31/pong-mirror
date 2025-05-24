@@ -97,7 +97,12 @@ export default function TournamentDetailScreen() {
           </ThemedText>
           {tournament.teams.map((teamId: string) => (
             <View key={teamId} className="mb-4 p-4 bg-gray-100 rounded-lg">
-              <ThemedText className="text-lg font-semibold mb-2">
+              <ThemedText
+                className="text-lg font-semibold mb-2"
+                lightColor="#000"
+                darkColor="#000"
+                style={{ color: '#000', opacity: 1 }}
+              >
                 Team {teamId}
               </ThemedText>
               <TeamChips
