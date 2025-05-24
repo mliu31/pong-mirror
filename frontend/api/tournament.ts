@@ -62,6 +62,7 @@ export const getTournament = async (
     const { data } = await api.get<TournamentResponse>(
       `/tournaments/getTournament/${tournamentId}`
     );
+    console.log(data);
     return data;
   } catch (error) {
     console.error('Error fetching tournament:', error);
