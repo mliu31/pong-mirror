@@ -1,6 +1,7 @@
 import Tournament from '../../models/Tournament';
 import Player from '../../models/Player';
 import Team from '../../models/Team';
+import Game from '../../models/Game';
 import {
   addPlayerTeam,
   calculateElo,
@@ -150,6 +151,113 @@ export const addPlayer = async (
 };
 
 // start tournament
+export const startTournament = async (tournamentId: string) => {
+  const tournament = await Tournament.findById(tournamentId);
+  if (!tournament) throw new Error('404 Tournament not found');
+
+  // Get all teams and sort by seed
+  const teams = await Promise.all(
+    tournament.teams.map(async (teamId) => {
+      const team = await Team.findById(teamId);
+      if (!team) throw new Error(`Team ${teamId} not found`);
+      return team;
+    })
+  );
+
+  const sortedTeams = teams.sort((a, b) => a.seed - b.seed);
+  const numTeams = sortedTeams.length;
+
+  // Find closest power of 2
+  const nextPowerOf2 = Math.pow(2, Math.ceil(Math.log2(numTeams)));
+  const numByes = nextPowerOf2 - numTeams;
+
+  // Initialize first round matches
+  const firstRoundMatches = [];
+
+  // Assign byes to top seeds
+  for (let i = 0; i < numByes; i++) {
+    const team = sortedTeams[i];
+    const players = await Promise.all(
+      team.players.map(async (playerId) => {
+        const player = await Player.findById(playerId);
+        if (!player) throw new Error(`Player ${playerId} not found`);
+        return player;
+      })
+    );
+
+    // Create a game for the bye
+    const game = await Game.create({
+      players: players.map((player) => ({ player, team: null })),
+      winner: 'LEFT' // Automatically set winner for bye
+    });
+
+    firstRoundMatches.push({
+      team1: team._id.toString(),
+      team2: null,
+      winner: team._id.toString(),
+      bye: true,
+      gameId: game.id
+    });
+  }
+
+  // Create remaining matches
+  const remainingTeams = sortedTeams.slice(numByes);
+  const numMatches = remainingTeams.length / 2;
+
+  for (let i = 0; i < numMatches; i++) {
+    const team1 = remainingTeams[i];
+    const team2 = remainingTeams[remainingTeams.length - 1 - i];
+
+    // Get players from both teams
+    const [team1Players, team2Players] = await Promise.all([
+      Promise.all(
+        team1.players.map(async (playerId) => {
+          const player = await Player.findById(playerId);
+          if (!player) throw new Error(`Player ${playerId} not found`);
+          return player;
+        })
+      ),
+      Promise.all(
+        team2.players.map(async (playerId) => {
+          const player = await Player.findById(playerId);
+          if (!player) throw new Error(`Player ${playerId} not found`);
+          return player;
+        })
+      )
+    ]);
+
+    // Create a game for the match
+    const game = await Game.create({
+      players: [
+        ...team1Players.map((player) => ({ player, team: 'LEFT' })),
+        ...team2Players.map((player) => ({ player, team: 'RIGHT' }))
+      ],
+      winner: null
+    });
+
+    firstRoundMatches.push({
+      team1: team1._id.toString(),
+      team2: team2._id.toString(),
+      winner: null,
+      bye: false,
+      gameId: game.id
+    });
+  }
+
+  // Initialize tournament bracket
+  tournament.bracket = [
+    {
+      round: 1,
+      matches: firstRoundMatches
+    }
+  ];
+
+  tournament.status = 'IN_PROGRESS';
+  tournament.currentRound = 1;
+
+  await tournament.save();
+  return tournament;
+};
 
 // end tournament
 

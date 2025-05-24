@@ -6,7 +6,8 @@ import {
   addTeam,
   reseedTeams,
   removeTeam,
-  getAllTeams
+  getAllTeams,
+  startTournament
 } from '../controllers/tournament/tournamentController';
 
 const router = express.Router();
@@ -88,6 +89,16 @@ router.get('/:id/teams', async (req, res) => {
     res.json(teams);
   } catch (error) {
     console.error('Error fetching tournament teams:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+router.post('/:id/start', async (req, res) => {
+  try {
+    const tournament = await startTournament(req.params.id);
+    res.json(tournament);
+  } catch (error) {
+    console.error('Error starting tournament:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });

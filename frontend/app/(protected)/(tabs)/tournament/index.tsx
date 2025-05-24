@@ -23,11 +23,8 @@ export default function TournamentScreen() {
 
   const handleCreateTournament = async () => {
     try {
-      const tournament = await createTournament(basicPlayerInfo?._id || '');
-      router.push({
-        pathname: '/tournament/qr',
-        params: { tournamentId: tournament._id }
-      });
+      const tournament = await createTournament('New Tournament');
+      router.push(`/tournament/${tournament._id}`);
     } catch (error) {
       console.error('Error creating tournament:', error);
     }
@@ -41,10 +38,7 @@ export default function TournamentScreen() {
     try {
       const tournamentId = data;
       await addTeam(tournamentId, basicPlayerInfo?._id || '');
-      router.push({
-        pathname: '/tournament/teams',
-        params: { tournamentId }
-      });
+      router.push(`/tournament/${tournamentId}`);
     } catch (error) {
       console.error('Error joining tournament:', error);
     }

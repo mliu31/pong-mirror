@@ -1,10 +1,29 @@
 import api from '.';
+import { Player } from './types';
+
+interface Team {
+  _id: string;
+  name: string;
+  players: string[];
+}
 
 // Define the shape of the API responses from the backend
-interface TournamentResponse {
+export interface TournamentResponse {
   _id: string;
   name: string;
   teams: string[];
+  status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
+  currentRound: number;
+  bracket: {
+    round: number;
+    matches: {
+      team1: string | null;
+      team2: string | null;
+      winner: string | null;
+      bye: boolean;
+      gameId: string;
+    }[];
+  }[];
 }
 
 /**
@@ -34,6 +53,7 @@ export const getTournament = async (
     const { data } = await api.get<TournamentResponse>(
       `/tournaments/getTournament/${tournamentId}`
     );
+    console.log(data);
     return data;
   } catch (error) {
     console.error('Error fetching tournament:', error);
@@ -132,6 +152,23 @@ export const addPlayer = async (
     );
   } catch (error) {
     console.error('Error adding player to team:', error);
+    throw error;
+  }
+};
+
+/**
+ * Starts a tournament, creating the initial bracket and matches
+ */
+export const startTournament = async (
+  tournamentId: string
+): Promise<TournamentResponse> => {
+  try {
+    const { data } = await api.post<TournamentResponse>(
+      `/tournaments/${tournamentId}/start`
+    );
+    return data;
+  } catch (error) {
+    console.error('Error starting tournament:', error);
     throw error;
   }
 };
