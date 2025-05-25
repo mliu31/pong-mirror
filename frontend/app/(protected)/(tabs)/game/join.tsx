@@ -9,7 +9,7 @@ export default function GameLandingScreen() {
     <ThemedView className="flex-1 relative">
       <InviteList />
       <Button
-        className="w-24 h-24 rounded-full bg-primary-500 items-center justify-center shadow-md absolute bottom-2 right-2"
+        className="w-24 h-24 rounded-full bg-primary-500 items-center justify-center shadow-md absolute bottom-4 right-4"
         onPress={() => {
           router.push('/game/scanjoin');
         }}
