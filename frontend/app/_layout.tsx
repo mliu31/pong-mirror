@@ -12,10 +12,10 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import spaceMono from '../assets/fonts/SpaceMono-Regular.ttf';
-import { IoProvider } from '@/context/IoContext';
 import { Provider as ReduxProvider } from 'react-redux';
 import store, { persistor } from '../redux/store';
 import { PersistGate } from 'redux-persist/integration/react';
+import { IoProvider } from '@/context/IoContext';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();

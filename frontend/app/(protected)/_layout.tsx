@@ -1,14 +1,31 @@
-import { Stack, usePathname } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { getPlayerInvites } from '@/api/invite';
 import { IInvite } from '@/api/types';
 import InvitesContext from '@/context/InviteContext';
 import useLoggedInPlayer from '@/hooks/useLoggedInPlayer';
+import MessageProvider from '@/components/MessageProvider';
+import { IoProvider } from '@/context/IoContext';
+import { Stack, useGlobalSearchParams, usePathname, router } from 'expo-router';
 
 export default function ProtectedLayout() {
   const pid = useLoggedInPlayer()._id;
   const [invites, setInvites] = useState<IInvite[]>([]);
   const pathname = usePathname();
+  const searchParams = useGlobalSearchParams();
+
+  useEffect(() => {
+    // the protected route may still be rendering while going to signup, ignore if this is the case;
+    // otherwise next will be signup.
+    if (pid === null && pathname !== '/signup') {
+      router.replace({
+        pathname: '/signup',
+        params: {
+          next: pathname,
+          nextParams: JSON.stringify(searchParams)
+        }
+      });
+    }
+  }, [pid, pathname, searchParams]);
 
   useEffect(() => {
     // If not logged in, stop checking so we hit the <Redirect>
@@ -37,17 +54,6 @@ export default function ProtectedLayout() {
     };
   }, [pathname, pid]);
 
-  // if (!pid) {
-  //   return (
-  //     <Redirect
-  //       href={{
-  //         pathname: '/signup',
-  //         params: { next: pathname }
-  //       }}
-  //     />
-  //   );
-  // }
-
   if (!pid) {
     // user is not authenticated, show blank page while we wait for the above effect to kick in
     return null;
@@ -55,11 +61,15 @@ export default function ProtectedLayout() {
 
   // no pending invites → render whatever protected screen they asked for
   return (
-    <InvitesContext.Provider value={{ invites, setInvites }}>
-      <Stack>
-        {/* tab navigator, no header */}
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      </Stack>
-    </InvitesContext.Provider>
+    <IoProvider>
+      <MessageProvider>
+        <InvitesContext.Provider value={{ invites, setInvites }}>
+          <Stack>
+            {/* tab navigator, no header */}
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          </Stack>
+        </InvitesContext.Provider>
+      </MessageProvider>
+    </IoProvider>
   );
 }

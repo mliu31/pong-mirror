@@ -1,29 +1,15 @@
-import { Tabs, useRootNavigationState, useRouter } from 'expo-router';
-import { useContext, useEffect } from 'react';
+import { Tabs } from 'expo-router';
+import { useContext } from 'react';
 import { HapticTab } from '@/components/HapticTab';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { useAppSelector } from '@/redux/redux-hooks';
-import { Badge, BadgeText } from '@/components/ui/badge';
 import InviteContext from '@/context/InviteContext';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const { invites } = useContext(InviteContext);
-
-  // TODO: flesh out route protection
-  const basicPlayerInfo = useAppSelector((state) => state.auth.basicPlayerInfo);
-  const router = useRouter();
-  const rootNavigationState = useRootNavigationState();
-
-  useEffect(() => {
-    if (!rootNavigationState?.key) return; // waiting for router
-    if (!basicPlayerInfo) {
-      router.replace('/signup');
-    }
-  }, [basicPlayerInfo, rootNavigationState, router]);
 
   return (
     <Tabs
