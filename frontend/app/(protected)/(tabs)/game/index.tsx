@@ -3,7 +3,6 @@ import { ThemedView } from '@/components/ThemedView';
 import { useContext, useState } from 'react';
 import { createGame } from '@/api/games';
 import { useRouter } from 'expo-router';
-import { View } from 'react-native';
 import { Badge, BadgeText } from '@/components/ui/badge';
 import InviteContext from '@/context/InviteContext';
 
@@ -14,7 +13,7 @@ export default function GameLandingScreen() {
 
   return (
     <ThemedView className="flex-1 items-center">
-      <View className="flex-1 justify-center gap-2 w-fit">
+      <ThemedView className="flex-1 justify-center gap-4 w-fit">
         <Button
           isDisabled={buttonDisabled}
           onPress={async () => {
@@ -42,7 +41,7 @@ export default function GameLandingScreen() {
         >
           <ButtonText>Join game</ButtonText>
         </Button>
-      </View>
+      </ThemedView>
     </ThemedView>
   );
 }

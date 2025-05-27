@@ -50,7 +50,7 @@ export default function InviteList() {
           onPress={() =>
             handleGameAcceptReject(item.gameId._id.toString(), INVITE.ACCEPTED)
           }
-          className="bg-green-700"
+          className="bg-green-600"
         >
           <ButtonText>
             <Icon as={CheckIcon} className="text-gray-300 m-2 w-5 h-5" />
