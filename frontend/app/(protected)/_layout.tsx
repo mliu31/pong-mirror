@@ -1,14 +1,34 @@
 import { useEffect, useState } from 'react';
-import { getPlayerInvites } from '@/api/invite';
 import { IInvite } from '@/api/types';
 import InvitesContext from '@/context/InviteContext';
-import useLoggedInPlayer from '@/hooks/useLoggedInPlayer';
 import MessageProvider from '@/components/MessageProvider';
 import { IoProvider } from '@/context/IoContext';
 import { Stack, useGlobalSearchParams, usePathname, router } from 'expo-router';
+import store, { RootState } from '@/redux/store';
+import { useSelector } from 'react-redux';
+import api from '@/api';
+import { logout } from '@/redux/slices/authSlice';
 
 export default function ProtectedLayout() {
-  const pid = useLoggedInPlayer()._id;
+  useEffect(() => {
+    // if we ever get a 401, clear auth state immediately
+    // (navigation will handle redirecting to login)
+    const interceptor = api.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response?.status === 401) {
+          store.dispatch(logout());
+        }
+        return Promise.reject(error);
+      }
+    );
+    return () => {
+      api.interceptors.response.eject(interceptor);
+    };
+  });
+  const basicPlayerInfo = useSelector(
+    (state: RootState) => state.auth.basicPlayerInfo
+  );
   const [invites, setInvites] = useState<IInvite[]>([]);
   const pathname = usePathname();
   const searchParams = useGlobalSearchParams();
@@ -16,7 +36,7 @@ export default function ProtectedLayout() {
   useEffect(() => {
     // the protected route may still be rendering while going to signup, ignore if this is the case;
     // otherwise next will be signup.
-    if (pid === null && pathname !== '/signup') {
+    if (basicPlayerInfo === null && pathname !== '/signup') {
       router.replace({
         pathname: '/signup',
         params: {
@@ -25,36 +45,9 @@ export default function ProtectedLayout() {
         }
       });
     }
-  }, [pid, pathname, searchParams]);
+  }, [pathname, searchParams, basicPlayerInfo]);
 
-  useEffect(() => {
-    // If not logged in, stop checking so we hit the <Redirect>
-    if (!pid) {
-      return;
-    }
-
-    // Else, async check for invites
-    const checkInvites = async () => {
-      try {
-        // fetch pending invites for this player
-        const invites = (await getPlayerInvites(pid)).data;
-        setInvites(invites);
-      } catch (err) {
-        console.error('Invite‐check failed', err);
-      } finally {
-        // setChecking(false);
-      }
-    };
-
-    checkInvites();
-    const intervalId = setInterval(checkInvites, 3000); // check every 3s
-
-    return () => {
-      clearInterval(intervalId); // cleanup
-    };
-  }, [pathname, pid]);
-
-  if (!pid) {
+  if (!basicPlayerInfo) {
     // user is not authenticated, show blank page while we wait for the above effect to kick in
     return null;
   }
