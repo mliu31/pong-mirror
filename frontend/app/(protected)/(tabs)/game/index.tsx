@@ -1,13 +1,16 @@
 import { Button, ButtonText } from '@/components/ui/button';
 import { ThemedView } from '@/components/ThemedView';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { createGame } from '@/api/games';
 import { useRouter } from 'expo-router';
 import { View } from 'react-native';
+import { Badge, BadgeText } from '@/components/ui/badge';
+import InviteContext from '@/context/InviteContext';
 
 export default function GameLandingScreen() {
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const router = useRouter();
+  const { invites } = useContext(InviteContext);
 
   return (
     <ThemedView className="flex-1 items-center">
@@ -23,6 +26,15 @@ export default function GameLandingScreen() {
         >
           <ButtonText>Create game</ButtonText>
         </Button>
+
+        {invites.length > 0 && (
+          <Badge
+            className="z-10 self-end h-[22px] w-[22px] bg-red-500 rounded-full -mb-5 -mr-2"
+            variant="solid"
+          >
+            <BadgeText className="text-white">{invites.length}</BadgeText>
+          </Badge>
+        )}
         <Button
           onPress={() => {
             router.push('/game/join');
