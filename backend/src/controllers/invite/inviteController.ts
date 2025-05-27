@@ -1,4 +1,5 @@
 import INVITE, { InviteValue } from '../../constants/INVITE';
+import { notifyPlayer } from '../../io/messages';
 import Game from '../../models/Game';
 import Invite from '../../models/Invite';
 import Player from '../../models/Player';
@@ -34,6 +35,11 @@ export const invitePlayers = async (gameid: string, pids: string[]) => {
       docs.push({
         gameId: gameid,
         playerId: pid
+      });
+      const captain = await Player.findById(game.captain);
+      notifyPlayer(player, {
+        title: `Invite from ${captain?.name ?? 'Unknown'}`,
+        destination: `/game/join`
       });
     }
   }
