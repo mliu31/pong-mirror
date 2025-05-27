@@ -8,8 +8,11 @@ import store, { RootState } from '@/redux/store';
 import { useSelector } from 'react-redux';
 import api from '@/api';
 import { logout } from '@/redux/slices/authSlice';
+import InviteProvider from '@/components/InviteProvider';
 
 export default function ProtectedLayout() {
+  // can't navigate to logout before the first render
+  const [isFirstRender, setIsFirstRender] = useState(true);
   useEffect(() => {
     // if we ever get a 401, clear auth state immediately
     // (navigation will handle redirecting to login)
@@ -29,11 +32,15 @@ export default function ProtectedLayout() {
   const basicPlayerInfo = useSelector(
     (state: RootState) => state.auth.basicPlayerInfo
   );
-  const [invites, setInvites] = useState<IInvite[]>([]);
   const pathname = usePathname();
   const searchParams = useGlobalSearchParams();
 
   useEffect(() => {
+    if (isFirstRender) {
+      // this then triggers the effect again after the first render
+      setIsFirstRender(false);
+      return;
+    }
     // the protected route may still be rendering while going to signup, ignore if this is the case;
     // otherwise next will be signup.
     if (basicPlayerInfo === null && pathname !== '/signup') {
@@ -45,7 +52,7 @@ export default function ProtectedLayout() {
         }
       });
     }
-  }, [pathname, searchParams, basicPlayerInfo]);
+  }, [pathname, searchParams, basicPlayerInfo, isFirstRender]);
 
   if (!basicPlayerInfo) {
     // user is not authenticated, show blank page while we wait for the above effect to kick in
