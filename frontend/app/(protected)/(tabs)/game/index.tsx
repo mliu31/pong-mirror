@@ -13,7 +13,7 @@ export default function GameLandingScreen() {
 
   return (
     <ThemedView className="flex-1 items-center">
-      <ThemedView className="flex-1 justify-center gap-4 w-fit">
+      <ThemedView className="flex-1 justify-center gap-2 w-fit">
         <Button
           isDisabled={buttonDisabled}
           onPress={async () => {
@@ -26,14 +26,12 @@ export default function GameLandingScreen() {
           <ButtonText>Create game</ButtonText>
         </Button>
 
-        {invites.length > 0 && (
-          <Badge
-            className="z-10 self-end h-[22px] w-[22px] bg-red-500 rounded-full -mb-5 -mr-2"
-            variant="solid"
-          >
-            <BadgeText className="text-white">{invites.length}</BadgeText>
-          </Badge>
-        )}
+        <Badge
+          className={`z-10 self-end h-[22px] w-[22px] bg-red-500 rounded-full -mb-6 -mr-2 ${invites.length === 0 ? 'invisible' : ''}`}
+          variant="solid"
+        >
+          <BadgeText className="text-white">{invites.length}</BadgeText>
+        </Badge>
         <Button
           onPress={() => {
             router.push('/game/join');
