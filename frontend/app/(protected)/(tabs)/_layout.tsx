@@ -1,14 +1,17 @@
 import { Tabs, useRootNavigationState, useRouter } from 'expo-router';
-import React, { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { HapticTab } from '@/components/HapticTab';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useAppSelector } from '@/redux/redux-hooks';
+import { Badge, BadgeText } from '@/components/ui/badge';
+import InviteContext from '@/context/InviteContext';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const { invites } = useContext(InviteContext);
 
   // TODO: flesh out route protection
   const basicPlayerInfo = useAppSelector((state) => state.auth.basicPlayerInfo);
@@ -53,7 +56,16 @@ export default function TabLayout() {
           title: 'Game',
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="plus" color={color} />
-          )
+          ),
+          tabBarBadge: invites.length > 0 ? '' : undefined,
+          tabBarBadgeStyle: {
+            backgroundColor: '#ef4444',
+            minWidth: 8,
+            height: 8,
+            borderRadius: 4,
+            marginLeft: 4,
+            marginTop: 4
+          }
         }}
       />
       <Tabs.Screen
