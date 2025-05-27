@@ -1,5 +1,12 @@
+import MessageProvider from '@/components/MessageProvider';
+import { IoProvider } from '@/context/IoContext';
 import { useAppSelector } from '@/redux/redux-hooks';
-import { Slot, usePathname, useRouter } from 'expo-router';
+import {
+  Slot,
+  useGlobalSearchParams,
+  usePathname,
+  useRouter
+} from 'expo-router';
 import { useEffect } from 'react';
 
 export default function ProtectedLayout() {
@@ -10,23 +17,31 @@ export default function ProtectedLayout() {
 
   const router = useRouter();
 
+  const searchParams = useGlobalSearchParams();
+
   useEffect(() => {
     // the protected route may still be rendering while going to singup, ignore if this is the case;
     // otherwise next will be signup.
-    if (!basicPlayerInfo && pathname !== '/signup') {
-      router.push({
+    if (basicPlayerInfo === null && pathname !== '/signup') {
+      router.replace({
         pathname: '/signup',
         params: {
-          next: pathname
+          next: pathname,
+          nextParams: JSON.stringify(searchParams)
         }
       });
     }
-  }, [basicPlayerInfo, pathname, router]);
+  }, [basicPlayerInfo, pathname, router, searchParams]);
 
   if (!basicPlayerInfo) {
-    // user is not authenticated, show blank page while we wait for the above effect to kick in
     return null;
   }
 
-  return <Slot></Slot>;
+  return (
+    <IoProvider>
+      <MessageProvider>
+        <Slot></Slot>
+      </MessageProvider>
+    </IoProvider>
+  );
 }

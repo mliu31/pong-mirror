@@ -1,12 +1,33 @@
-import io from '@/io';
-import { createContext, FC, PropsWithChildren, useContext } from 'react';
+import { IOEvent } from '@/api/messageTypes';
+import {
+  createContext,
+  FC,
+  PropsWithChildren,
+  useContext,
+  useEffect,
+  useState
+} from 'react';
+import io, { Socket } from 'socket.io-client';
 
-const IoContext = createContext<typeof io | null>(null);
+type IOEventsMap = {
+  [K in IOEvent['title']]: (
+    data: Extract<IOEvent, { title: K }>['data']
+  ) => void;
+};
+
+// undefined = loading
+const IoContext = createContext<Socket<IOEventsMap> | undefined>(undefined);
 
 export default IoContext;
 
 export const IoProvider: FC<PropsWithChildren> = ({ children }) => {
-  return <IoContext.Provider value={io}>{children}</IoContext.Provider>;
+  const [socket, setSocket] = useState<Socket | undefined>(undefined);
+  useEffect(() => {
+    const socket = io('http://localhost:3000', { withCredentials: true });
+    setSocket(socket);
+    return () => void socket.disconnect();
+  }, []);
+  return <IoContext.Provider value={socket}>{children}</IoContext.Provider>;
 };
 
 export const useIo = () => {

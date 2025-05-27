@@ -18,7 +18,6 @@ import 'react-native-reanimated';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
 import spaceMono from '../assets/fonts/SpaceMono-Regular.ttf';
-import { IoProvider } from '@/context/IoContext';
 import { Provider as ReduxProvider } from 'react-redux';
 import store, { persistor } from '../redux/store';
 import { PersistGate } from 'redux-persist/integration/react';
@@ -49,20 +48,18 @@ export default function RootLayout() {
       <ReduxProvider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <GluestackUIProvider mode={colorScheme === 'dark' ? 'dark' : 'light'}>
-            <IoProvider>
-              <ThemeProvider
-                value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
-              >
-                <Stack>
-                  <Stack.Screen
-                    name="(protected)"
-                    options={{ headerShown: false }}
-                  />
-                  <Stack.Screen name="+not-found" />
-                </Stack>
-                <StatusBar style="auto" />
-              </ThemeProvider>
-            </IoProvider>
+            <ThemeProvider
+              value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
+            >
+              <Stack>
+                <Stack.Screen
+                  name="(protected)"
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen name="+not-found" />
+              </Stack>
+              <StatusBar style="auto" />
+            </ThemeProvider>
           </GluestackUIProvider>
         </PersistGate>
       </ReduxProvider>
