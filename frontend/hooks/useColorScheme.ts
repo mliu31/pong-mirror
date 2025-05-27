@@ -1,1 +1,2 @@
-export default () => 'dark';
+export const useColorScheme = () => 'dark';
+export default useColorScheme;
