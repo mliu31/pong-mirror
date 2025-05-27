@@ -1,6 +1,4 @@
 import { useEffect, useState } from 'react';
-import { IInvite } from '@/api/types';
-import InvitesContext from '@/context/InviteContext';
 import MessageProvider from '@/components/MessageProvider';
 import { IoProvider } from '@/context/IoContext';
 import { Stack, useGlobalSearchParams, usePathname, router } from 'expo-router';
@@ -63,12 +61,12 @@ export default function ProtectedLayout() {
   return (
     <IoProvider>
       <MessageProvider>
-        <InvitesContext.Provider value={{ invites, setInvites }}>
+        <InviteProvider>
           <Stack>
             {/* tab navigator, no header */}
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           </Stack>
-        </InvitesContext.Provider>
+        </InviteProvider>
       </MessageProvider>
     </IoProvider>
   );
