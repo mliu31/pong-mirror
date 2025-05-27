@@ -1,6 +1,4 @@
 import express from 'express';
-import mongoose from 'mongoose';
-import env from './util/env';
 import cors from 'cors';
 import authRouter from './routes/authRouter.js';
 import { IPlayer } from './models/Player';
