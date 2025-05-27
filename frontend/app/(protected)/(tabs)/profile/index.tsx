@@ -51,8 +51,8 @@ export default function Profile() {
     <View style={styles.container}>
       <Text style={styles.title}>{player?.name}</Text>
       {/* Display Player Information */}
-      <Text style={styles.info}>Email: {player?.email}</Text>
       <Text style={styles.info}>ELO: {player?.elo}</Text>
+      <Text style={styles.info}>Ranking: {player?.rank}</Text>
       <Text style={styles.info}>Games Played: {player?.gamesPlayed}</Text>
       <Text style={styles.info}>Wins: {player?.wins}</Text>
 

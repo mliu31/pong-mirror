@@ -77,7 +77,13 @@ export const updateElo = async (gameid: string, winner: string) => {
           player: player.player,
           team: player.team,
           oldElo,
-          newElo
+          newElo,
+          eloHistory: [
+            {
+              elo: newElo,
+              date: new Date()
+            }
+          ]
         };
       })
     );
@@ -95,23 +101,17 @@ export const updateElo = async (gameid: string, winner: string) => {
           player: player.player,
           team: player.team,
           oldElo,
-          newElo
+          newElo,
+          eloHistory: [
+            {
+              elo: newElo,
+              date: new Date()
+            }
+          ]
         };
       })
     );
     foundGame.set('players', [...updatedWinners, ...updatedLosers]);
-
-    // TODO: update player object with newElo
-    // foundGame.players.forEach((playerEntry) => {
-    //   const updatedPlayerDoc = allPlayersDoc.find((p) =>
-    //     (p._id as unknown as Types.ObjectId).equals(
-    //       playerEntry.player as Types.ObjectId
-    //     )
-    //   );
-    //   if (updatedPlayerDoc) {
-    //     playerEntry.newElo = updatedPlayerDoc.elo;
-    //   }
-    // });
 
     await foundGame.save();
     return allPlayersDoc;
