@@ -90,7 +90,11 @@ export default function Route() {
       // move logged in user to the top of list
       const filteredPlayers = data.filter((player) => player._id !== playerId);
       const currentPlayer = data.find((player) => player._id === playerId);
-      setAllPlayers([currentPlayer, ...filteredPlayers]);
+      if (currentPlayer) {
+        setAllPlayers([currentPlayer, ...filteredPlayers]);
+      } else {
+        setAllPlayers(filteredPlayers);
+      }
     });
   }, [playerId]);
 
