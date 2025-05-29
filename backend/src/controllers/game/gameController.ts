@@ -22,6 +22,7 @@ export const getGame = async (gameId: string) =>
     .populate('eloChanges.player');
 
 export const addPlayersToGame = async (gameId: string, pids: string[]) => {
+  // TODO: currently no way to remove players from game
   const game = await Game.findById(gameId);
   if (game === null) throw new Error('Game not found');
 
