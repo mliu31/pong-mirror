@@ -1,10 +1,18 @@
+import { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  ScrollView
+} from 'react-native';
+import { LineChart } from 'react-native-gifted-charts';
+
 import { getPlayer } from '@/api/players';
 import { Player } from '@/api/types';
-import { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import useLoggedInPlayer from '@/hooks/useLoggedInPlayer';
 import Friends from '@/components/Friends/Friends';
 import LogoutButton from '@/components/LogoutButton';
-import useLoggedInPlayer from '@/hooks/useLoggedInPlayer';
 
 export default function Profile() {
   const playerId = useLoggedInPlayer()._id;
@@ -47,19 +55,60 @@ export default function Profile() {
     );
   }
 
+  const eloData =
+    player?.eloHistory?.map((entry) => ({
+      value: entry.elo,
+      label: new Date(entry.date).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric'
+      })
+    })) ?? [];
+
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>{player?.name}</Text>
-      {/* Display Player Information */}
       <Text style={styles.info}>ELO: {player?.elo}</Text>
       <Text style={styles.info}>Ranking: {player?.rank}</Text>
       <Text style={styles.info}>Games Played: {player?.gamesPlayed}</Text>
       <Text style={styles.info}>Wins: {player?.wins}</Text>
 
-      {player && <Friends pid={player._id} />}
+      {/* Elo History Chart */}
+      {eloData.length > 1 && (
+        <>
+          <Text style={styles.subTitle}>Elo History</Text>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingHorizontal: 16
+            }}
+          >
+            <LineChart
+              data={eloData}
+              thickness={2}
+              color="#4A90E2"
+              hideDataPoints={false} // show default dots
+              isAnimated
+              areaChart
+              startFillColor="#4A90E2"
+              endFillColor="#4A90E2"
+              startOpacity={0.3}
+              endOpacity={0}
+              yAxisTextStyle={{ color: '#444' }}
+              xAxisLabelTextStyle={{ color: '#444', fontSize: 10 }}
+              yAxisLabelWidth={40}
+              noOfSections={4}
+              yAxisLabelSuffix=""
+              spacing={40}
+            />
+          </View>
+        </>
+      )}
 
+      {player && <Friends pid={player._id} />}
       <LogoutButton />
-    </View>
+    </ScrollView>
   );
 }
 
@@ -97,5 +146,16 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  chartContainer: {
+    width: 320,
+    height: 200,
+    paddingHorizontal: 8
+  },
+  dot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#4A90E2'
   }
 });

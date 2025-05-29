@@ -70,20 +70,20 @@ export const updateElo = async (gameid: string, winner: string) => {
 
         await Player.findByIdAndUpdate(player.player, {
           $inc: { wins: 1, gamesPlayed: 1 },
-          $set: { elo: newElo }
+          $set: { elo: newElo },
+          $push: {
+            eloHistory: {
+              elo: newElo,
+              date: new Date()
+            }
+          }
         });
         // console.log(`${player.player}: ${oldElo} → ${newElo}`);
         return {
           player: player.player,
           team: player.team,
           oldElo,
-          newElo,
-          eloHistory: [
-            {
-              elo: newElo,
-              date: new Date()
-            }
-          ]
+          newElo
         };
       })
     );
@@ -94,20 +94,20 @@ export const updateElo = async (gameid: string, winner: string) => {
 
         await Player.findByIdAndUpdate(player.player, {
           $inc: { gamesPlayed: 1 },
-          $set: { elo: newElo }
+          $set: { elo: newElo },
+          $push: {
+            eloHistory: {
+              elo: newElo,
+              date: new Date()
+            }
+          }
         });
         // console.log(`${player.player}: ${oldElo} → ${newElo}`);
         return {
           player: player.player,
           team: player.team,
           oldElo,
-          newElo,
-          eloHistory: [
-            {
-              elo: newElo,
-              date: new Date()
-            }
-          ]
+          newElo
         };
       })
     );

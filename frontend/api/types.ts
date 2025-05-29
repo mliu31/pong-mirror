@@ -21,4 +21,5 @@ export interface Player {
   groups: string[];
   gamesPlayed: number;
   wins: number;
+  eloHistory: { elo: number; date: Date }[];
 }
