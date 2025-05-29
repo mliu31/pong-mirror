@@ -1,6 +1,6 @@
 import api from '.';
-import { Player } from './types';
+import { IPlayer } from './types';
 
-export const getAllPlayers = () => api.get<Player[]>(`/players`);
+export const getAllPlayers = () => api.get<IPlayer[]>(`/players`);
 
-export const getPlayer = (pid: string) => api.get<Player>(`/players/${pid}`);
+export const getPlayer = (pid: string) => api.get<IPlayer>(`/players/${pid}`);

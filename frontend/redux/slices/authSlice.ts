@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import api from '../../api';
-import { Player } from '@/api/types';
+import { IPlayer } from '@/api/types';
 
 export interface AuthApiState {
-  basicPlayerInfo?: Player | null;
+  basicPlayerInfo?: IPlayer | null;
   status: 'idle' | 'loading' | 'failed';
   error: string | null;
   isAuthenticated: boolean;
@@ -54,7 +54,7 @@ const authSlice = createSlice({
       })
       .addCase(
         googleSignup.fulfilled,
-        (state, action: PayloadAction<Player>) => {
+        (state, action: PayloadAction<IPlayer>) => {
           state.basicPlayerInfo = action.payload;
           state.status = 'idle';
           state.error = null;
