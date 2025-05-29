@@ -1,38 +1,8 @@
 import express, { RequestHandler } from 'express';
 import Player from '../models/Player';
 import { updateRanks } from '../controllers/leaderboard/rankingCurrent';
-// import { newPlayer } from '../controllers/player/playerController';
 
 const router = express.Router();
-
-// router.post('/signup', async (req, res) => {
-//   try {
-//     const { name, email } = req.body;
-//     const lowercasedEmail = email.toLowerCase();
-//     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-//     if (
-//       typeof name !== 'string' ||
-//       typeof lowercasedEmail !== 'string' ||
-//       !emailRegex.test(lowercasedEmail)
-//     ) {
-//       return void res
-//         .status(400)
-//         .json({ message: 'Please enter a valid username and email.' });
-//     }
-
-//     const player = await newPlayer(name, lowercasedEmail);
-//     req.session.player = player;
-
-//     res.json({
-//       message: 'Sign up successful!',
-//       player
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ message: 'Server error' });
-//   }
-// });
 
 router.post('/googleSignup', async (req, res) => {
   const { accessToken } = req.body;
@@ -83,40 +53,6 @@ router.post('/googleSignup', async (req, res) => {
   req.session.player = player;
   res.json(player);
 });
-
-// router.post('/login', async (req, res) => {
-//   try {
-//     const { email } = req.body;
-//     const lowercasedEmail = email.toLowerCase();
-//     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-//     if (
-//       typeof lowercasedEmail !== 'string' ||
-//       !emailRegex.test(lowercasedEmail)
-//     ) {
-//       return void res
-//         .status(400)
-//         .json({ message: 'Please enter a valid email address.' });
-//     }
-
-//     const player = await Player.findOne({ email: lowercasedEmail });
-//     if (!player) {
-//       return void res.status(400).json({
-//         message: "Invalid credentials. Don't have an account? Sign up below!"
-//       });
-//     }
-
-//     Player.findOne();
-//     req.session.player = player;
-//     res.json({
-//       message: 'Login successful',
-//       player
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ message: 'Server error' });
-//   }
-// });
 
 router.post('/logout', async (req, res) => {
   req.session.destroy((err) => {

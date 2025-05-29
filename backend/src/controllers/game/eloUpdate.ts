@@ -78,7 +78,6 @@ export const updateElo = async (gameid: string, winner: string) => {
             }
           }
         });
-        // console.log(`${player.player}: ${oldElo} → ${newElo}`);
         return {
           player: player.player,
           team: player.team,
@@ -102,7 +101,6 @@ export const updateElo = async (gameid: string, winner: string) => {
             }
           }
         });
-        // console.log(`${player.player}: ${oldElo} → ${newElo}`);
         return {
           player: player.player,
           team: player.team,

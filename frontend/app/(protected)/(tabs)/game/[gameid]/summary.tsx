@@ -18,7 +18,8 @@ export default function SummaryScreen() {
     getGame(local.gameid as string)
       .then((res) => {
         setGame(res.data);
-        // // console.log('Fetched game data:', res.data);
+        // testing
+        // console.log('Fetched game data:', res.data);
         // res.data.players.forEach((p) => {
         //   const name = p.player.name;
         //   const oldElo = p.oldElo ?? 1200;
