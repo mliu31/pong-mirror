@@ -8,16 +8,21 @@ import {
 } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
 
+import { Player, Game } from '@/api/types';
 import { getPlayer } from '@/api/players';
-import { Player } from '@/api/types';
+import { getGameHistory } from '@/api/games';
 import useLoggedInPlayer from '@/hooks/useLoggedInPlayer';
 import Friends from '@/components/Friends/Friends';
 import LogoutButton from '@/components/LogoutButton';
+
+import PreviousGames from '@/components/PreviousGames';
+import WinLossChart from '@/components/WinLossChart';
 
 export default function Profile() {
   const playerId = useLoggedInPlayer()._id;
 
   const [player, setPlayer] = useState<Player | null>(null);
+  const [games, setGames] = useState<Game[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,15 +33,21 @@ export default function Profile() {
       return;
     }
 
-    getPlayer(playerId)
-      .then((response) => {
-        setPlayer(response.data);
+    async function getData() {
+      try {
+        const [playerResp, gamesResp] = await Promise.all([
+          getPlayer(playerId),
+          getGameHistory(playerId)
+        ]);
+        setPlayer(playerResp.data);
+        setGames(gamesResp.data);
+      } catch (err) {
+        setError('Error fetching player data or game data');
+      } finally {
         setLoading(false);
-      })
-      .catch((err) => {
-        setError('Error fetching player data');
-        setLoading(false);
-      });
+      }
+    }
+    getData();
   }, [playerId]);
 
   if (loading) {
@@ -47,7 +58,7 @@ export default function Profile() {
     );
   }
 
-  if (error) {
+  if (error || !player) {
     return (
       <View style={styles.centered}>
         <Text>{error}</Text>
@@ -65,30 +76,47 @@ export default function Profile() {
     })) ?? [];
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>{player?.name}</Text>
-      <Text style={styles.info}>ELO: {player?.elo}</Text>
-      <Text style={styles.info}>Ranking: {player?.rank}</Text>
-      <Text style={styles.info}>Games Played: {player?.gamesPlayed}</Text>
-      <Text style={styles.info}>Wins: {player?.wins}</Text>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      keyboardShouldPersistTaps="handled"
+    >
+      {/* player info */}
+      <View style={styles.playerInfoContainer}>
+        <Text style={styles.title}>{player?.name}</Text>
+        <Text style={styles.info}>ELO: {player?.elo}</Text>
+        <Text style={styles.info}>Ranking: {player?.rank}</Text>
+        <Text style={styles.info}>Games Played: {player?.gamesPlayed}</Text>
+        <Text style={styles.info}>Wins: {player?.wins}</Text>
+      </View>
 
-      {/* Elo History Chart */}
+      <Text style={styles.subTitle}>Game History</Text>
+
+      {/* win loss pie chart */}
+      <>
+        <WinLossChart
+          wins={player.wins}
+          losses={player.gamesPlayed - player.wins}
+        />
+      </>
+
+      {/* previous games */}
+      {games.length > 0 && (
+        <>
+          <Text style={styles.subTitle2}>Previous Games</Text>
+          <PreviousGames games={games} currentPlayerId={playerId} />
+        </>
+      )}
+
+      {/* elo hisotry */}
       {eloData.length > 1 && (
         <>
-          <Text style={styles.subTitle}>Elo History</Text>
-          <View
-            style={{
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-              paddingHorizontal: 16
-            }}
-          >
+          <Text style={styles.subTitle2}>Elo History</Text>
+          <View style={styles.chartContainer}>
             <LineChart
               data={eloData}
               thickness={2}
               color="#4A90E2"
-              hideDataPoints={false} // show default dots
+              hideDataPoints={false}
               isAnimated
               areaChart
               startFillColor="#4A90E2"
@@ -99,8 +127,9 @@ export default function Profile() {
               xAxisLabelTextStyle={{ color: '#444', fontSize: 10 }}
               yAxisLabelWidth={40}
               noOfSections={4}
-              yAxisLabelSuffix=""
               spacing={40}
+              width={300}
+              height={200}
             />
           </View>
         </>
@@ -114,29 +143,39 @@ export default function Profile() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center', // Center vertically
-    alignItems: 'center', // Center horizontally
     padding: 16,
     backgroundColor: '#fff'
+  },
+  playerInfoContainer: {
+    alignItems: 'center',
+    marginBottom: 16
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 16
-  },
-  info: {
-    fontSize: 18,
-    marginBottom: 8
+    marginBottom: 16,
+    textAlign: 'center'
   },
   subTitle: {
     fontSize: 20,
     fontWeight: 'bold',
     marginTop: 16,
+    marginBottom: 8,
+    textAlign: 'center'
+  },
+  subTitle2: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginTop: 16,
+    marginBottom: 8,
+    textAlign: 'center'
+  },
+  info: {
+    fontSize: 18,
     marginBottom: 8
   },
   friendsList: {
-    alignItems: 'center' // Center friends list items
+    alignItems: 'center'
   },
   friend: {
     fontSize: 16,
@@ -148,9 +187,9 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   chartContainer: {
-    width: 320,
-    height: 200,
-    paddingHorizontal: 8
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16
   },
   dot: {
     width: 6,
