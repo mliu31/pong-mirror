@@ -1,7 +1,7 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { getGame } from '@/api/games';
-import { Game } from '@/api/types';
+import { IGame } from '@/api/types';
 import { Dimensions } from 'react-native';
 import TEAM, { TeamValue } from '@/constants/TEAM';
 import { updatePlayerTeam } from '@/api/games';
@@ -15,7 +15,7 @@ import TeamBoxes from '@/components/TeamBoxes';
 
 export default function TeamBuilder() {
   const local = useLocalSearchParams();
-  const [gameData, setGameData] = useState<Game | null>(null);
+  const [gameData, setGameData] = useState<IGame | null>(null);
   const [continueButtonDisabled, setContinueButtonDisabled] = useState(true);
   const [chipAssignments, setChipAssignments] = useState<
     Record<string, TeamValue>
@@ -25,13 +25,15 @@ export default function TeamBuilder() {
   // get game data from BE & set initial chip assignments
   useEffect(() => {
     getGame(local.gameid as string).then((res) => {
-      setGameData(res.data as Game);
-      res.data.players.forEach((player) => {
-        setChipAssignments((prev) => ({
-          ...prev,
-          [player.player._id]: player.team
-        }));
-      });
+      setGameData(res.data as IGame);
+      res.data.players.forEach(
+        (playerTeam: { player: { _id: string }; team: TeamValue }) => {
+          setChipAssignments((prev) => ({
+            ...prev,
+            [playerTeam.player._id]: playerTeam.team
+          }));
+        }
+      );
     });
   }, [local.gameid]);
 

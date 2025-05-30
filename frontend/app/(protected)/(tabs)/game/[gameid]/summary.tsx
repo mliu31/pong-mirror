@@ -6,25 +6,25 @@ import { ThemedText } from '@/components/ThemedText';
 import { Button, ButtonText } from '@/components/ui/button';
 import { Box } from '@/components/ui/box';
 import { getGame } from '@/api/games';
-import { Game } from '@/api/types';
+import { IGame } from '@/api/types';
 import PlayerCircle from '@/components/PlayerCircle';
 
 export default function SummaryScreen() {
   const local = useLocalSearchParams();
 
-  const [game, setGame] = useState<Game | null>(null);
+  const [game, setGame] = useState<IGame | null>(null);
 
   useEffect(() => {
     getGame(local.gameid as string)
       .then((res) => {
         setGame(res.data);
-        // // console.log('Fetched game data:', res.data);
-        // res.data.players.forEach((p) => {
-        //   const name = p.player.name;
-        //   const oldElo = p.oldElo ?? 1200;
-        //   const newElo = p.newElo;
-        //   // console.log(`${name}: ${oldElo} → ${newElo}`);
-        // });
+        console.log('Fetched game data:', res.data);
+        res.data.players.forEach((p) => {
+          const name = p.player.name;
+          const oldElo = p.oldElo ?? 1200;
+          const newElo = p.newElo;
+          console.log(`${name}: ${oldElo} → ${newElo}`);
+        });
       })
       .catch((err) => {
         console.error('Failed to fetch game:', err);

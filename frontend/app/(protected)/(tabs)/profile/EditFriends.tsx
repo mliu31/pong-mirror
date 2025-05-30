@@ -1,5 +1,5 @@
 import { getAllPlayers } from '@/api/players';
-import { Player } from '@/api/types';
+import { IPlayer } from '@/api/types';
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, SafeAreaView, FlatList } from 'react-native';
@@ -16,7 +16,7 @@ export default function EditFriend() {
 
   // state for friend ids and sorted list of friends/nonfriends
   const [fids, setFids] = useState<Set<string>>(new Set());
-  const [sortedPlayers, setSortedPlayers] = useState<Player[]>([]);
+  const [sortedPlayers, setSortedPlayers] = useState<IPlayer[]>([]);
 
   // on page load
   useEffect(() => {
@@ -28,9 +28,9 @@ export default function EditFriend() {
     //  sorts all players into friends and nonfriends
     getAllPlayers().then((res) => {
       // remove current user
-      const players = res.data.filter((player: Player) => player._id !== pid);
+      const players = res.data.filter((player: IPlayer) => player._id !== pid);
 
-      players.sort((a: Player, b: Player) => {
+      players.sort((a: IPlayer, b: IPlayer) => {
         const aIsFriend = newFids.has(a._id);
         const bIsFriend = newFids.has(b._id);
 

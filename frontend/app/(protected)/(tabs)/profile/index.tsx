@@ -1,5 +1,5 @@
 import { getPlayer } from '@/api/players';
-import { Player } from '@/api/types';
+import { IPlayer } from '@/api/types';
 import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import Friends from '@/components/Friends/Friends';
@@ -9,7 +9,7 @@ import useLoggedInPlayer from '@/hooks/useLoggedInPlayer';
 export default function Profile() {
   const playerId = useLoggedInPlayer()._id;
 
-  const [player, setPlayer] = useState<Player | null>(null);
+  const [player, setPlayer] = useState<IPlayer | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
