@@ -5,6 +5,8 @@ interface Team {
   _id: string;
   name: string;
   players: string[];
+  elo: number;
+  seed: number;
 }
 
 // Define the shape of the API responses from the backend
@@ -14,6 +16,7 @@ export interface TournamentResponse {
   teams: string[];
   status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
   currentRound: number;
+  admin: string;
   bracket: {
     round: number;
     matches: {
@@ -30,11 +33,13 @@ export interface TournamentResponse {
  * Creates a new tournament with the given name
  */
 export const createTournament = async (
-  name: string
+  name: string,
+  adminId: string
 ): Promise<TournamentResponse> => {
   try {
     const { data } = await api.put<TournamentResponse>(
-      `/tournaments/createTournament/${name}`
+      `/tournaments/createTournament/${name}`,
+      { adminId }
     );
     return data;
   } catch (error) {
@@ -78,11 +83,13 @@ export const deleteTournament = async (tournamentId: string): Promise<void> => {
  */
 export const addTeam = async (
   tournamentId: string,
-  playerId: string
+  playerId: string,
+  playerName: string
 ): Promise<TournamentResponse> => {
   try {
     const { data } = await api.post<TournamentResponse>(
-      `/tournaments/addTeam/${tournamentId}/teams/${playerId}`
+      `/tournaments/addTeam/${tournamentId}/teams/${playerId}`,
+      { playerName }
     );
     return data;
   } catch (error) {
@@ -169,6 +176,16 @@ export const startTournament = async (
     return data;
   } catch (error) {
     console.error('Error starting tournament:', error);
+    throw error;
+  }
+};
+
+export const getTeam = async (teamId: string): Promise<Team> => {
+  try {
+    const { data } = await api.get<Team>(`/tournaments/getTeam/${teamId}`);
+    return data;
+  } catch (error) {
+    console.error('Error fetching team:', error);
     throw error;
   }
 };

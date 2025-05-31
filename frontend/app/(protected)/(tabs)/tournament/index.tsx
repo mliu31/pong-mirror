@@ -25,6 +25,8 @@ export default function TournamentScreen() {
   const [manualTournamentId, setManualTournamentId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const basicPlayerInfo = useAppSelector((state) => state.auth.basicPlayerInfo);
+  console.log('basicPlayerInfo');
+  console.log(basicPlayerInfo);
 
   useEffect(() => {
     (async () => {
@@ -35,7 +37,10 @@ export default function TournamentScreen() {
 
   const handleCreateTournament = async () => {
     try {
-      const tournament = await createTournament('New Tournament');
+      const tournament = await createTournament(
+        'New Tournament',
+        basicPlayerInfo?._id || ''
+      );
       router.push(`/tournament/${tournament._id}`);
     } catch (error) {
       console.error('Error creating tournament:', error);
@@ -69,7 +74,11 @@ export default function TournamentScreen() {
       // Verify the tournament exists
       await getTournament(trimmedId);
       // Add the player to the tournament
-      await addTeam(trimmedId, basicPlayerInfo?._id || '');
+      await addTeam(
+        trimmedId,
+        basicPlayerInfo?._id || '',
+        basicPlayerInfo?.name || ''
+      );
       router.push(`/tournament/${trimmedId}`);
     } catch (error) {
       toast.show({

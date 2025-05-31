@@ -7,14 +7,18 @@ import {
   reseedTeams,
   removeTeam,
   getAllTeams,
-  startTournament
+  startTournament,
+  getTeam
 } from '../controllers/tournament/tournamentController';
 
 const router = express.Router();
 
 router.put('/createTournament/:name', async (req, res) => {
   try {
-    const tournament = await createTournament(req.params.name);
+    const tournament = await createTournament(
+      req.params.name,
+      req.body.adminId
+    );
 
     res.status(201).json(tournament);
   } catch (error) {
@@ -50,8 +54,11 @@ router.delete('/:id', async (req, res) => {
 
 router.post('/addTeam/:id/teams/:playerId', async (req, res) => {
   try {
-    const tournament = await addTeam(req.params.id, req.params.playerId);
-
+    const tournament = await addTeam(
+      req.params.id,
+      req.params.playerId,
+      req.body.playerName
+    );
     res.json(tournament);
   } catch (error) {
     console.error('Error adding team to tournament:', error);
@@ -99,6 +106,16 @@ router.post('/:id/start', async (req, res) => {
     res.json(tournament);
   } catch (error) {
     console.error('Error starting tournament:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+router.get('/getTeam/:id', async (req, res) => {
+  try {
+    const team = await getTeam(req.params.id);
+    res.json(team);
+  } catch (error) {
+    console.error('Error fetching team:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });

@@ -2,7 +2,7 @@ import Team from '../../models/Team';
 import Player from '../../models/Player';
 
 // create team
-export const createTeam = async (playerId: string) => {
+export const createTeam = async (playerId: string, teamName: string) => {
   const player = await Player.findById(playerId);
 
   if (!player) {
@@ -11,7 +11,8 @@ export const createTeam = async (playerId: string) => {
   const team = await Team.create({
     elo: player.elo,
     players: [playerId],
-    seed: 5
+    seed: 5,
+    name: teamName
   });
   return team;
 };

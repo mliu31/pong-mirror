@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 
 export interface ITournament extends Document {
   name: string;
+  admin: string;
   teams: string[];
   status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
   currentRound: number;
@@ -19,6 +20,10 @@ export interface ITournament extends Document {
 
 const tournamentSchema = new mongoose.Schema<ITournament>({
   name: {
+    type: String,
+    required: true
+  },
+  admin: {
     type: String,
     required: true
   },

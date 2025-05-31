@@ -7,7 +7,8 @@ import { Button, ButtonText } from '@/components/ui/button';
 import {
   getTournament,
   startTournament,
-  TournamentResponse
+  TournamentResponse,
+  getTeam
 } from '@/api/tournament';
 import { useAppSelector } from '@/redux/redux-hooks';
 import TeamChips from '@/components/TeamChips';
@@ -20,18 +21,35 @@ interface Match {
   gameId: string;
 }
 
+interface Team {
+  _id: string;
+  name: string;
+  players: string[];
+  elo: number;
+  seed: number;
+}
+
 export default function TournamentDetailScreen() {
   const local = useLocalSearchParams();
   const tournamentId = local.tournamentid;
   const router = useRouter();
   const [tournament, setTournament] = useState<TournamentResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [teams, setTeams] = useState<Team[]>([]);
   const basicPlayerInfo = useAppSelector((state) => state.auth.basicPlayerInfo);
+  const isAdmin = basicPlayerInfo?._id === tournament?.admin;
 
-  const fetchTournament = async (tournamentId: string) => {
+  const fetchTournament = async () => {
     try {
-      const data = await getTournament(tournamentId);
-      setTournament(data);
+      const tournamentData = await getTournament(tournamentId as string);
+      setTournament(tournamentData);
+
+      // Fetch team data for each team ID
+      const teamPromises = tournamentData.teams.map((teamId) =>
+        getTeam(teamId)
+      );
+      const teamData = await Promise.all(teamPromises);
+      setTeams(teamData);
     } catch (error) {
       console.error('Error fetching tournament:', error);
     } finally {
@@ -40,7 +58,7 @@ export default function TournamentDetailScreen() {
   };
 
   useEffect(() => {
-    fetchTournament(tournamentId as string);
+    fetchTournament();
     // Set up polling for tournament updates
     const interval = setInterval(fetchTournament, 5000);
     return () => clearInterval(interval);
@@ -49,7 +67,7 @@ export default function TournamentDetailScreen() {
   const handleStartTournament = async () => {
     try {
       await startTournament(tournamentId as string);
-      fetchTournament(tournamentId as string);
+      fetchTournament();
     } catch (error) {
       console.error('Error starting tournament:', error);
     }
@@ -58,7 +76,6 @@ export default function TournamentDetailScreen() {
   const handleJoinTeam = (teamId: string) => {
     router.push(`/tournament/${tournamentId}/${teamId}`);
   };
-
   if (isLoading) {
     return (
       <ThemedView className="flex-1 items-center justify-center">
@@ -74,8 +91,6 @@ export default function TournamentDetailScreen() {
       </ThemedView>
     );
   }
-
-  const isAdmin = tournament.teams.includes(basicPlayerInfo?._id || '');
 
   return (
     <ThemedView className="flex-1 p-5">
@@ -95,15 +110,15 @@ export default function TournamentDetailScreen() {
           <ThemedText type="subtitle" className="mb-2">
             Teams
           </ThemedText>
-          {tournament.teams.map((teamId: string) => (
-            <View key={teamId} className="mb-4 p-4 bg-gray-100 rounded-lg">
+          {teams.map((team) => (
+            <View key={team._id} className="mb-4 p-4 bg-gray-100 rounded-lg">
               <ThemedText
                 className="text-lg font-semibold mb-2"
                 lightColor="#000"
                 darkColor="#000"
                 style={{ color: '#000', opacity: 1 }}
               >
-                Team {teamId}
+                {'Leader: '}{team.name}
               </ThemedText>
               <TeamChips
                 leftTeam={[]}
@@ -117,13 +132,13 @@ export default function TournamentDetailScreen() {
                 variant="solid"
                 size="sm"
                 className="mt-2"
-                onPress={() => handleJoinTeam(teamId)}
+                onPress={() => handleJoinTeam(team._id)}
               >
                 <ButtonText>Join Team</ButtonText>
               </Button>
             </View>
           ))}
-          {isAdmin && tournament.teams.length >= 2 && (
+          {isAdmin && teams.length >= 2 && (
             <Button
               action="primary"
               variant="solid"

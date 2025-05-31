@@ -9,10 +9,11 @@ import {
 } from '../teams/teamController';
 
 // create tournament
-export const createTournament = (tournamentName: string) => {
+export const createTournament = (tournamentName: string, adminId: string) => {
   const tournament = Tournament.create({
     name: tournamentName,
-    teams: []
+    teams: [],
+    admin: adminId
   });
   return tournament;
 };
@@ -37,7 +38,11 @@ export const deleteTournament = async (tournamentId: string) => {
 
 // add team
 
-export const addTeam = async (tournamentId: string, playerId: string) => {
+export const addTeam = async (
+  tournamentId: string,
+  playerId: string,
+  playerName: string
+) => {
   const player = await Player.findById(playerId);
   const tournament = await Tournament.findById(tournamentId);
 
@@ -52,7 +57,7 @@ export const addTeam = async (tournamentId: string, playerId: string) => {
       throw new Error('Player already in tournament');
   }
 
-  const team = await createTeam(playerId);
+  const team = await createTeam(playerId, playerName);
 
   if (!team) throw new Error('Error creating team');
 
@@ -268,4 +273,10 @@ export const getAllTeams = async (tournamentId: string) => {
   if (!tournament) throw new Error('404 Tournament not found');
 
   return tournament.teams;
+};
+
+export const getTeam = async (teamId: string) => {
+  const team = await Team.findById(teamId);
+  if (!team) throw new Error('404 Team not found');
+  return team;
 };

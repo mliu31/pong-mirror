@@ -4,17 +4,18 @@ import { useEffect, useState } from 'react';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { Button, ButtonText } from '@/components/ui/button';
-import { getTournament } from '@/api/tournament';
+import { getTeam, getTournament, startTournament } from '@/api/tournament';
 import { useAppSelector } from '@/redux/redux-hooks';
 import TeamChips from '@/components/TeamChips';
+import { Player } from '@/api/types';
+import { getPlayer } from '@/api/players';
 
 interface Team {
   _id: string;
+  elo: number;
+  players: string[];
+  seed: number;
   name: string;
-  players: {
-    _id: string;
-    name: string;
-  }[];
 }
 
 interface Match {
@@ -29,26 +30,41 @@ interface Tournament {
   _id: string;
   name: string;
   status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
-  teams: Team[];
+  teams: string[];
   currentRound: number;
   bracket: {
     round: number;
     matches: Match[];
   }[];
+  admin: string;
 }
 
 export default function TeamTournamentScreen() {
-  const { tournamentId, teamId } = useLocalSearchParams();
-  console.log(tournamentId, teamId);
+  const local = useLocalSearchParams();
+  const tournamentId = local.tournamentid;
+  const teamId = local.teamid;
   const router = useRouter();
   const [tournament, setTournament] = useState<Tournament | null>(null);
+  const [team, setTeam] = useState<Team | null>(null);
+  const [teamPlayers, setTeamPlayers] = useState<Player[]>([]);
+  const [teams, setTeams] = useState<Team[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const basicPlayerInfo = useAppSelector((state) => state.auth.basicPlayerInfo);
+  const isAdmin = basicPlayerInfo?._id === tournament?.admin;
 
   const fetchTournament = async () => {
     try {
-      const data = await getTournament(tournamentId as string);
-      setTournament(data);
+      const tournamentData = await getTournament(tournamentId as string);
+      console.log('this is the tournament data');
+      console.log(tournamentData);
+      setTournament(tournamentData);
+
+      // Fetch team data for each team ID
+      const teamPromises = tournamentData.teams.map((teamId) =>
+        getTeam(teamId)
+      );
+      const teamData = await Promise.all(teamPromises);
+      setTeams(teamData);
     } catch (error) {
       console.error('Error fetching tournament:', error);
     } finally {
@@ -56,8 +72,31 @@ export default function TeamTournamentScreen() {
     }
   };
 
+  const fetchTeam = async () => {
+    console.log('fetching team');
+    try {
+      const teamData = await getTeam(teamId as string);
+      console.log('this is the team data');
+      console.log(teamData);
+      setTeam(teamData);
+
+      // Fetch player data for each player ID
+      const playerPromises = teamData.players.map((playerId) =>
+        getPlayer(playerId)
+      );
+      const playerResponses = await Promise.all(playerPromises);
+      const players = playerResponses.map((response) => response.data);
+      setTeamPlayers(players);
+    } catch (error) {
+      console.error('Error fetching team:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchTournament();
+    fetchTeam();
     // Set up polling for tournament updates
     const interval = setInterval(fetchTournament, 5000);
     return () => clearInterval(interval);
@@ -65,6 +104,15 @@ export default function TeamTournamentScreen() {
 
   const handleJoinGame = (gameId: string) => {
     router.push(`/game/${gameId}`);
+  };
+
+  const handleStartTournament = async () => {
+    try {
+      await startTournament(tournamentId as string);
+      fetchTournament(); // Refresh tournament data
+    } catch (error) {
+      console.error('Error starting tournament:', error);
+    }
   };
 
   if (isLoading) {
@@ -83,8 +131,7 @@ export default function TeamTournamentScreen() {
     );
   }
 
-  const currentTeam = tournament.teams.find((t) => t._id === teamId);
-  if (!currentTeam) {
+  if (!team) {
     return (
       <ThemedView className="flex-1 items-center justify-center">
         <ThemedText>Team not found</ThemedText>
@@ -96,14 +143,12 @@ export default function TeamTournamentScreen() {
     .flatMap((round) => round.matches)
     .find((match) => match.team1 === teamId || match.team2 === teamId);
 
-  const isPlayerInTeam = currentTeam.players.some(
-    (player) => player._id === basicPlayerInfo?._id
-  );
+  const isPlayerInTeam = team.players.includes(basicPlayerInfo?._id || '');
 
   return (
     <ThemedView className="flex-1 p-5">
       <ThemedText type="title" className="mb-4">
-        {currentTeam.name}
+        {team.name}
       </ThemedText>
 
       <View className="mb-4">
@@ -118,13 +163,27 @@ export default function TeamTournamentScreen() {
           Team Members
         </ThemedText>
         <TeamChips
-          leftTeam={currentTeam.players}
+          leftTeam={teamPlayers}
           rightTeam={[]}
           teamBoxHeight={200}
           showLeftBorder={false}
           showRightBorder={false}
         />
       </View>
+
+      {tournament.status === 'PENDING' && isAdmin && teams.length >= 2 && (
+        <View className="mb-4">
+          <Button
+            action="primary"
+            variant="solid"
+            size="lg"
+            className="w-full"
+            onPress={handleStartTournament}
+          >
+            <ButtonText>Start Tournament</ButtonText>
+          </Button>
+        </View>
+      )}
 
       {tournament.status === 'IN_PROGRESS' && currentMatch && (
         <View className="mb-4">
@@ -167,15 +226,9 @@ export default function TeamTournamentScreen() {
                 Round {round.round}
               </ThemedText>
               {round.matches.map((match, index) => {
-                const team1 = tournament.teams.find(
-                  (t) => t._id === match.team1
-                );
-                const team2 = tournament.teams.find(
-                  (t) => t._id === match.team2
-                );
-                const winner = tournament.teams.find(
-                  (t) => t._id === match.winner
-                );
+                const team1Data = teams.find((t) => t._id === match.team1);
+                const team2Data = teams.find((t) => t._id === match.team2);
+                const winnerData = teams.find((t) => t._id === match.winner);
                 const isCurrentTeamMatch =
                   match.team1 === teamId || match.team2 === teamId;
 
@@ -187,16 +240,16 @@ export default function TeamTournamentScreen() {
                     }`}
                   >
                     <ThemedText>
-                      {team1?.name || 'TBD'} vs {team2?.name || 'TBD'}
+                      {team1Data?.name || 'TBD'} vs {team2Data?.name || 'TBD'}
                     </ThemedText>
                     {match.winner && (
                       <ThemedText className="text-green-600">
-                        Winner: {winner?.name}
+                        Winner: {winnerData?.name}
                       </ThemedText>
                     )}
                     {match.bye && (
                       <ThemedText className="text-blue-600">
-                        Bye: {team1?.name}
+                        Bye: {team1Data?.name}
                       </ThemedText>
                     )}
                   </View>
