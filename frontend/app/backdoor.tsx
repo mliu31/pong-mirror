@@ -1,16 +1,14 @@
-import api from '@/api';
 import { Input, InputField } from '@/components/ui/input';
 import { Toast, ToastTitle, useToast } from '@/components/ui/toast';
 import { useLoggedInPlayerUnsafe } from '@/hooks/useLoggedInPlayer';
 import { useAppDispatch } from '@/redux/redux-hooks';
 import { backdoor } from '@/redux/slices/authSlice';
-import { Redirect, useRouter } from 'expo-router';
+import { Redirect } from 'expo-router';
 import { FC } from 'react';
 import { View } from 'react-native';
 
 const Backdoor: FC = () => {
   const dispatch = useAppDispatch();
-  const router = useRouter();
   const loggedInPlayer = useLoggedInPlayerUnsafe();
   const errorToast = useToast();
   if (loggedInPlayer !== null) {

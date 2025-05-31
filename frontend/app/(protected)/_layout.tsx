@@ -2,9 +2,7 @@ import { useEffect, useState } from 'react';
 import { getPlayerInvites } from '@/api/invite';
 import { IInvite } from '@/api/types';
 import InvitesContext from '@/context/InviteContext';
-import useLoggedInPlayer, {
-  useLoggedInPlayerUnsafe
-} from '@/hooks/useLoggedInPlayer';
+import { useLoggedInPlayerUnsafe } from '@/hooks/useLoggedInPlayer';
 import MessageProvider from '@/components/MessageProvider';
 import { IoProvider } from '@/context/IoContext';
 import { Stack, useGlobalSearchParams, usePathname, router } from 'expo-router';
