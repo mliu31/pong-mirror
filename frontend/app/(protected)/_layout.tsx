@@ -2,13 +2,15 @@ import { useEffect, useState } from 'react';
 import { getPlayerInvites } from '@/api/invite';
 import { IInvite } from '@/api/types';
 import InvitesContext from '@/context/InviteContext';
-import useLoggedInPlayer from '@/hooks/useLoggedInPlayer';
+import useLoggedInPlayer, {
+  useLoggedInPlayerUnsafe
+} from '@/hooks/useLoggedInPlayer';
 import MessageProvider from '@/components/MessageProvider';
 import { IoProvider } from '@/context/IoContext';
 import { Stack, useGlobalSearchParams, usePathname, router } from 'expo-router';
 
 export default function ProtectedLayout() {
-  const pid = useLoggedInPlayer()._id;
+  const pid = useLoggedInPlayerUnsafe()?._id;
   const [invites, setInvites] = useState<IInvite[]>([]);
   const pathname = usePathname();
   const searchParams = useGlobalSearchParams();
@@ -16,7 +18,7 @@ export default function ProtectedLayout() {
   useEffect(() => {
     // the protected route may still be rendering while going to signup, ignore if this is the case;
     // otherwise next will be signup.
-    if (pid === null && pathname !== '/signup') {
+    if (pid === undefined && pathname !== '/signup') {
       router.replace({
         pathname: '/signup',
         params: {
