@@ -517,10 +517,5 @@ class PongSimulator:
         pygame.quit()
 
 if __name__ == "__main__":
-    # Use the API configuration directly from the code
-    simulator = PongSimulator(
-        "test_game_logs/new_pong_long.json",
-        API_CONFIG["endpoint"],
-        API_CONFIG["api_key"]
-    )
+    simulator = PongSimulator("test_game_logs/new_pong_long.json")
     simulator.run()
