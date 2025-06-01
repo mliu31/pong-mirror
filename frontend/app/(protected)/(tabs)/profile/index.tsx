@@ -1,72 +1,51 @@
-import { getPlayer } from '@/api/players';
-import { IPlayer } from '@/api/types';
 import { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ActivityIndicator,
-  ScrollView
-} from 'react-native';
-import { LineChart } from 'react-native-gifted-charts';
-
-import { Player, Game } from '@/api/types';
+import { ScrollView, ActivityIndicator } from 'react-native';
 import { getPlayer } from '@/api/players';
 import { getGameHistory } from '@/api/games';
+import { IPlayer, IGame } from '@/api/types';
 import useLoggedInPlayer from '@/hooks/useLoggedInPlayer';
+
+import { ThemedView } from '@/components/ThemedView';
+import { ThemedText } from '@/components/ThemedText';
+import { Box } from '@/components/ui/box';
 import Friends from '@/components/Friends/Friends';
 import LogoutButton from '@/components/LogoutButton';
-
 import PreviousGames from '@/components/PreviousGames';
 import WinLossChart from '@/components/WinLossChart';
+import { LineChart } from 'react-native-gifted-charts';
 
 export default function Profile() {
   const playerId = useLoggedInPlayer()._id;
 
   const [player, setPlayer] = useState<IPlayer | null>(null);
-  const [games, setGames] = useState<Game[]>([]);
+  const [games, setGames] = useState<IGame[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!playerId) {
       setLoading(false);
-      console.error('UserId is invalid');
+      setError('User ID is invalid');
       return;
     }
 
-    async function getData() {
+    async function fetchData() {
       try {
-        const [playerResp, gamesResp] = await Promise.all([
+        const [playerRes, gamesRes] = await Promise.all([
           getPlayer(playerId),
           getGameHistory(playerId)
         ]);
-        setPlayer(playerResp.data);
-        setGames(gamesResp.data);
+        setPlayer(playerRes.data);
+        setGames(gamesRes.data);
       } catch (err) {
-        setError('Error fetching player data or game data');
+        setError('Error fetching player or game data.');
       } finally {
         setLoading(false);
       }
     }
-    getData();
+
+    fetchData();
   }, [playerId]);
-
-  if (loading) {
-    return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
-  }
-
-  if (error || !player) {
-    return (
-      <View style={styles.centered}>
-        <Text>{error}</Text>
-      </View>
-    );
-  }
 
   const eloData =
     player?.eloHistory?.map((entry) => ({
@@ -77,126 +56,107 @@ export default function Profile() {
       })
     })) ?? [];
 
+  if (loading) {
+    return (
+      <ThemedView className="flex-1 justify-center items-center">
+        <ActivityIndicator size="large" color="#4A90E2" />
+      </ThemedView>
+    );
+  }
+
+  if (error || !player) {
+    return (
+      <ThemedView className="flex-1 justify-center items-center px-6">
+        <ThemedText className="text-lg text-red-600 text-center">
+          {error ?? 'Player not found.'}
+        </ThemedText>
+      </ThemedView>
+    );
+  }
+
   return (
-    <ScrollView
-      contentContainerStyle={styles.container}
-      keyboardShouldPersistTaps="handled"
-    >
-      {/* player info */}
-      <View style={styles.playerInfoContainer}>
-        <Text style={styles.title}>{player?.name}</Text>
-        <Text style={styles.info}>ELO: {player?.elo}</Text>
-        <Text style={styles.info}>Ranking: {player?.rank}</Text>
-        <Text style={styles.info}>Games Played: {player?.gamesPlayed}</Text>
-        <Text style={styles.info}>Wins: {player?.wins}</Text>
-      </View>
+    <ScrollView contentContainerStyle={{ paddingBottom: 32 }}>
+      <ThemedView className="px-4 pt-10 items-center">
+        <Box className="w-full max-w-[380px]">
+          {/* Player Info */}
+          <Box className="items-center mb-4">
+            <ThemedText className="text-3xl font-bold">
+              {player.name}
+            </ThemedText>
+            <Box className="mt-4 flex-row justify-center">
+              <Box className="items-center mr-2">
+                {/* TODO: a better way to implement text color? */}
+                <ThemedText style={{ color: '#277f5a' }} className="text-lg">
+                  ELO:
+                </ThemedText>
+                <ThemedText style={{ color: '#277f5a' }} className="text-lg">
+                  Rank:
+                </ThemedText>
+              </Box>
 
-      <Text style={styles.subTitle}>Game History</Text>
+              <Box className="items-center">
+                <ThemedText className="text-lg">{player.elo}</ThemedText>
+                <ThemedText className="text-lg">#{player.rank}</ThemedText>
+              </Box>
+            </Box>
+          </Box>
+          <Friends pid={player._id} />
 
-      {/* win loss pie chart */}
-      <>
-        <WinLossChart
-          wins={player.wins}
-          losses={player.gamesPlayed - player.wins}
-        />
-      </>
-
-      {/* previous games */}
-      {games.length > 0 && (
-        <>
-          <Text style={styles.subTitle2}>Previous Games</Text>
-          <PreviousGames games={games} currentPlayerId={playerId} />
-        </>
-      )}
-
-      {/* elo hisotry */}
-      {eloData.length > 1 && (
-        <>
-          <Text style={styles.subTitle2}>Elo History</Text>
-          <View style={styles.chartContainer}>
-            <LineChart
-              data={eloData}
-              thickness={2}
-              color="#4A90E2"
-              hideDataPoints={false}
-              isAnimated
-              areaChart
-              startFillColor="#4A90E2"
-              endFillColor="#4A90E2"
-              startOpacity={0.3}
-              endOpacity={0}
-              yAxisTextStyle={{ color: '#444' }}
-              xAxisLabelTextStyle={{ color: '#444', fontSize: 10 }}
-              yAxisLabelWidth={40}
-              noOfSections={4}
-              spacing={40}
-              width={300}
-              height={200}
+          {/* Win/Loss Chart */}
+          <Box className="mt-8">
+            <ThemedText className="text-xl font-bold text-center mb-2">
+              Game History
+            </ThemedText>
+            <WinLossChart
+              wins={player.wins}
+              losses={player.gamesPlayed - player.wins}
             />
-          </View>
-        </>
-      )}
+          </Box>
 
-      {player && <Friends pid={player._id} />}
-      <LogoutButton />
+          {/* Previous Games */}
+          {games.length > 0 && (
+            <Box className="mt-8">
+              <ThemedText className="text-lg font-semibold text-center mb-2">
+                Previous Games
+              </ThemedText>
+              <PreviousGames games={games} currentPlayerId={playerId} />
+            </Box>
+          )}
+
+          {/* Elo History Chart */}
+          {eloData.length > 1 && (
+            <Box className="mt-10 items-center">
+              <ThemedText className="text-lg font-semibold mb-2">
+                Elo History
+              </ThemedText>
+              <LineChart
+                data={eloData}
+                thickness={2}
+                color="#4A90E2"
+                hideDataPoints={false}
+                isAnimated
+                areaChart
+                startFillColor="#4A90E2"
+                endFillColor="#4A90E2"
+                startOpacity={0.3}
+                endOpacity={0}
+                yAxisTextStyle={{ color: '#444' }}
+                xAxisLabelTextStyle={{ color: '#444', fontSize: 10 }}
+                yAxisLabelWidth={40}
+                noOfSections={4}
+                spacing={40}
+                width={300}
+                height={200}
+              />
+            </Box>
+          )}
+
+          {/* Logout */}
+          <Box className="mt-10">
+            <LogoutButton />
+          </Box>
+        </Box>
+      </ThemedView>
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-    backgroundColor: '#fff'
-  },
-  playerInfoContainer: {
-    alignItems: 'center',
-    marginBottom: 16
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
-    textAlign: 'center'
-  },
-  subTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginTop: 16,
-    marginBottom: 8,
-    textAlign: 'center'
-  },
-  subTitle2: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginTop: 16,
-    marginBottom: 8,
-    textAlign: 'center'
-  },
-  info: {
-    fontSize: 18,
-    marginBottom: 8
-  },
-  friendsList: {
-    alignItems: 'center'
-  },
-  friend: {
-    fontSize: 16,
-    marginBottom: 4
-  },
-  centered: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  chartContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 16
-  },
-  dot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: '#4A90E2'
-  }
-});

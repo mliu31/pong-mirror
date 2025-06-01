@@ -23,4 +23,4 @@ export const setGameWinner = async (gameId: string, team: TeamValue) =>
   await api.patch(`/games/${gameId}/winner/${team}`);
 
 export const getGameHistory = async (playerId: string) =>
-  await api.get<Game[]>(`/games/player/${playerId}`);
+  await api.get<IGame[]>(`/games/player/${playerId}`);

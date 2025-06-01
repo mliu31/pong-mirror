@@ -1,87 +1,66 @@
-import { View, Text, StyleSheet } from 'react-native';
 import { PieChart } from 'react-native-gifted-charts';
+import { Box } from '@/components/ui/box';
+import { ThemedText } from '@/components/ThemedText';
+import { View } from 'react-native';
 
-interface WinLossPieChartProps {
+interface WinLossPieChart {
   wins: number;
   losses: number;
 }
 
-export default function WinLossChart({ wins, losses }: WinLossPieChartProps) {
+export default function WinLossChart({ wins, losses }: WinLossPieChart) {
   const total = wins + losses;
 
-  // if no games played yet
   if (total === 0) {
     return (
-      <View style={styles.centered}>
-        <Text>No games played yet</Text>
-      </View>
+      <Box className="h-44 items-center justify-center">
+        <ThemedText>No games played yet</ThemedText>
+      </Box>
     );
   }
 
   const winRate = ((wins / total) * 100).toFixed(1);
 
   const data = [
-    {
-      value: wins,
-      color: '#4CAF50'
-    },
-    {
-      value: losses,
-      color: '#F44336'
-    }
+    { value: wins, color: '#277f5a' },
+    { value: losses, color: '#ea4236' }
   ];
 
   return (
-    <View style={styles.wrapper}>
-      <View style={styles.stats}>
-        <Text style={styles.statsText}>Won: {wins}</Text>
-        <Text style={styles.statsText}>Lost: {losses}</Text>
-      </View>
+    <Box className="flex-row items-center justify-center my-4">
+      <Box className="mr-6 items-end">
+        <ThemedText className="text-base my-1" style={{ color: '#277f5a' }}>
+          Won: <ThemedText style={{ color: '#ffffff' }}>{wins}</ThemedText>
+        </ThemedText>
 
-      {/* pie chart with win rate at center */}
+        <ThemedText className="text-base my-1" style={{ color: '#ea4236' }}>
+          Lost: <ThemedText style={{ color: '#ffffff' }}>{losses}</ThemedText>
+        </ThemedText>
+      </Box>
+
       <PieChart
         data={data}
         donut
-        showGradient
+        showGradient={false}
         innerRadius={60}
         radius={100}
         centerLabelComponent={() => (
-          <View style={styles.centerLabel}>
-            <Text style={styles.centerLabelText}>{winRate}%</Text>
+          <View
+            className="justify-center items-center"
+            style={{
+              backgroundColor: '#000',
+              borderRadius: 60,
+              width: 120,
+              height: 120
+            }}
+          >
+            <ThemedText className="text-white font-bold text-base">
+              {winRate}%
+            </ThemedText>
           </View>
         )}
         showValuesAsLabels={false}
       />
-    </View>
+    </Box>
   );
 }
-
-const styles = StyleSheet.create({
-  wrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginVertical: 16
-  },
-  stats: {
-    marginRight: 24,
-    alignItems: 'flex-end'
-  },
-  statsText: {
-    fontSize: 16,
-    marginVertical: 4
-  },
-  centerLabel: {
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  centerLabelText: {
-    fontSize: 18,
-    fontWeight: 'bold'
-  },
-  centered: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 180
-  }
-});

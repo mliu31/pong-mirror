@@ -9,7 +9,6 @@ import {
   setPlayerTeam
 } from '../controllers/game/gameController';
 import { getPlayer } from '../controllers/player/playerController';
-import express from 'express';
 import { requireLoggedInHandler } from './authRouter';
 
 const router = express.Router();

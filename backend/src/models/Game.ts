@@ -45,7 +45,8 @@ const gameSchema = new mongoose.Schema({
         required: true
       }
     }
-  ]
+  ],
+  date: String
 });
 
 export default mongoose.model('Game', gameSchema);

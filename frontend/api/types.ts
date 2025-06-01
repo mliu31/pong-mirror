@@ -11,6 +11,7 @@ export interface IGame {
   }[];
   captain: IPlayer;
   winner: TeamValue;
+  date: string;
 }
 
 export interface IPlayer {
