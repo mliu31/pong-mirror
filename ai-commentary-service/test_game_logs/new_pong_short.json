@@ -1,0 +1,32 @@
+[
+  { "timestamp": 0, "type": "serve", "player": "B" },
+  { "timestamp": 1, "type": "rally", "player": "D" },
+  { "timestamp": 3, "type": "sink", "player": "A" },
+
+  { "timestamp": 4, "type": "serve", "player": "D" },
+  { "timestamp": 7, "type": "rally", "player": "A" },
+  { "timestamp": 9, "type": "rally", "player": "D" },
+  { "timestamp": 10, "type": "rally", "player": "B" },
+  { "timestamp": 12, "type": "rally", "player": "D" },
+  { "timestamp": 13, "type": "sink", "player": "B" },
+
+  { "timestamp": 14, "type": "serve", "player": "C" },
+  { "timestamp": 15, "type": "rally", "player": "B" },
+  { "timestamp": 16, "type": "rally", "player": "C" },
+  { "timestamp": 19, "type": "sink", "player": "B" },
+
+  { "timestamp": 20, "type": "serve", "player": "C" },
+  { "timestamp": 21, "type": "rally", "player": "A" },
+  { "timestamp": 24, "type": "rally", "player": "C" },
+  { "timestamp": 27, "type": "rally", "player": "B" },
+  { "timestamp": 30, "type": "rally", "player": "D" },
+  { "timestamp": 33, "type": "sink", "player": "A" },
+
+  { "timestamp": 36, "type": "serve", "player": "D" },
+  { "timestamp": 39, "type": "rally", "player": "A" },
+  { "timestamp": 40, "type": "rally", "player": "D" },
+  { "timestamp": 41, "type": "rally", "player": "A" },
+  { "timestamp": 44, "type": "rally", "player": "C" },
+  { "timestamp": 46, "type": "rally", "player": "A" },
+  { "timestamp": 49, "type": "hit", "player": "D" }
+]
