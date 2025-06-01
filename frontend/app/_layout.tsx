@@ -1,32 +1,30 @@
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider
-} from '@react-navigation/native';
+import { DarkTheme, ThemeProvider } from '@react-navigation/native';
 import '@/global.css';
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
-import { useFonts } from 'expo-font';
+import {
+  useFonts,
+  AlumniSansCollegiateOne_400Regular
+} from '@expo-google-fonts/alumni-sans-collegiate-one';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
-
 import spaceMono from '../assets/fonts/SpaceMono-Regular.ttf';
-import { IoProvider } from '@/context/IoContext';
 import { Provider as ReduxProvider } from 'react-redux';
 import store, { persistor } from '../redux/store';
 import { PersistGate } from 'redux-persist/integration/react';
+import { IoProvider } from '@/context/IoContext';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
   const [loaded] = useFonts({
-    SpaceMono: spaceMono
+    SpaceMono: spaceMono,
+    AlumniSansCollegiateOne_400Regular
   });
 
   useEffect(() => {
@@ -40,25 +38,25 @@ export default function RootLayout() {
   }
 
   return (
-    <ReduxProvider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <GluestackUIProvider mode={colorScheme === 'dark' ? 'dark' : 'light'}>
-          <IoProvider>
-            <ThemeProvider
-              value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
-            >
-              <Stack>
-                <Stack.Screen
-                  name="(protected)"
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen name="+not-found" />
-              </Stack>
-              <StatusBar style="auto" />
-            </ThemeProvider>
-          </IoProvider>
-        </GluestackUIProvider>
-      </PersistGate>
-    </ReduxProvider>
+    <GestureHandlerRootView>
+      <ReduxProvider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <GluestackUIProvider mode={'dark'}>
+            <IoProvider>
+              <ThemeProvider value={DarkTheme}>
+                <Stack>
+                  <Stack.Screen
+                    name="(protected)"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen name="+not-found" />
+                </Stack>
+                <StatusBar style="auto" />
+              </ThemeProvider>
+            </IoProvider>
+          </GluestackUIProvider>
+        </PersistGate>
+      </ReduxProvider>
+    </GestureHandlerRootView>
   );
 }

@@ -1,25 +1,15 @@
 import express from 'express';
-import session from 'express-session';
-import mongoose from 'mongoose';
-import env from './util/env';
 import cors from 'cors';
-import authRouter from './routes/authRouter.js';
 import { IPlayer } from './models/Player';
+import authRouter from './routes/authRouter.js';
 import gamesRouter from './routes/gamesRouter';
 import playersRouter from './routes/playersRouter';
 import leaderboardRouter from './routes/leaderboardRouter';
-import MongoStore from 'connect-mongo';
 import corsOptions from './util/corsOptions';
 import groupRouter from './routes/groupRouter';
-
-// if we can't connect to the database, exit immediately - don't let Express start listening.
-// this handler must be registered before calling mongoose.connect.
-mongoose.connection.on('error', (error) => {
-  console.error(error);
-  process.exit(1);
-});
-
-await mongoose.connect(env.MONGODB_URI);
+import inviteRouter from './routes/inviteRouter';
+import tournamentRouter from './routes/tournamentRouter';
+import sessionMiddleware from './util/sessionMiddleware';
 
 const app = express();
 
@@ -32,17 +22,7 @@ declare module 'express-session' {
   }
 }
 
-app.use(
-  session({
-    secret: env.SECRET_KEY,
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false },
-    store: MongoStore.create({
-      clientPromise: Promise.resolve(mongoose.connection.getClient())
-    })
-  })
-);
+app.use(sessionMiddleware);
 
 app.get('/', async (_, res) => {
   res.send(`Hello World!`);
@@ -53,5 +33,7 @@ app.use('/games', gamesRouter);
 app.use('/players', playersRouter);
 app.use('/leaderboard', leaderboardRouter);
 app.use('/groups', groupRouter);
+app.use('/invite', inviteRouter);
+app.use('/tournaments', tournamentRouter);
 
 export default app;

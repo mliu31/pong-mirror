@@ -1,11 +1,11 @@
 import { ThemedText } from '@/components/ThemedText';
 import { router, useLocalSearchParams } from 'expo-router';
-import { Game } from '@/api/types';
+import { IGame } from '@/api/types';
 import { useEffect, useState } from 'react';
 import { getGame } from '@/api/games';
 import { Box } from '@/components/ui/box';
 import { Button, ButtonText } from '@/components/ui/button';
-import { Player } from '@/api/types';
+import { IPlayer } from '@/api/types';
 import { ThemedView } from '@/components/ThemedView';
 import TeamChips from '@/components/TeamChips';
 import TeamBoxes from '@/components/TeamBoxes';
@@ -13,14 +13,14 @@ import TEAM from '@/constants/TEAM';
 
 export default function InProgress() {
   const local = useLocalSearchParams();
-  const [leftTeam, setLeftTeam] = useState<Player[]>([]);
-  const [rightTeam, setRightTeam] = useState<Player[]>([]);
+  const [leftTeam, setLeftTeam] = useState<IPlayer[]>([]);
+  const [rightTeam, setRightTeam] = useState<IPlayer[]>([]);
   const [teamBoxHeight, setTeamBoxHeight] = useState(0); // used to center chips vertically
 
   // group players into left/right teams
   useEffect(() => {
     getGame(local.gameid as string).then((res) => {
-      const game = res.data as Game;
+      const game = res.data as IGame;
       setLeftTeam(
         game.players.filter((p) => p.team === TEAM.LEFT).map((p) => p.player)
       );

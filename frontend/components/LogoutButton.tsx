@@ -13,7 +13,7 @@ export default function LogoutButton() {
   const handleLogout = async () => {
     try {
       await dispatch(logout()).unwrap();
-      router.navigate('/login');
+      router.navigate('/signup');
     } catch (err) {
       console.error('Logout failed:', err);
     }

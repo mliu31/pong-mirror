@@ -66,39 +66,44 @@ router.post('/googleSignup', async (req, res) => {
   res.json(player);
 });
 
-router.post('/login', async (req, res) => {
-  try {
-    const { email } = req.body;
-    const lowercasedEmail = email.toLowerCase();
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+if (process.env.BACKDOOR === 'yes') {
+  console.warn(
+    'Backdoor access enabled! This should only be used in development.'
+  );
+  router.post('/backdoor', async (req, res) => {
+    try {
+      const { email } = req.body;
+      const lowercasedEmail = email.toLowerCase();
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (
-      typeof lowercasedEmail !== 'string' ||
-      !emailRegex.test(lowercasedEmail)
-    ) {
-      return void res
-        .status(400)
-        .json({ message: 'Please enter a valid email address.' });
-    }
+      if (
+        typeof lowercasedEmail !== 'string' ||
+        !emailRegex.test(lowercasedEmail)
+      ) {
+        return void res
+          .status(400)
+          .json({ message: 'Please enter a valid email address.' });
+      }
 
-    const player = await Player.findOne({ email: lowercasedEmail });
-    if (!player) {
-      return void res.status(400).json({
-        message: "Invalid credentials. Don't have an account? Sign up below!"
+      const player = await Player.findOne({ email: lowercasedEmail });
+      if (!player) {
+        return void res.status(400).json({
+          message: 'Could not find a player with that email address.'
+        });
+      }
+
+      Player.findOne();
+      req.session.player = player;
+      res.json({
+        message: 'Login successful',
+        player
       });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Server error' });
     }
-
-    Player.findOne();
-    req.session.player = player;
-    res.json({
-      message: 'Login successful',
-      player
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+  });
+}
 
 router.post('/logout', async (req, res) => {
   req.session.destroy((err) => {
