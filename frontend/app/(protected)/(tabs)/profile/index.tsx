@@ -1,3 +1,5 @@
+import { getPlayer } from '@/api/players';
+import { IPlayer } from '@/api/types';
 import { useState, useEffect } from 'react';
 import {
   View,
@@ -21,7 +23,7 @@ import WinLossChart from '@/components/WinLossChart';
 export default function Profile() {
   const playerId = useLoggedInPlayer()._id;
 
-  const [player, setPlayer] = useState<Player | null>(null);
+  const [player, setPlayer] = useState<IPlayer | null>(null);
   const [games, setGames] = useState<Game[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);

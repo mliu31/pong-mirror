@@ -6,13 +6,13 @@ import { ThemedText } from '@/components/ThemedText';
 import { Button, ButtonText } from '@/components/ui/button';
 import { Box } from '@/components/ui/box';
 import { getGame } from '@/api/games';
-import { Game } from '@/api/types';
+import { IGame } from '@/api/types';
 import PlayerCircle from '@/components/PlayerCircle';
 
 export default function SummaryScreen() {
   const local = useLocalSearchParams();
 
-  const [game, setGame] = useState<Game | null>(null);
+  const [game, setGame] = useState<IGame | null>(null);
 
   useEffect(() => {
     getGame(local.gameid as string)

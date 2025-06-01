@@ -1,12 +1,13 @@
 import express from 'express';
 import cors from 'cors';
-import authRouter from './routes/authRouter.js';
 import { IPlayer } from './models/Player';
+import authRouter from './routes/authRouter.js';
 import gamesRouter from './routes/gamesRouter';
 import playersRouter from './routes/playersRouter';
 import leaderboardRouter from './routes/leaderboardRouter';
 import corsOptions from './util/corsOptions';
 import groupRouter from './routes/groupRouter';
+import inviteRouter from './routes/inviteRouter';
 import tournamentRouter from './routes/tournamentRouter';
 import sessionMiddleware from './util/sessionMiddleware';
 
@@ -32,6 +33,7 @@ app.use('/games', gamesRouter);
 app.use('/players', playersRouter);
 app.use('/leaderboard', leaderboardRouter);
 app.use('/groups', groupRouter);
+app.use('/invite', inviteRouter);
 app.use('/tournaments', tournamentRouter);
 
 export default app;

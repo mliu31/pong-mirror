@@ -1,10 +1,14 @@
 import { TeamValue } from '@/constants/TEAM';
 import api from '.';
-import { Game } from './types';
+import { IGame } from './types';
 
 export const createGame = async () => await api.post('/games');
+
 export const getGame = async (gameid: string) =>
-  await api.get<Game>(`/games/${gameid}`);
+  await api.get<IGame>(`/games/${gameid}`);
+
+export const addPlayersToGame = async (gameid: string, pids: string[]) =>
+  await api.patch(`/games/${gameid}/players`, pids);
 
 export const updatePlayerTeam = async (
   pid: string,

@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import api from '../../api';
-import { Player } from '@/api/types';
+import { IPlayer } from '@/api/types';
+import { AxiosResponse, isAxiosError } from 'axios';
 
 export interface AuthApiState {
-  basicPlayerInfo?: Player | null;
+  basicPlayerInfo?: IPlayer | null;
   status: 'idle' | 'loading' | 'failed';
   error: string | null;
   isAuthenticated: boolean;
@@ -41,6 +42,26 @@ export const logout = createAsyncThunk('auth/logout', async () => {
   return response.data;
 });
 
+export const backdoor =
+  __DEV__ === true
+    ? createAsyncThunk<
+        AxiosResponse<{ player: IPlayer }>,
+        string,
+        { rejectValue: string }
+      >('auth/backdoor', async (email: string, { rejectWithValue }) => {
+        try {
+          return await api.post('/auth/backdoor', { email });
+        } catch (err: unknown) {
+          if (isAxiosError(err)) {
+            return rejectWithValue(
+              err.response?.data ?? 'Backdoor login failed'
+            );
+          }
+          return rejectWithValue('Backdoor login failed');
+        }
+      })
+    : undefined;
+
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -53,7 +74,7 @@ const authSlice = createSlice({
       })
       .addCase(
         googleSignup.fulfilled,
-        (state, action: PayloadAction<Player>) => {
+        (state, action: PayloadAction<IPlayer>) => {
           state.basicPlayerInfo = action.payload;
           state.status = 'idle';
           state.error = null;
@@ -79,6 +100,30 @@ const authSlice = createSlice({
         state.status = 'failed';
         state.error = action.error.message || 'Logout failed';
       });
+    if (backdoor !== undefined) {
+      builder
+        .addCase(backdoor.pending, (state) => {
+          state.status = 'loading';
+          state.error = null;
+        })
+        .addCase(
+          backdoor.fulfilled,
+          (
+            state,
+            action: PayloadAction<AxiosResponse<{ player: IPlayer }>>
+          ) => {
+            state.basicPlayerInfo = action.payload.data.player;
+            state.status = 'idle';
+            state.error = null;
+            state.isAuthenticated = true;
+          }
+        )
+        .addCase(backdoor.rejected, (state, action) => {
+          state.status = 'failed';
+          state.error = action.payload as string;
+          state.isAuthenticated = false;
+        });
+    }
   }
 });
 
