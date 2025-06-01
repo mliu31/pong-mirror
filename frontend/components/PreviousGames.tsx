@@ -27,8 +27,19 @@ export default function PreviousGames({
           const playerInfo = game.players.find(
             (p) => p.player._id === currentPlayerId
           );
-          const team = playerInfo?.team;
-          const winner = game.winner === team;
+          const team = playerInfo?.team ?? 'null';
+          const teamsMap = game.players.reduce<Record<string, string[]>>(
+            (acc, p) => {
+              const teamName = p.team ?? 'null';
+              if (!acc[teamName]) acc[teamName] = [];
+              acc[teamName].push(p.player.name);
+              return acc;
+            },
+            {}
+          );
+          const otherTeam =
+            Object.keys(teamsMap).find((t) => t !== team) ?? 'null';
+          const winner = game.winner;
           const eloChange =
             (playerInfo?.newElo ?? 0) - (playerInfo?.oldElo ?? 0);
           const date = new Date(game.date);
@@ -49,7 +60,18 @@ export default function PreviousGames({
               </ThemedText>
 
               <Box className="flex-row justify-between items-center">
-                <ThemedText className="text-base">Team: {team}</ThemedText>
+                <Box className="mr-6 items-end">
+                  <ThemedText className="text-xs text-muted-foreground mb-2">
+                    {teamsMap[team]?.join(', ')}
+                  </ThemedText>
+                  <ThemedText className="text-xs text-muted-foreground mb-2">
+                    vs{' '}
+                  </ThemedText>
+                  <ThemedText className="text-xs text-muted-foreground mb-2">
+                    {teamsMap[otherTeam]?.join(', ')}
+                  </ThemedText>
+                </Box>
+
                 <ThemedText
                   className={`font-bold ${winner ? 'text-green-600' : 'text-red-600'}`}
                 >
