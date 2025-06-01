@@ -8,18 +8,16 @@ import {
   getTournament,
   startTournament,
   TournamentResponse,
-  getTeam
+  getTeam,
+  updateMatchWinner,
+  addPlayer
 } from '@/api/tournament';
+import { getPlayer } from '@/api/players';
 import { useAppSelector } from '@/redux/redux-hooks';
 import TeamChips from '@/components/TeamChips';
-
-interface Match {
-  team1: string | null;
-  team2: string | null;
-  winner: string | null;
-  bye: boolean;
-  gameId: string;
-}
+import { Game } from '@/api/types';
+import TEAM from '@/constants/TEAM';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 interface Team {
   _id: string;
@@ -36,6 +34,7 @@ export default function TournamentDetailScreen() {
   const [tournament, setTournament] = useState<TournamentResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [teams, setTeams] = useState<Team[]>([]);
+  const [playerNames, setPlayerNames] = useState<Record<string, string>>({});
   const basicPlayerInfo = useAppSelector((state) => state.auth.basicPlayerInfo);
   const isAdmin = basicPlayerInfo?._id === tournament?.admin;
 
@@ -50,6 +49,22 @@ export default function TournamentDetailScreen() {
       );
       const teamData = await Promise.all(teamPromises);
       setTeams(teamData);
+
+      // Fetch player names for all players in all teams
+      const allPlayerIds = teamData.flatMap((team) => team.players);
+      const uniquePlayerIds = [...new Set(allPlayerIds)];
+      const playerNamePromises = uniquePlayerIds.map(async (playerId) => {
+        try {
+          const response = await getPlayer(playerId);
+          return [playerId, response.data.name];
+        } catch (error) {
+          console.error(`Error fetching player ${playerId}:`, error);
+          return [playerId, 'Unknown Player'];
+        }
+      });
+      const playerNameResults = await Promise.all(playerNamePromises);
+      const playerNameMap = Object.fromEntries(playerNameResults);
+      setPlayerNames(playerNameMap);
     } catch (error) {
       console.error('Error fetching tournament:', error);
     } finally {
@@ -73,9 +88,29 @@ export default function TournamentDetailScreen() {
     }
   };
 
-  const handleJoinTeam = (teamId: string) => {
-    router.push(`/tournament/${tournamentId}/${teamId}`);
+  const handleJoinTeam = async (teamId: string) => {
+    if (!basicPlayerInfo?._id) {
+      alert('Player information not found. Please try again.');
+      return;
+    }
+    try {
+      await addPlayer(tournamentId as string, teamId, basicPlayerInfo._id);
+      router.push(`/tournament/${tournamentId}/${teamId}`);
+    } catch (error) {
+      console.error('Error adding player to team:', error);
+      alert('Failed to join team. Please try again.');
+    }
   };
+
+  const handleSetWinner = async (matchId: string, winnerId: string) => {
+    try {
+      await updateMatchWinner(tournamentId as string, matchId, winnerId);
+      fetchTournament();
+    } catch (error) {
+      console.error('Error setting match winner:', error);
+    }
+  };
+
   if (isLoading) {
     return (
       <ThemedView className="flex-1 items-center justify-center">
@@ -93,7 +128,7 @@ export default function TournamentDetailScreen() {
   }
 
   return (
-    <ThemedView className="flex-1 p-5">
+    <ThemedView className="flex-1 p-5 flex-col">
       <ThemedText type="title" className="mb-4">
         {tournament.name}
       </ThemedText>
@@ -103,6 +138,36 @@ export default function TournamentDetailScreen() {
         <ThemedText className="text-lg">
           Teams: {tournament.teams.length}
         </ThemedText>
+      </View>
+
+      <View className="mb-4 p-4 bg-gray-100 rounded-lg">
+        <ThemedText
+          type="subtitle"
+          className="mb-2"
+          lightColor="#000"
+          darkColor="#000"
+        >
+          Tournament ID
+        </ThemedText>
+        <View className="flex-row items-center justify-between">
+          <ThemedText
+            className="text-lg font-mono"
+            lightColor="#000"
+            darkColor="#000"
+          >
+            {tournamentId}
+          </ThemedText>
+          <Button
+            action="primary"
+            variant="solid"
+            size="sm"
+            onPress={() => {
+              Clipboard.setString(tournamentId as string);
+            }}
+          >
+            <ButtonText>Copy ID</ButtonText>
+          </Button>
+        </View>
       </View>
 
       {tournament.status === 'PENDING' && (
@@ -118,7 +183,9 @@ export default function TournamentDetailScreen() {
                 darkColor="#000"
                 style={{ color: '#000', opacity: 1 }}
               >
-                {'Leader: '}{team.name}
+                {team.players.length === 2
+                  ? `${playerNames[team.players[0]] || 'Loading...'} and ${playerNames[team.players[1]] || 'Loading...'}`
+                  : `${playerNames[team.players[0]] || 'Loading...'} and Guest`}
               </ThemedText>
               <TeamChips
                 leftTeam={[]}
@@ -138,17 +205,22 @@ export default function TournamentDetailScreen() {
               </Button>
             </View>
           ))}
-          {isAdmin && teams.length >= 2 && (
-            <Button
-              action="primary"
-              variant="solid"
-              size="lg"
-              className="w-full mt-4"
-              onPress={handleStartTournament}
-            >
-              <ButtonText>Start Tournament</ButtonText>
-            </Button>
-          )}
+          <View style={{ height: 40 }} />
+        </View>
+      )}
+      {tournament.status === 'PENDING' && isAdmin && teams.length >= 2 && (
+        <View
+          style={{ bottom: 32, left: 20, right: 20, alignSelf: 'flex-end' }}
+        >
+          <Button
+            action="primary"
+            variant="solid"
+            size="lg"
+            className="w-full"
+            onPress={handleStartTournament}
+          >
+            <ButtonText>Start Tournament</ButtonText>
+          </Button>
         </View>
       )}
 
@@ -158,33 +230,82 @@ export default function TournamentDetailScreen() {
             Current Round: {tournament.currentRound}
           </ThemedText>
           {tournament.bracket.map(
-            (round: { round: number; matches: Match[] }) => (
+            (round: { round: number; matches: Game[] }) => (
               <View key={round.round} className="mb-4">
                 <ThemedText className="font-semibold mb-2">
                   Round {round.round}
                 </ThemedText>
-                {round.matches.map((match: Match, index: number) => {
-                  const team1 = match.team1;
-                  const team2 = match.team2;
-                  const winner = match.winner;
+                {round.matches.map((game: Game, index: number) => {
+                  const team1Player = game.players.find(
+                    (p) => p.team === TEAM.LEFT
+                  );
+                  const team2Player = game.players.find(
+                    (p) => p.team === TEAM.RIGHT
+                  );
+                  const team1 = teams.find((team) =>
+                    team.players.includes(team1Player?.player._id || '')
+                  );
+                  const team2 = teams.find((team) =>
+                    team.players.includes(team2Player?.player._id || '')
+                  );
+                  const winner = game.players.find(
+                    (p) => p.team === game.winner
+                  );
 
                   return (
                     <View
                       key={index}
-                      className="p-3 bg-gray-100 rounded-lg mb-2"
+                      className="p-3 bg-gray-100 text-black rounded-lg mb-2"
                     >
-                      <ThemedText>
-                        {team1 || 'TBD'} vs {team2 || 'TBD'}
+                      <ThemedText
+                        lightColor="#000"
+                        darkColor="#000"
+                        style={{ color: '#000', opacity: 1 }}
+                      >
+                        {team1?.name || 'TBD'} vs {team2?.name || 'TBD'}
                       </ThemedText>
-                      {match.winner && (
-                        <ThemedText className="text-green-600">
-                          Winner: {winner}
+                      {winner && (
+                        <ThemedText
+                          lightColor="#000"
+                          darkColor="#000"
+                          style={{ color: '#000', opacity: 1 }}
+                          className="text-green-600"
+                        >
+                          Winner:{' '}
+                          {winner.team === TEAM.LEFT
+                            ? team1?.name
+                            : team2?.name}
                         </ThemedText>
                       )}
-                      {match.bye && (
-                        <ThemedText className="text-blue-600">
-                          Bye: {team1}
+                      {!team2 && (
+                        <ThemedText
+                          lightColor="#000"
+                          darkColor="#000"
+                          style={{ color: '#000', opacity: 1 }}
+                          className="text-blue-600"
+                        >
+                          Bye: {team1?.name}
                         </ThemedText>
+                      )}
+                      {!winner && team1 && team2 && (
+                        <View className="flex-row justify-between mt-2">
+                          <Button
+                            action="primary"
+                            variant="solid"
+                            size="sm"
+                            onPress={() => handleSetWinner(game._id, team1._id)}
+                          >
+                            <ButtonText>{team1.name} Wins</ButtonText>
+                          </Button>
+                          <Button
+                            action="primary"
+                            variant="solid"
+                            size="sm"
+                            onPress={() => handleSetWinner(game._id, team2._id)}
+                          >
+                            <ButtonText>{team2.name} Wins</ButtonText>
+                          </Button>
+                        </View>
                       )}
                     </View>
                   );

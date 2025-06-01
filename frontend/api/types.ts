@@ -6,6 +6,7 @@ export interface Game {
     player: Player;
     team: TeamValue;
   }[];
+  winner?: TeamValue;
 }
 
 export interface Player {

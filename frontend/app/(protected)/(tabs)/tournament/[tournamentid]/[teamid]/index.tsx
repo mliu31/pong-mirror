@@ -55,8 +55,8 @@ export default function TeamTournamentScreen() {
   const fetchTournament = async () => {
     try {
       const tournamentData = await getTournament(tournamentId as string);
-      console.log('this is the tournament data');
-      console.log(tournamentData);
+      console.log('this is the team data');
+      console.log(teamPlayers);
       setTournament(tournamentData);
 
       // Fetch team data for each team ID
@@ -162,13 +162,11 @@ export default function TeamTournamentScreen() {
         <ThemedText type="subtitle" className="mb-2">
           Team Members
         </ThemedText>
-        <TeamChips
-          leftTeam={teamPlayers}
-          rightTeam={[]}
-          teamBoxHeight={200}
-          showLeftBorder={false}
-          showRightBorder={false}
-        />
+        {teamPlayers.map((player, index) => (
+          <ThemedText key={player._id} className="mb-1">
+            {index + 1}. {player.name}
+          </ThemedText>
+        ))}
       </View>
 
       {tournament.status === 'PENDING' && isAdmin && teams.length >= 2 && (
@@ -190,10 +188,17 @@ export default function TeamTournamentScreen() {
           <ThemedText type="subtitle" className="mb-2">
             Current Match
           </ThemedText>
-          <View className="p-4 bg-gray-100 rounded-lg">
-            <ThemedText className="text-lg mb-2">
-              {currentMatch.team1 === teamId ? 'You' : 'Opponent'} vs{' '}
-              {currentMatch.team2 === teamId ? 'You' : 'Opponent'}
+          <View className="p-4 bg-[#277f5a] rounded-lg">
+            <ThemedText className="mb-2 text-black">
+              {currentMatch.team1 === teamId
+                ? team.name
+                : teams.find((t) => t._id === currentMatch.team1)?.name ||
+                  'TBD'}{' '}
+              vs{' '}
+              {currentMatch.team2 === teamId
+                ? team.name
+                : teams.find((t) => t._id === currentMatch.team2)?.name ||
+                  'TBD'}
             </ThemedText>
             {currentMatch.winner && (
               <ThemedText className="text-green-600 mb-2">
@@ -235,7 +240,7 @@ export default function TeamTournamentScreen() {
                 return (
                   <View
                     key={index}
-                    className={`p-3 rounded-lg mb-2 ${
+                    className={`p-3 rounded-lg mb-2 bg-[#277f5a] ${
                       isCurrentTeamMatch ? 'bg-blue-100' : 'bg-gray-100'
                     }`}
                   >

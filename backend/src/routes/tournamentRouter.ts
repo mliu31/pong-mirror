@@ -8,7 +8,8 @@ import {
   removeTeam,
   getAllTeams,
   startTournament,
-  getTeam
+  getTeam,
+  addPlayer
 } from '../controllers/tournament/tournamentController';
 
 const router = express.Router();
@@ -53,6 +54,8 @@ router.delete('/:id', async (req, res) => {
 });
 
 router.post('/addTeam/:id/teams/:playerId', async (req, res) => {
+  console.log('Router - Request body:', req.body);
+  console.log('Router - playerName:', req.body.playerName);
   try {
     const tournament = await addTeam(
       req.params.id,
@@ -119,5 +122,22 @@ router.get('/getTeam/:id', async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+
+router.post(
+  '/addPlayer/:tournamentId/teams/:teamId/player/:playerId',
+  async (req, res) => {
+    try {
+      const tournament = await addPlayer(
+        req.params.tournamentId,
+        req.params.teamId,
+        req.params.playerId
+      );
+      res.json(tournament);
+    } catch (error) {
+      console.error('Error adding player to tournament:', error);
+      res.status(500).json({ error: 'Server error' });
+    }
+  }
+);
 
 export default router;

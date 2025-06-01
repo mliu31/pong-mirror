@@ -16,6 +16,7 @@ import {
 } from '@gluestack-ui/themed';
 import { Hash } from 'lucide-react-native';
 import { Toast, useToast } from '@/components/ui/toast';
+import { TextInput } from 'react-native';
 
 export default function TournamentScreen() {
   const router = useRouter();
@@ -24,6 +25,7 @@ export default function TournamentScreen() {
   const [scannerVisible, setScannerVisible] = useState(false);
   const [manualTournamentId, setManualTournamentId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [tournamentName, setTournamentName] = useState('');
   const basicPlayerInfo = useAppSelector((state) => state.auth.basicPlayerInfo);
   console.log('basicPlayerInfo');
   console.log(basicPlayerInfo);
@@ -36,19 +38,20 @@ export default function TournamentScreen() {
   }, []);
 
   const handleCreateTournament = async () => {
+    if (!tournamentName.trim()) {
+      alert('Please enter a tournament name');
+      return;
+    }
     try {
       const tournament = await createTournament(
-        'New Tournament',
+        tournamentName.trim(),
         basicPlayerInfo?._id || ''
       );
       router.push(`/tournament/${tournament._id}`);
     } catch (error) {
       console.error('Error creating tournament:', error);
+      alert('Failed to create tournament. Please try again.');
     }
-  };
-
-  const handleJoinTournament = () => {
-    setScannerVisible(true);
   };
 
   const handleManualJoin = async () => {
@@ -99,12 +102,17 @@ export default function TournamentScreen() {
   };
 
   const handleBarCodeScanned = async ({ data }: ScanningResult) => {
+    if (!basicPlayerInfo?._id || !basicPlayerInfo?.name) {
+      alert('Player information not found. Please try again.');
+      return;
+    }
     try {
       const tournamentId = data;
-      await addTeam(tournamentId, basicPlayerInfo?._id || '');
+      await addTeam(tournamentId, basicPlayerInfo._id, basicPlayerInfo.name);
       router.push(`/tournament/${tournamentId}`);
     } catch (error) {
       console.error('Error joining tournament:', error);
+      alert('Failed to join tournament. Please try again.');
     }
   };
 
@@ -141,8 +149,14 @@ export default function TournamentScreen() {
   return (
     <ThemedView className="flex-1 items-center justify-center p-5">
       <ThemedText type="title" className="mb-8">
-        Tournament
+        Create Tournament
       </ThemedText>
+      <TextInput
+        className="w-full p-4 mb-4 bg-white rounded-lg border border-gray-300 text-black"
+        placeholder="Enter tournament name"
+        value={tournamentName}
+        onChangeText={setTournamentName}
+      />
       <Button
         action="primary"
         variant="solid"
@@ -152,36 +166,24 @@ export default function TournamentScreen() {
       >
         <ButtonText>Create Tournament</ButtonText>
       </Button>
-      <Button
-        action="primary"
-        variant="solid"
-        size="lg"
-        className="w-full mb-4"
-        onPress={handleJoinTournament}
-      >
-        <ButtonText>Scan QR Code</ButtonText>
-      </Button>
 
-      <View className="w-full mb-4">
-        <ThemedText className="text-center mb-2">
-          Or enter tournament ID:
+      <View className="items-center w-full mb-8">
+        <ThemedText type="title" className="mb-8">
+          Join Tournament
         </ThemedText>
-        <HStack className="items-center gap-2">
-          <Input flex={1}>
-            <InputSlot>
-              <InputIcon as={Hash} />
-            </InputSlot>
-            <InputField
-              placeholder="Enter tournament ID"
-              value={manualTournamentId}
-              onChangeText={setManualTournamentId}
-              autoCapitalize="none"
-              autoCorrect={false}
-              returnKeyType="join"
-              onSubmitEditing={handleManualJoin}
-            />
-          </Input>
+        <HStack className="items-center gap-4">
+          <TextInput
+            className="flex-1 p-4 bg-white rounded-lg border border-gray-300 text-black"
+            placeholder="Enter tournament ID"
+            value={manualTournamentId}
+            onChangeText={setManualTournamentId}
+            autoCapitalize="none"
+            autoCorrect={false}
+            returnKeyType="join"
+            onSubmitEditing={handleManualJoin}
+          />
           <Button
+            className="w-full mt-4"
             action="primary"
             variant="solid"
             size="lg"

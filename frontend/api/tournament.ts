@@ -1,5 +1,6 @@
+import { P } from '@expo/html-elements';
 import api from '.';
-import { Player } from './types';
+import { Player, Game } from './types';
 
 interface Team {
   _id: string;
@@ -19,13 +20,7 @@ export interface TournamentResponse {
   admin: string;
   bracket: {
     round: number;
-    matches: {
-      team1: string | null;
-      team2: string | null;
-      winner: string | null;
-      bye: boolean;
-      gameId: string;
-    }[];
+    matches: Game[];
   }[];
 }
 
@@ -58,7 +53,6 @@ export const getTournament = async (
     const { data } = await api.get<TournamentResponse>(
       `/tournaments/getTournament/${tournamentId}`
     );
-    console.log(data);
     return data;
   } catch (error) {
     console.error('Error fetching tournament:', error);
@@ -94,6 +88,25 @@ export const addTeam = async (
     return data;
   } catch (error) {
     console.error('Error adding team to tournament:', error);
+    throw error;
+  }
+};
+
+/**
+ * Adds a player to a team in a tournament
+ */
+export const addPlayer = async (
+  tournamentId: string,
+  teamId: string,
+  playerId: string
+): Promise<TournamentResponse> => {
+  try {
+    const { data } = await api.post<TournamentResponse>(
+      `/tournaments/addPlayer/${tournamentId}/teams/${teamId}/player/${playerId}`
+    );
+    return data;
+  } catch (error) {
+    console.error('Error adding player to team:', error);
     throw error;
   }
 };
@@ -146,24 +159,6 @@ export const getAllTeams = async (tournamentId: string): Promise<string[]> => {
 };
 
 /**
- * Adds a player to a team in a tournament
- */
-export const addPlayer = async (
-  tournamentId: string,
-  teamId: string,
-  playerId: string
-): Promise<void> => {
-  try {
-    await api.post(
-      `/tournaments/${tournamentId}/teams/${teamId}/players/${playerId}`
-    );
-  } catch (error) {
-    console.error('Error adding player to team:', error);
-    throw error;
-  }
-};
-
-/**
  * Starts a tournament, creating the initial bracket and matches
  */
 export const startTournament = async (
@@ -186,6 +181,26 @@ export const getTeam = async (teamId: string): Promise<Team> => {
     return data;
   } catch (error) {
     console.error('Error fetching team:', error);
+    throw error;
+  }
+};
+
+/**
+ * Updates the winner of a match in a tournament
+ */
+export const updateMatchWinner = async (
+  tournamentId: string,
+  matchId: string,
+  winnerId: string
+): Promise<TournamentResponse> => {
+  try {
+    const { data } = await api.put<TournamentResponse>(
+      `/tournaments/${tournamentId}/matches/${matchId}/winner`,
+      { winnerId }
+    );
+    return data;
+  } catch (error) {
+    console.error('Error updating match winner:', error);
     throw error;
   }
 };
