@@ -104,8 +104,40 @@ export default function TournamentDetailScreen() {
 
   const handleSetWinner = async (matchId: string, winnerId: string) => {
     try {
-      await updateMatchWinner(tournamentId as string, matchId, winnerId);
-      fetchTournament();
+      const teamIndex = teams.findIndex((team) => team._id === winnerId);
+      if (teamIndex === -1) {
+        console.error('Team not found');
+        return;
+      }
+      let side: 'LEFT' | 'RIGHT';
+      if (teamIndex === 0) {
+        side = 'LEFT';
+      } else {
+        side = 'RIGHT';
+      }
+      const updatedTournament = await updateMatchWinner(
+        tournamentId as string,
+        matchId,
+        side
+      );
+
+      // Check if tournament is complete (only one team left)
+      if (updatedTournament.status === 'COMPLETED') {
+        // Find the winning team
+        const winningTeam = teams.find((team) => team._id === winnerId);
+        if (winningTeam) {
+          // Navigate to winner screen
+          router.push({
+            pathname: '/(protected)/(tabs)/tournament/[tournamentid]/winner',
+            params: {
+              tournamentid: tournamentId as string,
+              teamName: winningTeam.name
+            }
+          });
+        }
+      } else {
+        fetchTournament();
+      }
     } catch (error) {
       console.error('Error setting match winner:', error);
     }
@@ -236,21 +268,9 @@ export default function TournamentDetailScreen() {
                   Round {round.round}
                 </ThemedText>
                 {round.matches.map((game: Game, index: number) => {
-                  const team1Player = game.players.find(
-                    (p) => p.team === TEAM.LEFT
-                  );
-                  const team2Player = game.players.find(
-                    (p) => p.team === TEAM.RIGHT
-                  );
-                  const team1 = teams.find((team) =>
-                    team.players.includes(team1Player?.player._id || '')
-                  );
-                  const team2 = teams.find((team) =>
-                    team.players.includes(team2Player?.player._id || '')
-                  );
-                  const winner = game.players.find(
-                    (p) => p.team === game.winner
-                  );
+                  const team1 = teams.find((team) => team._id === game.team1);
+                  const team2 = teams.find((team) => team._id === game.team2);
+                  const winner = teams.find((team) => team._id === game.winner);
 
                   return (
                     <View
@@ -272,9 +292,7 @@ export default function TournamentDetailScreen() {
                           className="text-green-600"
                         >
                           Winner:{' '}
-                          {winner.team === TEAM.LEFT
-                            ? team1?.name
-                            : team2?.name}
+                          {winner === TEAM.LEFT ? team1?.name : team2?.name}
                         </ThemedText>
                       )}
                       {!team2 && (

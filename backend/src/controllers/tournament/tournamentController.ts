@@ -280,3 +280,35 @@ export const getTeam = async (teamId: string) => {
   if (!team) throw new Error('404 Team not found');
   return team;
 };
+
+export const updateMatchWinner = async (
+  tournamentId: string,
+  matchId: string,
+  side: 'LEFT' | 'RIGHT'
+) => {
+  const tournament = await Tournament.findById(tournamentId);
+  if (!tournament) throw new Error('404 Tournament not found');
+
+  let foundMatch = null;
+  for (const round of tournament.bracket) {
+    const match = round.matches.find((match) => {
+      return match._id.toString() === matchId;
+    });
+    if (match) {
+      foundMatch = match;
+      break;
+    }
+  }
+  if (!foundMatch) throw new Error('404 Match not found');
+
+  if (side === 'LEFT') {
+    foundMatch.winner = 'LEFT';
+    console.log(foundMatch);
+    console.log('winner');
+  } else {
+    foundMatch.winner = 'RIGHT';
+  }
+
+  await tournament.save();
+  return tournament;
+};

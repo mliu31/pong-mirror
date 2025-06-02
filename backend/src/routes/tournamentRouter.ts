@@ -9,7 +9,8 @@ import {
   getAllTeams,
   startTournament,
   getTeam,
-  addPlayer
+  addPlayer,
+  updateMatchWinner
 } from '../controllers/tournament/tournamentController';
 
 const router = express.Router();
@@ -135,6 +136,23 @@ router.post(
       res.json(tournament);
     } catch (error) {
       console.error('Error adding player to tournament:', error);
+      res.status(500).json({ error: 'Server error' });
+    }
+  }
+);
+
+router.put(
+  '/updateMatchWinner/:tournamentId/match/:matchId/side/:winningSide',
+  async (req, res) => {
+    try {
+      const tournament = await updateMatchWinner(
+        req.params.tournamentId,
+        req.params.matchId,
+        req.params.winningSide as 'LEFT' | 'RIGHT'
+      );
+      res.json(tournament);
+    } catch (error) {
+      console.error('Error updating match winner:', error);
       res.status(500).json({ error: 'Server error' });
     }
   }

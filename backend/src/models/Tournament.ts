@@ -9,6 +9,7 @@ export interface ITournament extends Document {
   bracket: {
     round: number;
     matches: {
+      _id: string;
       team1: string | null;
       team2: string | null;
       winner: string | null;
@@ -46,6 +47,10 @@ const tournamentSchema = new mongoose.Schema<ITournament>({
       round: Number,
       matches: [
         {
+          _id: {
+            type: mongoose.Schema.Types.ObjectId,
+            auto: true
+          },
           team1: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Team',
@@ -57,7 +62,7 @@ const tournamentSchema = new mongoose.Schema<ITournament>({
             default: null
           },
           winner: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: mongoose.Schema.Types.String,
             ref: 'Team',
             default: null
           },

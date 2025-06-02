@@ -191,12 +191,11 @@ export const getTeam = async (teamId: string): Promise<Team> => {
 export const updateMatchWinner = async (
   tournamentId: string,
   matchId: string,
-  winnerId: string
+  winningSide: 'LEFT' | 'RIGHT'
 ): Promise<TournamentResponse> => {
   try {
     const { data } = await api.put<TournamentResponse>(
-      `/tournaments/${tournamentId}/matches/${matchId}/winner`,
-      { winnerId }
+      `/tournaments/updateMatchWinner/${tournamentId}/match/${matchId}/side/${winningSide}`
     );
     return data;
   } catch (error) {
