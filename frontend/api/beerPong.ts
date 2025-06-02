@@ -25,11 +25,17 @@ export interface BeerPongGameState {
   blue_empty: number;
 }
 
+export interface Commentary {
+  commentary: string;
+  commentator: string;
+  timestamp: number;
+}
+
 export interface BeerPongGame {
   id: string;
   created_at: string;
   actions: BeerPongAction[];
-  commentaries: any[];
+  commentaries: Commentary[];
   current_state: BeerPongGameState;
 }
 

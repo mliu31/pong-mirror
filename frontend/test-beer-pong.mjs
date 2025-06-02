@@ -1,7 +1,7 @@
 // Simple test script to verify beer pong API connection
-// Run this with: node test-beer-pong.js
+// Run this with: node test-beer-pong.mjs
 
-const axios = require('axios');
+import axios from 'axios';
 
 const BEER_PONG_API_URL = 'http://localhost:8000';
 

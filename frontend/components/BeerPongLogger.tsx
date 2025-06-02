@@ -17,9 +17,7 @@ import {
 import {
   logBeerPongEvent,
   getBeerPongGameSession,
-  getLatestBeerPongCommentary,
-  BeerPongGameSession,
-  CommentaryResponse
+  getLatestBeerPongCommentary
 } from '../api/mainBackendBeerPong';
 
 interface BeerPongLoggerProps {
@@ -39,9 +37,6 @@ const BeerPongLogger: React.FC<BeerPongLoggerProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedPlayer, setSelectedPlayer] = useState<string>('');
-  const [gameSession, setGameSession] = useState<BeerPongGameSession | null>(
-    null
-  );
   const [gameState, setGameState] = useState({
     red_full: 10,
     red_half: 0,
@@ -63,6 +58,7 @@ const BeerPongLogger: React.FC<BeerPongLoggerProps> = ({
     if (isVisible && gameId && leftTeam.length > 0 && rightTeam.length > 0) {
       loadGameSession();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVisible, gameId, leftTeam.length, rightTeam.length]);
 
   // Animate widget expansion
@@ -72,12 +68,12 @@ const BeerPongLogger: React.FC<BeerPongLoggerProps> = ({
       duration: 300,
       useNativeDriver: false
     }).start();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isExpanded]);
 
   const loadGameSession = async () => {
     try {
       const session = await getBeerPongGameSession(gameId);
-      setGameSession(session);
       setGameState(session.currentState);
       setLastAction(session.lastAction || '');
       console.log('Beer Pong game session loaded:', session);
@@ -179,7 +175,7 @@ const BeerPongLogger: React.FC<BeerPongLoggerProps> = ({
     color
   }: {
     action: ActionType;
-    icon: any;
+    icon: any; // eslint-disable-line @typescript-eslint/no-explicit-any
     color: string;
   }) => (
     <Button
@@ -190,7 +186,7 @@ const BeerPongLogger: React.FC<BeerPongLoggerProps> = ({
       disabled={!selectedPlayer || isLoading}
     >
       <ButtonText className="text-xs font-semibold text-white">
-        <Icon size={12} className="mr-1" />
+        <Icon size={12} />
         {action.toUpperCase()}
       </ButtonText>
     </Button>
