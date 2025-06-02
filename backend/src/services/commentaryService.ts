@@ -32,8 +32,8 @@ export class CommentaryService {
   private apiEndpoint: string;
   private apiKey: string;
   private commentaryHistory: string[] = [];
-  private lastCommentaryTime: number = 0;
-  private commentaryCooldown: number = 1.0; // seconds
+  private lastCommentaryTime = 0;
+  private commentaryCooldown = 1.0; // seconds
   private currentCommentator: CommentatorIndex = 0; // 0 for John, 1 for Jane
 
   private commentatorPersonalities: Record<CommentatorIndex, CommentatorName> =
@@ -175,7 +175,7 @@ export class CommentaryService {
 
   private generateFallbackCommentary(
     action: BeerPongAction,
-    _gameState: GameState
+    _gameState: GameState // eslint-disable-line @typescript-eslint/no-unused-vars
   ): string {
     const { type, player, playerName } = action;
     const team =
