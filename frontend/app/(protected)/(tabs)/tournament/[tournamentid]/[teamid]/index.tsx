@@ -6,7 +6,6 @@ import { ThemedText } from '@/components/ThemedText';
 import { Button, ButtonText } from '@/components/ui/button';
 import { getTeam, getTournament, startTournament } from '@/api/tournament';
 import { useAppSelector } from '@/redux/redux-hooks';
-import TeamChips from '@/components/TeamChips';
 import { Player } from '@/api/types';
 import { getPlayer } from '@/api/players';
 
@@ -55,8 +54,6 @@ export default function TeamTournamentScreen() {
   const fetchTournament = async () => {
     try {
       const tournamentData = await getTournament(tournamentId as string);
-      console.log('this is the team data');
-      console.log(teamPlayers);
       setTournament(tournamentData);
 
       // Fetch team data for each team ID
@@ -73,11 +70,8 @@ export default function TeamTournamentScreen() {
   };
 
   const fetchTeam = async () => {
-    console.log('fetching team');
     try {
       const teamData = await getTeam(teamId as string);
-      console.log('this is the team data');
-      console.log(teamData);
       setTeam(teamData);
 
       // Fetch player data for each player ID

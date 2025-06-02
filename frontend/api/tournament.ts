@@ -10,6 +10,15 @@ interface Team {
   seed: number;
 }
 
+interface TournamentMatch {
+  _id: string;
+  team1: string | null;
+  team2: string | null;
+  winner: 'LEFT' | 'RIGHT' | null;
+  bye: boolean;
+  gameId: string;
+}
+
 // Define the shape of the API responses from the backend
 export interface TournamentResponse {
   _id: string;
@@ -20,7 +29,7 @@ export interface TournamentResponse {
   admin: string;
   bracket: {
     round: number;
-    matches: Game[];
+    matches: TournamentMatch[];
   }[];
 }
 

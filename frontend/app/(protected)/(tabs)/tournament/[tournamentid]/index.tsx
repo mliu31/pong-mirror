@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ThemedView } from '@/components/ThemedView';
@@ -25,6 +25,15 @@ interface Team {
   players: string[];
   elo: number;
   seed: number;
+}
+
+interface TournamentMatch {
+  _id: string;
+  team1: string | null;
+  team2: string | null;
+  winner: 'LEFT' | 'RIGHT' | null;
+  bye: boolean;
+  gameId: string;
 }
 
 export default function TournamentDetailScreen() {
@@ -160,90 +169,181 @@ export default function TournamentDetailScreen() {
   }
 
   return (
-    <ThemedView className="flex-1 p-5 flex-col">
-      <ThemedText type="title" className="mb-4">
-        {tournament.name}
-      </ThemedText>
-
-      <View className="mb-4">
-        <ThemedText className="text-lg">Status: {tournament.status}</ThemedText>
-        <ThemedText className="text-lg">
-          Teams: {tournament.teams.length}
+    <ThemedView className="flex-1">
+      <ScrollView className="flex-1 p-5">
+        <ThemedText type="title" className="mb-4">
+          {tournament.name}
         </ThemedText>
-      </View>
 
-      <View className="mb-4 p-4 bg-gray-100 rounded-lg">
-        <ThemedText
-          type="subtitle"
-          className="mb-2"
-          lightColor="#000"
-          darkColor="#000"
-        >
-          Tournament ID
-        </ThemedText>
-        <View className="flex-row items-center justify-between">
+        <View className="mb-4">
+          <ThemedText className="text-lg">
+            Status: {tournament.status}
+          </ThemedText>
+          <ThemedText className="text-lg">
+            Teams: {tournament.teams.length}
+          </ThemedText>
+        </View>
+
+        <View className="mb-4 p-4 bg-gray-100 rounded-lg">
           <ThemedText
-            className="text-lg font-mono"
+            type="subtitle"
+            className="mb-2"
             lightColor="#000"
             darkColor="#000"
           >
-            {tournamentId}
+            Tournament ID
           </ThemedText>
-          <Button
-            action="primary"
-            variant="solid"
-            size="sm"
-            onPress={() => {
-              Clipboard.setString(tournamentId as string);
-            }}
-          >
-            <ButtonText>Copy ID</ButtonText>
-          </Button>
+          <View className="flex-row items-center justify-between">
+            <ThemedText
+              className="text-lg font-mono"
+              lightColor="#000"
+              darkColor="#000"
+            >
+              {tournamentId}
+            </ThemedText>
+            <Button
+              action="primary"
+              variant="solid"
+              size="sm"
+              onPress={() => {
+                Clipboard.setString(tournamentId as string);
+              }}
+            >
+              <ButtonText>Copy ID</ButtonText>
+            </Button>
+          </View>
         </View>
-      </View>
 
-      {tournament.status === 'PENDING' && (
-        <View className="mb-4">
-          <ThemedText type="subtitle" className="mb-2">
-            Teams
-          </ThemedText>
-          {teams.map((team) => (
-            <View key={team._id} className="mb-4 p-4 bg-gray-100 rounded-lg">
-              <ThemedText
-                className="text-lg font-semibold mb-2"
-                lightColor="#000"
-                darkColor="#000"
-                style={{ color: '#000', opacity: 1 }}
-              >
-                {team.players.length === 2
-                  ? `${playerNames[team.players[0]] || 'Loading...'} and ${playerNames[team.players[1]] || 'Loading...'}`
-                  : `${playerNames[team.players[0]] || 'Loading...'} and Guest`}
-              </ThemedText>
-              <TeamChips
-                leftTeam={[]}
-                rightTeam={[]}
-                teamBoxHeight={200}
-                showLeftBorder={false}
-                showRightBorder={false}
-              />
-              <Button
-                action="primary"
-                variant="solid"
-                size="sm"
-                className="mt-2"
-                onPress={() => handleJoinTeam(team._id)}
-              >
-                <ButtonText>Join Team</ButtonText>
-              </Button>
-            </View>
-          ))}
-          <View style={{ height: 40 }} />
-        </View>
-      )}
+        {tournament.status === 'PENDING' && (
+          <View className="mb-4">
+            <ThemedText type="subtitle" className="mb-2">
+              Teams
+            </ThemedText>
+            {teams.map((team) => (
+              <View key={team._id} className="mb-4 p-4 bg-gray-100 rounded-lg">
+                <ThemedText
+                  className="text-lg font-semibold mb-2"
+                  lightColor="#000"
+                  darkColor="#000"
+                  style={{ color: '#000', opacity: 1 }}
+                >
+                  {team.players.length === 2
+                    ? `${playerNames[team.players[0]] || 'Loading...'} and ${playerNames[team.players[1]] || 'Loading...'}`
+                    : `${playerNames[team.players[0]] || 'Loading...'} and Guest`}
+                </ThemedText>
+                <TeamChips
+                  leftTeam={[]}
+                  rightTeam={[]}
+                  teamBoxHeight={200}
+                  showLeftBorder={false}
+                  showRightBorder={false}
+                />
+                <Button
+                  action="primary"
+                  variant="solid"
+                  size="sm"
+                  className="mt-2"
+                  onPress={() => handleJoinTeam(team._id)}
+                >
+                  <ButtonText>Join Team</ButtonText>
+                </Button>
+              </View>
+            ))}
+            <View style={{ height: 100 }} />
+          </View>
+        )}
+
+        {tournament.status === 'IN_PROGRESS' && (
+          <View className="mt-4">
+            <ThemedText type="subtitle" className="mb-2">
+              Current Round: {tournament.currentRound}
+            </ThemedText>
+            {tournament.bracket.map(
+              (round: { round: number; matches: TournamentMatch[] }) => (
+                <View key={round.round} className="mb-4">
+                  <ThemedText className="font-semibold mb-2">
+                    Round {round.round}
+                  </ThemedText>
+                  {round.matches.map(
+                    (match: TournamentMatch, index: number) => {
+                      const team1 = teams.find(
+                        (team) => team._id === match.team1
+                      );
+                      const team2 = teams.find(
+                        (team) => team._id === match.team2
+                      );
+                      const winner = match.winner;
+
+                      return (
+                        <View
+                          key={index}
+                          className="p-3 bg-gray-100 text-black rounded-lg mb-2"
+                        >
+                          <ThemedText
+                            lightColor="#000"
+                            darkColor="#000"
+                            style={{ color: '#000', opacity: 1 }}
+                          >
+                            {team1?.name || 'TBD'} vs {team2?.name || 'TBD'}
+                          </ThemedText>
+                          {winner && (
+                            <ThemedText
+                              lightColor="#000"
+                              darkColor="#000"
+                              style={{ color: '#000', opacity: 1 }}
+                              className="text-green-600"
+                            >
+                              Winner:{' '}
+                              {winner === TEAM.LEFT ? team1?.name : team2?.name}
+                            </ThemedText>
+                          )}
+                          {!team2 && (
+                            <ThemedText
+                              lightColor="#000"
+                              darkColor="#000"
+                              style={{ color: '#000', opacity: 1 }}
+                              className="text-blue-600"
+                            >
+                              Bye: {team1?.name}
+                            </ThemedText>
+                          )}
+                          {!winner && team1 && team2 && (
+                            <View className="flex-row justify-between mt-2">
+                              <Button
+                                action="primary"
+                                variant="solid"
+                                size="sm"
+                                onPress={() =>
+                                  handleSetWinner(match._id, team1._id)
+                                }
+                              >
+                                <ButtonText>{team1.name} Wins</ButtonText>
+                              </Button>
+                              <Button
+                                action="primary"
+                                variant="solid"
+                                size="sm"
+                                onPress={() =>
+                                  handleSetWinner(match._id, team2._id)
+                                }
+                              >
+                                <ButtonText>{team2.name} Wins</ButtonText>
+                              </Button>
+                            </View>
+                          )}
+                        </View>
+                      );
+                    }
+                  )}
+                </View>
+              )
+            )}
+          </View>
+        )}
+      </ScrollView>
+
       {tournament.status === 'PENDING' && isAdmin && teams.length >= 2 && (
-        <View
-          style={{ bottom: 32, left: 20, right: 20, alignSelf: 'flex-end' }}
-        >
+        <View style={{ position: 'absolute', bottom: 32, left: 20, right: 20 }}>
           <Button
             action="primary"
             variant="solid"
@@ -253,84 +353,6 @@ export default function TournamentDetailScreen() {
           >
             <ButtonText>Start Tournament</ButtonText>
           </Button>
-        </View>
-      )}
-
-      {tournament.status === 'IN_PROGRESS' && (
-        <View className="mt-4">
-          <ThemedText type="subtitle" className="mb-2">
-            Current Round: {tournament.currentRound}
-          </ThemedText>
-          {tournament.bracket.map(
-            (round: { round: number; matches: Game[] }) => (
-              <View key={round.round} className="mb-4">
-                <ThemedText className="font-semibold mb-2">
-                  Round {round.round}
-                </ThemedText>
-                {round.matches.map((game: Game, index: number) => {
-                  const team1 = teams.find((team) => team._id === game.team1);
-                  const team2 = teams.find((team) => team._id === game.team2);
-                  const winner = teams.find((team) => team._id === game.winner);
-
-                  return (
-                    <View
-                      key={index}
-                      className="p-3 bg-gray-100 text-black rounded-lg mb-2"
-                    >
-                      <ThemedText
-                        lightColor="#000"
-                        darkColor="#000"
-                        style={{ color: '#000', opacity: 1 }}
-                      >
-                        {team1?.name || 'TBD'} vs {team2?.name || 'TBD'}
-                      </ThemedText>
-                      {winner && (
-                        <ThemedText
-                          lightColor="#000"
-                          darkColor="#000"
-                          style={{ color: '#000', opacity: 1 }}
-                          className="text-green-600"
-                        >
-                          Winner:{' '}
-                          {winner === TEAM.LEFT ? team1?.name : team2?.name}
-                        </ThemedText>
-                      )}
-                      {!team2 && (
-                        <ThemedText
-                          lightColor="#000"
-                          darkColor="#000"
-                          style={{ color: '#000', opacity: 1 }}
-                          className="text-blue-600"
-                        >
-                          Bye: {team1?.name}
-                        </ThemedText>
-                      )}
-                      {!winner && team1 && team2 && (
-                        <View className="flex-row justify-between mt-2">
-                          <Button
-                            action="primary"
-                            variant="solid"
-                            size="sm"
-                            onPress={() => handleSetWinner(game._id, team1._id)}
-                          >
-                            <ButtonText>{team1.name} Wins</ButtonText>
-                          </Button>
-                          <Button
-                            action="primary"
-                            variant="solid"
-                            size="sm"
-                            onPress={() => handleSetWinner(game._id, team2._id)}
-                          >
-                            <ButtonText>{team2.name} Wins</ButtonText>
-                          </Button>
-                        </View>
-                      )}
-                    </View>
-                  );
-                })}
-              </View>
-            )
-          )}
         </View>
       )}
     </ThemedView>

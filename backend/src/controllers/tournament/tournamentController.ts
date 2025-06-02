@@ -7,6 +7,7 @@ import {
   calculateElo,
   createTeam
 } from '../teams/teamController';
+import mongoose from 'mongoose';
 
 // create tournament
 export const createTournament = (tournamentName: string, adminId: string) => {
@@ -178,6 +179,7 @@ export const startTournament = async (tournamentId: string) => {
 
   // Initialize first round matches
   const firstRoundMatches = [];
+  const byeWinners = [];
 
   // Assign byes to top seeds
   for (let i = 0; i < numByes; i++) {
@@ -192,17 +194,20 @@ export const startTournament = async (tournamentId: string) => {
 
     // Create a game for the bye
     const game = await Game.create({
-      players: players.map((player) => ({ player, team: null })),
+      players: players.map((player) => ({ player, team: 'LEFT' })),
       winner: 'LEFT' // Automatically set winner for bye
     });
 
+    const matchId = new mongoose.Types.ObjectId();
     firstRoundMatches.push({
+      _id: matchId.toString(),
       team1: team._id.toString(),
       team2: null,
-      winner: team._id.toString(),
+      winner: 'LEFT',
       bye: true,
       gameId: game.id
     });
+    byeWinners.push(team._id.toString());
   }
 
   // Create remaining matches
@@ -240,7 +245,9 @@ export const startTournament = async (tournamentId: string) => {
       winner: null
     });
 
+    const matchId = new mongoose.Types.ObjectId();
     firstRoundMatches.push({
+      _id: matchId.toString(),
       team1: team1._id.toString(),
       team2: team2._id.toString(),
       winner: null,
@@ -257,9 +264,45 @@ export const startTournament = async (tournamentId: string) => {
     }
   ];
 
-  tournament.status = 'IN_PROGRESS';
-  tournament.currentRound = 1;
+  // If we have byes, create the next round immediately
+  if (byeWinners.length > 0) {
+    const nextRoundMatches = [];
+    const allWinners = [...byeWinners];
 
+    // Create matches for the next round
+    for (let i = 0; i < allWinners.length; i += 2) {
+      const team1 = allWinners[i];
+      const team2 = allWinners[i + 1] || null; // Handle odd number of teams
+
+      // Create a game for the match
+      const game = await Game.create({
+        players: [], // Players will be added when the match is played
+        winner: null
+      });
+
+      const matchId = new mongoose.Types.ObjectId();
+      nextRoundMatches.push({
+        _id: matchId.toString(),
+        team1,
+        team2,
+        winner: null as 'LEFT' | 'RIGHT' | null,
+        bye: !team2,
+        gameId: game.id.toString()
+      });
+    }
+
+    // Add the next round to the bracket
+    tournament.bracket.push({
+      round: 2,
+      matches: nextRoundMatches
+    });
+
+    tournament.currentRound = 2;
+  } else {
+    tournament.currentRound = 1;
+  }
+
+  tournament.status = 'IN_PROGRESS';
   await tournament.save();
   return tournament;
 };
@@ -290,23 +333,80 @@ export const updateMatchWinner = async (
   if (!tournament) throw new Error('404 Tournament not found');
 
   let foundMatch = null;
-  for (const round of tournament.bracket) {
-    const match = round.matches.find((match) => {
-      return match._id.toString() === matchId;
-    });
-    if (match) {
-      foundMatch = match;
+  let currentRoundIndex = -1;
+  let currentMatchIndex = -1;
+
+  // Find the match and its position in the bracket
+  for (let i = 0; i < tournament.bracket.length; i++) {
+    const round = tournament.bracket[i];
+    const matchIndex = round.matches.findIndex(
+      (match) => match._id.toString() === matchId
+    );
+    if (matchIndex !== -1) {
+      foundMatch = round.matches[matchIndex];
+      currentRoundIndex = i;
+      currentMatchIndex = matchIndex;
       break;
     }
   }
+
   if (!foundMatch) throw new Error('404 Match not found');
 
-  if (side === 'LEFT') {
-    foundMatch.winner = 'LEFT';
-    console.log(foundMatch);
-    console.log('winner');
-  } else {
-    foundMatch.winner = 'RIGHT';
+  // Set the winner
+  foundMatch.winner = side;
+
+  // Check if this is the last match of the current round
+  const currentRound = tournament.bracket[currentRoundIndex];
+  const isLastMatchOfRound =
+    currentMatchIndex === currentRound.matches.length - 1;
+
+  // If this is the last match of the round, create the next round
+  if (isLastMatchOfRound) {
+    const nextRoundNumber = currentRound.round + 1;
+    const winners = currentRound.matches
+      .map((match) => {
+        if (match.winner === 'LEFT') return match.team1;
+        if (match.winner === 'RIGHT') return match.team2;
+        return null;
+      })
+      .filter(Boolean);
+
+    // If there's only one winner left, the tournament is complete
+    if (winners.length === 1) {
+      tournament.status = 'COMPLETED';
+      tournament.currentRound = nextRoundNumber;
+    } else {
+      // Create matches for the next round
+      const nextRoundMatches = [];
+      for (let i = 0; i < winners.length; i += 2) {
+        const team1 = winners[i];
+        const team2 = winners[i + 1] || null; // Handle odd number of teams
+
+        // Create a game for the match
+        const game = await Game.create({
+          players: [], // Players will be added when the match is played
+          winner: null
+        });
+
+        const matchId = new mongoose.Types.ObjectId();
+        nextRoundMatches.push({
+          _id: matchId.toString(),
+          team1,
+          team2,
+          winner: null as 'LEFT' | 'RIGHT' | null,
+          bye: !team2,
+          gameId: game.id.toString()
+        });
+      }
+
+      // Add the next round to the bracket
+      tournament.bracket.push({
+        round: nextRoundNumber,
+        matches: nextRoundMatches
+      });
+
+      tournament.currentRound = nextRoundNumber;
+    }
   }
 
   await tournament.save();
