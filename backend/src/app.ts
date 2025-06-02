@@ -9,6 +9,7 @@ import corsOptions from './util/corsOptions';
 import groupRouter from './routes/groupRouter';
 import inviteRouter from './routes/inviteRouter';
 import tournamentRouter from './routes/tournamentRouter';
+import beerPongRouter from './routes/beerPongRouter';
 import sessionMiddleware from './util/sessionMiddleware';
 
 const app = express();
@@ -35,5 +36,6 @@ app.use('/leaderboard', leaderboardRouter);
 app.use('/groups', groupRouter);
 app.use('/invite', inviteRouter);
 app.use('/tournaments', tournamentRouter);
+app.use('/beer-pong', beerPongRouter);
 
 export default app;
