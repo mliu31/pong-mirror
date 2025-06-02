@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
-import { Player } from '@/api/types';
+import { IPlayer } from '@/api/types';
 import { getFriends } from '@/api/friends';
 
 const FriendList = ({ fids }: { fids: string[] }) => {
-  const [friends, setFriends] = useState<Player[]>([]);
+  const [friends, setFriends] = useState<IPlayer[]>([]);
 
   useEffect(() => {
     getFriends(fids).then((res) => setFriends(res));

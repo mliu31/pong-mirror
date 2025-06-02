@@ -1,27 +1,15 @@
-import { Tabs, useRootNavigationState, useRouter } from 'expo-router';
-import React, { useEffect } from 'react';
-import { Platform } from 'react-native';
+import { Tabs } from 'expo-router';
+import { useContext } from 'react';
 import { HapticTab } from '@/components/HapticTab';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { useAppSelector } from '@/redux/redux-hooks';
+import InviteContext from '@/context/InviteContext';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-
-  // TODO: flesh out route protection
-  const basicPlayerInfo = useAppSelector((state) => state.auth.basicPlayerInfo);
-  const router = useRouter();
-  const rootNavigationState = useRootNavigationState();
-
-  useEffect(() => {
-    if (!rootNavigationState?.key) return; // waiting for router
-    if (!basicPlayerInfo) {
-      router.replace('/login');
-    }
-  }, [basicPlayerInfo, rootNavigationState, router]);
+  const { invites } = useContext(InviteContext);
 
   return (
     <Tabs
@@ -30,13 +18,18 @@ export default function TabLayout() {
         headerShown: false,
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute'
-          },
-          default: {}
-        })
+        tabBarLabelPosition: 'below-icon',
+        tabBarStyle: {
+          height: 60,
+          paddingTop: 8
+        }
+        // tabBarStyle: Platform.select({
+        //   ios: {
+        //     // Use a transparent background on iOS to show the blur effect
+        //     position: 'absolute'
+        //   },
+        //   default: {}
+        // })
       }}
     >
       <Tabs.Screen
@@ -54,7 +47,16 @@ export default function TabLayout() {
           title: 'Game',
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="plus" color={color} />
-          )
+          ),
+          tabBarBadge: invites.length > 0 ? '' : undefined,
+          tabBarBadgeStyle: {
+            backgroundColor: '#ef4444',
+            minWidth: 8,
+            height: 8,
+            borderRadius: 4,
+            marginLeft: 4,
+            marginTop: 4
+          }
         }}
       />
       <Tabs.Screen

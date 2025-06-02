@@ -1,0 +1,44 @@
+[
+  { "timestamp": 0, "type": "serve", "player": "C" },
+  { "timestamp": 2, "type": "rally", "player": "A" },
+  { "timestamp": 3, "type": "sink", "player": "C" },
+
+  { "timestamp": 4, "type": "serve", "player": "A" },
+  { "timestamp": 6, "type": "rally", "player": "D" },
+  { "timestamp": 9, "type": "rally", "player": "B" },
+  { "timestamp": 11, "type": "rally", "player": "C" },
+  { "timestamp": 13, "type": "hit", "player": "B" },
+
+  { "timestamp": 16, "type": "serve", "player": "D" },
+  { "timestamp": 17, "type": "rally", "player": "A" },
+  { "timestamp": 20, "type": "rally", "player": "C" },
+  { "timestamp": 22, "type": "rally", "player": "B" },
+  { "timestamp": 25, "type": "sink", "player": "D" },
+
+  { "timestamp": 27, "type": "serve", "player": "B" },
+  { "timestamp": 29, "type": "rally", "player": "C" },
+  { "timestamp": 32, "type": "rally", "player": "A" },
+  { "timestamp": 33, "type": "rally", "player": "D" },
+  { "timestamp": 36, "type": "hit", "player": "A" },
+
+  { "timestamp": 38, "type": "serve", "player": "C" },
+  { "timestamp": 40, "type": "rally", "player": "B" },
+  { "timestamp": 42, "type": "rally", "player": "D" },
+  { "timestamp": 44, "type": "rally", "player": "A" },
+  { "timestamp": 46, "type": "sink", "player": "C" },
+
+  { "timestamp": 48, "type": "serve", "player": "A" },
+  { "timestamp": 49, "type": "rally", "player": "C" },
+  { "timestamp": 51, "type": "rally", "player": "B" },
+  { "timestamp": 53, "type": "rally", "player": "D" },
+  { "timestamp": 55, "type": "hit", "player": "B" },
+
+  { "timestamp": 57, "type": "serve", "player": "D" },
+  { "timestamp": 59, "type": "rally", "player": "A" },
+  { "timestamp": 60, "type": "rally", "player": "C" },
+  { "timestamp": 62, "type": "rally", "player": "A" },
+  { "timestamp": 64, "type": "rally", "player": "C" },
+  { "timestamp": 67, "type": "rally", "player": "A" },
+  { "timestamp": 70, "type": "rally", "player": "C" },
+  { "timestamp": 72, "type": "sink", "player": "A" }
+]
