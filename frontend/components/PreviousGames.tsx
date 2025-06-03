@@ -56,37 +56,38 @@ export default function PreviousGames({
           const otherTeam =
             Object.keys(teamsMap).find((t) => t !== team) ?? 'null';
           const winner = game.winner;
-          const eloChange =
-            (playerInfo?.newElo ?? 0) - (playerInfo?.oldElo ?? 0);
+          const oldElo = playerInfo?.oldElo;
+          const newElo = playerInfo?.newElo;
+          const eloChange = (newElo ?? 0) - (oldElo ?? 0);
           const date = new Date(game.date);
           const mm = String(date.getMonth() + 1).padStart(2, '0');
           const dd = String(date.getDate()).padStart(2, '0');
           const yy = String(date.getFullYear()).slice(-2);
           const gameDate = `${mm}/${dd}/${yy}`;
-          console.log('raw game.date:', game.date);
-          console.log('parsed date:', new Date(game.date));
 
           return (
             <Box
               key={game._id}
               className="bg-muted p-4 rounded-2xl mb-1 mx-4 w-[90%] self-center"
             >
-              <ThemedText className="text-l text-muted-foreground mb-2">
-                {gameDate}
-              </ThemedText>
+              <ThemedText className="text-l">{gameDate}</ThemedText>
 
-              <Box className="flex-row justify-between items-center">
+              <Box className="flex-row justify-between items-right">
                 {/* print team vs. team */}
                 <Box className="mb-2 items-start pl-4">
                   <ThemedText
                     className="text-l font-bold mb-1"
                     style={{
-                      color: team === winner ? '#277f5a' : '#ea4236',
+                      color: team === winner ? '#65b684' : '#ea4236',
                       lineHeight: 14
                     }}
                   >
                     {teamsMap[team]?.join(', ')}
                   </ThemedText>
+                  {/* TODO: display Elo aligned */}
+                  {/* <ThemedText className="text-s text-typography-900">
+                    {oldElo} → {newElo}
+                  </ThemedText> */}
 
                   <ThemedText
                     className="text-s mb-1"
@@ -98,12 +99,15 @@ export default function PreviousGames({
                   <ThemedText
                     className="text-l font-bold"
                     style={{
-                      color: otherTeam === winner ? '#277f5a' : '#ea4236',
+                      color: otherTeam === winner ? '#65b684' : '#ea4236',
                       lineHeight: 14
                     }}
                   >
                     {teamsMap[otherTeam]?.join(', ')}
                   </ThemedText>
+                  {/* <ThemedText className="text-s text-typography-900">
+                    {oldElo} → {newElo}
+                  </ThemedText> */}
                 </Box>
 
                 {/* print elo changes */}

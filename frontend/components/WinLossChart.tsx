@@ -22,14 +22,14 @@ export default function WinLossChart({ wins, losses }: WinLossPieChart) {
   const winRate = ((wins / total) * 100).toFixed(1);
 
   const data = [
-    { value: wins, color: '#277f5a' },
+    { value: wins, color: '#65b684' },
     { value: losses, color: '#ea4236' }
   ];
 
   return (
     <Box className="flex-row items-center justify-center my-4">
       <Box className="mr-6 items-end">
-        <ThemedText className="text-base my-1" style={{ color: '#277f5a' }}>
+        <ThemedText className="text-base my-1" style={{ color: '#65b684' }}>
           Won: <ThemedText style={{ color: '#ffffff' }}>{wins}</ThemedText>
         </ThemedText>
 

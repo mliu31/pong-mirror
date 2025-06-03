@@ -8,6 +8,8 @@ import { Box } from '@/components/ui/box';
 import { getGame } from '@/api/games';
 import { IGame } from '@/api/types';
 import PlayerCircle from '@/components/PlayerCircle';
+import WinArrow from '@/components/WinArrow';
+import LossArrow from '@/components/LossArrow';
 
 export default function SummaryScreen() {
   const local = useLocalSearchParams();
@@ -19,13 +21,13 @@ export default function SummaryScreen() {
       .then((res) => {
         setGame(res.data);
         // testing
-        // console.log('Fetched game data:', res.data);
-        // res.data.players.forEach((p) => {
-        //   const name = p.player.name;
-        //   const oldElo = p.oldElo ?? 1200;
-        //   const newElo = p.newElo;
-        //   // console.log(`${name}: ${oldElo} → ${newElo}`);
-        // });
+        console.log('Fetched game data:', res.data);
+        res.data.players.forEach((p) => {
+          const name = p.player.name;
+          const oldElo = p.oldElo ?? 1200;
+          const newElo = p.newElo;
+          console.log(`${name}: ${oldElo} → ${newElo}`);
+        });
       })
       .catch((err) => {
         console.error('Failed to fetch game:', err);
@@ -65,7 +67,7 @@ export default function SummaryScreen() {
         renderItem={({ item }) => {
           const oldElo = item.oldElo ?? 1200;
           const newElo = item.newElo ?? 'N/A';
-          const change = (item.newElo ?? 0) - (item.oldElo ?? 0);
+          const eloChange = (item.newElo ?? 0) - (item.oldElo ?? 0);
 
           return (
             <Box
@@ -95,9 +97,19 @@ export default function SummaryScreen() {
                   }
                 />
                 <ThemedText className="text-base font-bold text-typography-900">
-                  {oldElo} → {newElo} ({change >= 0 ? '+' : ''}
-                  {change})
+                  {oldElo} → {newElo}
                 </ThemedText>
+                <Box className="flex-col items-center">
+                  {eloChange > 0 ? (
+                    <WinArrow size={40} />
+                  ) : (
+                    <LossArrow size={40} />
+                  )}
+                  <ThemedText className="text-l font-bold mt-1">
+                    {eloChange >= 0 ? '+' : ''}
+                    {eloChange} Elo
+                  </ThemedText>
+                </Box>
               </Box>
             </Box>
           );

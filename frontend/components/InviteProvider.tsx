@@ -25,7 +25,6 @@ const InviteProvider: FC<PropsWithChildren> = ({ children }) => {
 
   // fetch invites on mount
   useEffect(() => {
-    console.log('refreshing invites on mount');
     return void refreshInvites();
   }, [refreshInvites]);
 

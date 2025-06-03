@@ -1,6 +1,6 @@
 import FriendList from './FriendList';
-import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { router, useFocusEffect } from 'expo-router';
+import { useCallback, useEffect, useState } from 'react';
 import { Button, ButtonText } from '@/components/ui/button';
 import { getPlayer } from '@/api/players';
 import { ThemedView } from '@/components/ThemedView';
@@ -10,13 +10,15 @@ const Friends = ({ pid }: { pid: string }) => {
   const [friends, setFriends] = useState<string[]>([]);
 
   // on page load, fetch friend ids
-  useEffect(() => {
-    const fetchFriends = async () => {
-      const player = await getPlayer(pid);
-      setFriends(player.data.friends);
-    };
-    fetchFriends();
-  }, [pid]);
+  useFocusEffect(
+    useCallback(() => {
+      const fetchFriends = async () => {
+        const player = await getPlayer(pid);
+        setFriends(player.data.friends);
+      };
+      fetchFriends();
+    }, [pid])
+  );
 
   // route to edit friends page
   const EditFriendHandler = (fids: string[], pid: string) => {

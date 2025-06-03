@@ -75,7 +75,7 @@ export default function EditFriend() {
         value={fids.has(_id)}
         onValueChange={(isChecked) => checkboxHandler(isChecked, _id)}
         className="mr-3"
-        color={fids.has(_id) ? '#4A90E2' : undefined}
+        color={fids.has(_id) ? '#65b684' : undefined}
       />
       <ThemedText className="text-base text-text-light">{name}</ThemedText>
     </Box>
