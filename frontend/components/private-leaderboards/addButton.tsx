@@ -36,13 +36,12 @@ const styles = StyleSheet.create({
   }
 });
 
-const AddButton: React.FC<AddButtonProps> = ({ category }) => {
+const AddButton: React.FC<AddButtonProps> = ({ category, showLabel }) => {
   const router = useRouter();
   if (category === 'Friends') {
     return (
       <>
         <View style={styles.viewStyling}>
-          <ThemedText style={styles.titleStyling}>Friends</ThemedText>
           <TouchableHighlight
             style={styles.buttonStyling}
             onPress={() => router.push('./')}
@@ -56,7 +55,6 @@ const AddButton: React.FC<AddButtonProps> = ({ category }) => {
   } else if (category === 'Groups') {
     return (
       <View style={styles.viewStyling}>
-        <ThemedText style={styles.titleStyling}>Groups</ThemedText>
         <TouchableHighlight
           style={styles.buttonStyling}
           onPress={() => router.push('./addGroup')}

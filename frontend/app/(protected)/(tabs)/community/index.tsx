@@ -293,7 +293,7 @@ export default function CommunityLandingScreen() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Friends</Text>
-            <AddButton />
+            <AddButton category="Friends" />
           </View>
 
           {friends.length === 0 ? (
@@ -302,12 +302,6 @@ export default function CommunityLandingScreen() {
             friends.map((f, idx) => (
               <View key={f._id} style={styles.itemRow}>
                 <FriendBox rank={idx + 1} name={f.name} elo={f.elo} />
-                <TouchableOpacity
-                  onPress={() => handleRemoveFriend(f._id)}
-                  style={styles.removeButton}
-                >
-                  <Text style={styles.removeButtonText}>Remove</Text>
-                </TouchableOpacity>
               </View>
             ))
           )}
