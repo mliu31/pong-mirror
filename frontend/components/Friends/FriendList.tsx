@@ -17,7 +17,6 @@ const FriendList = ({ fids }: { fids: string[] }) => {
       className="py-1 px-2 rounded-md bg-transparent"
     >
       <Text className="text-sm text-black dark:text-white">{friend.name}</Text>
-      {/* <Text className="text-xs text-gray-600 dark:text-gray-400">{friend.elo}</Text> */}
     </ThemedView>
   ));
 };

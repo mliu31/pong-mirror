@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { ScrollView, ActivityIndicator } from 'react-native';
 import { getPlayer } from '@/api/players';
 import { getGameHistory } from '@/api/games';
@@ -89,10 +89,10 @@ export default function Profile() {
             <Box className="mt-4 flex-row justify-center">
               <Box className="items-center mr-2">
                 {/* TODO: a better way to implement text color? */}
-                <ThemedText style={{ color: '#277f5a' }} className="text-lg">
+                <ThemedText style={{ color: '#65b684' }} className="text-lg">
                   Elo:
                 </ThemedText>
-                <ThemedText style={{ color: '#277f5a' }} className="text-lg">
+                <ThemedText style={{ color: '#65b684' }} className="text-lg">
                   Rank:
                 </ThemedText>
               </Box>
@@ -125,7 +125,7 @@ export default function Profile() {
             <Box className="mt-8">
               <ThemedText
                 className="text-xl font-semibold text-left"
-                style={{ color: '#277f5a' }}
+                style={{ color: '#65b684' }}
               >
                 Previous Games
               </ThemedText>
@@ -138,19 +138,19 @@ export default function Profile() {
             <Box className="mt-10">
               <ThemedText
                 className="text-xl font-semibold text-left mb-1"
-                style={{ color: '#277f5a' }}
+                style={{ color: '#65b684' }}
               >
                 Elo History
               </ThemedText>
               <LineChart
                 data={eloData}
                 thickness={2}
-                color="#4A90E2"
+                color="#65b684"
                 hideDataPoints={false}
                 isAnimated
                 areaChart
-                startFillColor="#4A90E2"
-                endFillColor="#4A90E2"
+                startFillColor="#65b684"
+                endFillColor="#374051"
                 startOpacity={0.3}
                 endOpacity={0}
                 yAxisTextStyle={{ color: '#444' }}
