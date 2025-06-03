@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
 import { FlatList } from 'react-native';
 import { Button, ButtonText } from '@/components/ui/button';
 import INVITE, { InviteValue } from '@/constants/INVITE';
@@ -9,9 +9,16 @@ import { ThemedView } from '@/components/ThemedView';
 import { Icon, CheckIcon, SlashIcon } from '@/components/ui/icon';
 import InviteContext from '@/context/InviteContext';
 import useLoggedInPlayer from '@/hooks/useLoggedInPlayer';
+import { useFocusEffect } from 'expo-router';
 
 export default function InviteList() {
-  const { invites, setInvites } = useContext(InviteContext);
+  const { invites, setInvites, refreshInvites } = useContext(InviteContext);
+
+  useFocusEffect(
+    useCallback(() => {
+      refreshInvites();
+    }, [refreshInvites])
+  );
 
   const currentPlayerId = useLoggedInPlayer()._id;
 
