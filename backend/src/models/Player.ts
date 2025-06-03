@@ -1,7 +1,7 @@
 import mongoose, { Document, ObjectId } from 'mongoose';
 
 export interface IPlayer extends Document<ObjectId> {
-  name: string;
+  name: string; // TODO: customize name from profile page
   email: string;
   friends: string[];
   elo: number;
@@ -10,6 +10,7 @@ export interface IPlayer extends Document<ObjectId> {
   gamesPlayed: number;
   wins: number;
   googleID: string;
+  eloHistory: { elo: number; date: Date }[];
 }
 
 const playerSchema = new mongoose.Schema<IPlayer>({
@@ -25,8 +26,7 @@ const playerSchema = new mongoose.Schema<IPlayer>({
   rank: {
     type: Number,
     required: true,
-    // call updateRanks() immediately after creating a new player
-    default: 0
+    default: 0 // call updateRanks() immediately after creating a new player
   },
   elo: {
     type: Number,
@@ -55,7 +55,16 @@ const playerSchema = new mongoose.Schema<IPlayer>({
   },
   googleID: {
     type: String,
-    required: false
+    required: true
+  },
+  eloHistory: {
+    type: [
+      {
+        elo: { type: Number, required: true, default: 1200 },
+        date: { type: Date, required: true }
+      }
+    ],
+    default: []
   }
 });
 

@@ -1,51 +1,36 @@
-import React from 'react';
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+// components/leaderboard/LeaderboardNav.tsx
+import { TouchableOpacity, View, Text } from 'react-native';
+import { ThemedView } from '../ThemedView';
 
 type Tab = 'Top' | 'League';
 
-interface LeaderboardNavProps {
-  currentTab: Tab;
-  onTabChange: (tab: Tab) => void;
-}
-
-const LeaderboardNav: React.FC<LeaderboardNavProps> = ({
+export default function LeaderboardNav({
   currentTab,
   onTabChange
-}) => {
+}: {
+  currentTab: Tab;
+  onTabChange: (tab: Tab) => void;
+}) {
   return (
-    <View style={styles.container}>
-      <TouchableOpacity
-        style={[styles.tabButton, currentTab === 'Top' && styles.activeTab]}
-        onPress={() => onTabChange('Top')}
-      >
-        <Text>Top</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[styles.tabButton, currentTab === 'League' && styles.activeTab]}
-        onPress={() => onTabChange('League')}
-      >
-        <Text>League</Text>
-      </TouchableOpacity>
-    </View>
+    <ThemedView className="flex-row justify-center my-4">
+      {(['Top', 'League'] as Tab[]).map((tab) => (
+        <TouchableOpacity
+          key={tab}
+          onPress={() => onTabChange(tab)}
+          className="mx-6 items-center"
+        >
+          <Text
+            className={`text-lg ${
+              currentTab === tab ? 'text-white font-bold' : 'text-white'
+            }`}
+          >
+            {tab === 'Top' ? 'Top 100' : 'League'}
+          </Text>
+          {currentTab === tab && (
+            <View className="h-0.5 bg-green-600 w-full mt-1" />
+          )}
+        </TouchableOpacity>
+      ))}
+    </ThemedView>
   );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginVertical: 16
-  },
-  tabButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    marginHorizontal: 8,
-    backgroundColor: '#ddd',
-    borderRadius: 4
-  },
-  activeTab: {
-    backgroundColor: '#007AFF'
-  }
-});
-
-export default LeaderboardNav;
+}

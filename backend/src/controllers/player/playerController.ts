@@ -1,22 +1,4 @@
 import Player from '../../models/Player';
-import { updateRanks } from '../leaderboard/rankingCurrent';
-
-// New player
-export const newPlayer = async (name: string, email: string) => {
-  const existingPlayer = await Player.findOne({ email });
-  if (existingPlayer) {
-    throw new Error('Player already exists');
-  }
-
-  const newPlayer = new Player({
-    name: name,
-    email: email,
-    friends: []
-  });
-  await newPlayer.save();
-  await updateRanks();
-  return newPlayer;
-};
 
 export const getAllPlayers = () => Player.find();
 

@@ -2,13 +2,12 @@ import { router, useLocalSearchParams, useNavigation } from 'expo-router';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { useEffect, useState } from 'react';
-import api from '@/api';
-import { Player } from '@/api/types';
+import { IPlayer } from '@/api/types';
 import { getAllPlayers } from '@/api/players';
 import { Button, ButtonText } from '@/components/ui/button';
 import { useToast, Toast, ToastTitle } from '@/components/ui/toast';
 import { VStack } from '@/components/ui/vstack';
-import { FlatList, ScrollView, View } from 'react-native';
+import { FlatList, View } from 'react-native';
 import { QrCode as QrCodeIcon } from 'lucide-react-native';
 import { CloseIcon, Icon } from '@/components/ui/icon';
 import {
@@ -20,17 +19,40 @@ import {
   ModalHeader
 } from '@/components/ui/modal';
 import QRCode from 'react-native-qrcode-svg';
+import { invitePlayersToGame } from '@/api/invite';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
+import { Searchbar } from 'react-native-paper';
 
 export default function Route() {
   const { gameid } = useLocalSearchParams<{ gameid: string }>();
-  const [allPlayers, setAllPlayers] = useState<Player[] | null>(null);
+  const playerId = useSelector(
+    (state: RootState) => state.auth.basicPlayerInfo?._id
+  );
+
+  const [allPlayers, setAllPlayers] = useState<IPlayer[]>();
   const [playerUpdates, setPlayerUpdates] = useState<
-    Record<Player['_id'], boolean>
-  >({});
-  const [numSelectedPlayers, setNumSelectedPlayers] = useState(0);
+    Record<IPlayer['_id'], boolean>
+  >({ [playerId as string]: true });
+  const [numSelectedPlayers, setNumSelectedPlayers] = useState(1);
   const [isUpdatingPlayers, setIsUpdatingPlayers] = useState(false);
   const shouldDisableContinueButton =
     numSelectedPlayers < 2 || isUpdatingPlayers;
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredPlayers, setFilteredPlayers] = useState<IPlayer[]>([]);
+
+  useEffect(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (allPlayers === undefined) return;
+
+    if (q === '') {
+      setFilteredPlayers(allPlayers);
+    } else {
+      setFilteredPlayers(
+        allPlayers?.filter((p) => p.name.toLowerCase().includes(q))
+      );
+    }
+  }, [searchQuery, allPlayers]);
 
   const toast = useToast();
   const [toastId, setToastId] = useState(0);
@@ -50,7 +72,12 @@ export default function Route() {
       render: ({ id }) => {
         const uniqueToastId = 'toast-' + id;
         return (
-          <Toast nativeID={uniqueToastId} action="error" variant="solid">
+          <Toast
+            nativeID={uniqueToastId}
+            action="error"
+            variant="solid"
+            className="bg-red-400"
+          >
             <ToastTitle>Max 4 players in a game</ToastTitle>
           </Toast>
         );
@@ -58,17 +85,28 @@ export default function Route() {
     });
   };
 
-  useEffect(
-    () => void getAllPlayers().then(({ data }) => setAllPlayers(data)),
-    []
-  );
-
-  const handleContinueButtonPress = () => {
-    setIsUpdatingPlayers(true);
-    api.patch(`/games/${gameid}/players`, playerUpdates).then(() => {
-      setIsUpdatingPlayers(false);
-      router.push(`/game/${gameid}/teamBuilder`);
+  useEffect(() => {
+    void getAllPlayers().then(({ data }) => {
+      // move logged in user to the top of list
+      const filteredPlayers = data.filter((player) => player._id !== playerId);
+      const currentPlayer = data.find((player) => player._id === playerId);
+      if (currentPlayer) {
+        setAllPlayers([currentPlayer, ...filteredPlayers]);
+      } else {
+        setAllPlayers(filteredPlayers);
+      }
     });
+  }, [playerId]);
+
+  const handleContinueButtonPress = async () => {
+    setIsUpdatingPlayers(true);
+    const selectedPlayerIds = Object.keys(playerUpdates).filter(
+      (playerId) => playerUpdates[playerId] // convert playerUpdates to array of pids
+    );
+    const filteredPlayerIds = selectedPlayerIds.filter((id) => id !== playerId); // don't invite captain bc alr in game
+    await invitePlayersToGame(gameid, filteredPlayerIds);
+    setIsUpdatingPlayers(false);
+    router.push(`/game/${gameid}/confirm`);
   };
 
   const navigation = useNavigation();
@@ -79,7 +117,7 @@ export default function Route() {
       <>
         <Button
           size="lg"
-          className="rounded-full p-2  mr-4 w-10 h-10"
+          className="rounded-full p-2 mr-4 w-10 h-10"
           onPress={() => {
             setShowModal(true);
           }}
@@ -129,10 +167,13 @@ export default function Route() {
     );
   }
 
-  const renderItem = ({ item: player }: { item: Player }) => {
+  const renderItem = ({ item: player }: { item: IPlayer }) => {
     const playerButtonPressHandler = () => {
+      if (player._id === playerId) return;
+
       // If trying to select and already at 4 players
       const isSelected = playerUpdates[player._id] === true; // allow for deselection
+      // self + three others
       if (numSelectedPlayers === 4 && !isSelected) {
         handleToast();
         return;
@@ -157,7 +198,7 @@ export default function Route() {
         action="primary"
         onPress={playerButtonPressHandler}
         variant={playerUpdates[player._id] === true ? 'solid' : 'outline'}
-        className={`border-0 border-b rounded-none ${
+        className={`border-0 rounded-none ${
           playerUpdates[player._id] === true ? 'border-black' : ''
         }`}
       >
@@ -167,24 +208,41 @@ export default function Route() {
   };
 
   return (
-    // TODO: add searchbar
-    <ThemedView className="flex-1 justify-center space-y-4">
+    <ThemedView className="flex-1 justify-center space-y-4 pb-4">
+      <Searchbar
+        placeholder="Search"
+        onChangeText={setSearchQuery}
+        value={searchQuery}
+        style={{
+          margin: 12,
+          marginBottom: 0,
+          borderRadius: 12
+        }}
+        inputStyle={{
+          fontFamily: 'sans-serif',
+          fontSize: 16,
+          fontWeight: '400'
+        }}
+      />
       <VStack space="md" className="flex-1">
         <FlatList
-          data={allPlayers}
+          data={filteredPlayers}
           className="flex-1"
           keyExtractor={(player) => player._id}
           renderItem={renderItem}
+          ItemSeparatorComponent={() => <View className="h-px bg-gray-500" />}
         />
       </VStack>
 
       <Button
-        disabled={shouldDisableContinueButton}
         onPress={handleContinueButtonPress}
+        disabled={shouldDisableContinueButton}
         action={shouldDisableContinueButton ? 'secondary' : 'primary'}
-        className={shouldDisableContinueButton ? '' : 'bg-success-300'}
+        className={`m-5 
+    ${shouldDisableContinueButton ? '' : 'bg-green-700'}
+  `}
       >
-        <ButtonText>Continue</ButtonText>
+        <ButtonText className="text-gray-3003">Continue</ButtonText>
       </Button>
     </ThemedView>
   );

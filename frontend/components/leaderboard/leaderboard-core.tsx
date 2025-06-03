@@ -1,63 +1,52 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { View, Text, FlatList } from 'react-native';
 import { LeaderboardItem } from '@/app/(protected)/(tabs)/leaderboard';
+import useLoggedInPlayer from '@/hooks/useLoggedInPlayer';
 
 interface LeaderboardRankingProps {
   items: LeaderboardItem[];
 }
 
 const LeaderboardRanking: React.FC<LeaderboardRankingProps> = ({ items }) => {
+  const currentPlayer = useLoggedInPlayer();
+
   // Render individual leaderboard row
-  const renderItem = ({ item }: { item: LeaderboardItem }) => (
-    <View style={styles.rowContainer}>
+  const renderItem = ({
+    item,
+    index
+  }: {
+    item: LeaderboardItem;
+    index: number;
+  }) => (
+    // last item doesn't have bottom border
+    // current player is highlighted
+    <View
+      className={`flex-row items-center p-3 ${
+        index !== items.length - 1 ? 'border-b border-gray-700' : ''
+      } ${item._id === currentPlayer._id ? 'bg-green-800' : ''}`}
+    >
       {/* Rank column */}
-      <View style={styles.rankContainer}>
-        <Text>{item.rank}</Text>
+      <View className="w-12">
+        <Text className="text-white text-lg">{item.rank}</Text>
       </View>
       {/* Username column (takes up most space) */}
-      <View style={styles.usernameContainer}>
-        <Text>{item.name}</Text>
+      <View className="flex-1">
+        <Text className="text-white text-lg">{item.name}</Text>
       </View>
-      <View style={styles.scoreContainer}>
-        <Text>{item.elo}</Text>
+      {/* ELO score column */}
+      <View>
+        <Text className="text-white text-lg">{item.elo}</Text>
       </View>
     </View>
   );
 
   return (
     <FlatList
-      contentContainerStyle={styles.container}
       data={items}
       keyExtractor={(item) => `${item._id}-${item.rank}`}
       renderItem={renderItem}
     />
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-    backgroundColor: '#fff'
-  },
-  // Row styling for 3-column layout
-  rowContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc'
-  },
-  // Column styles with flex distribution
-  rankContainer: {
-    flex: 1 // Takes up 1/5 of the space
-  },
-  usernameContainer: {
-    flex: 3 // Takes up 3/5 of the space
-  },
-  scoreContainer: {
-    flex: 1, // Takes up 1/5 of the space
-    alignItems: 'flex-end' // Right align the score
-  }
-});
 
 export default LeaderboardRanking;
