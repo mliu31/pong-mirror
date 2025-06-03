@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Text, ActivityIndicator, View } from 'react-native';
 import LeaderboardNav from '@/components/leaderboard/leaderboard-nav';
 import LeaderboardRanking from '@/components/leaderboard/leaderboard-core';
-import { fetchLeaderboard } from '@/api/leaderboard';
+import { fetchLeaderboard, updateRanks } from '@/api/leaderboard';
 import useLoggedInPlayer from '@/hooks/useLoggedInPlayer';
 import { ThemedView } from '@/components/ThemedView';
 
@@ -38,11 +38,19 @@ const LeaderboardScreen: React.FC = () => {
     }
 
     const loadLeaderboard = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      // update the ranks
       try {
-        setIsLoading(true);
-        setError(null);
+        await updateRanks();
+      } catch (err) {
+        console.error('Error updating ranks:', err);
+      }
+
+      // fetch the leaderboard data
+      try {
         const response = await fetchLeaderboard(currentTab, currentUserId);
-        // No transformation needed, use the data directly
         setItems(response.players);
       } catch (err) {
         setError('Failed to load leaderboard data');
