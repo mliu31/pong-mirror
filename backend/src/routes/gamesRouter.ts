@@ -1,3 +1,5 @@
+import express from 'express';
+import Game from '../models/Game';
 import {
   addPlayersToGame,
   createGame,
@@ -7,12 +9,10 @@ import {
   setPlayerTeam
 } from '../controllers/game/gameController';
 import { getPlayer } from '../controllers/player/playerController';
-import express from 'express';
 import { requireLoggedInHandler } from './authRouter';
 
 const router = express.Router();
 
-// TODO: Uncomment this once frontend login is implemented
 router.use(requireLoggedInHandler);
 
 router.post('/', async (req, res) => {
@@ -62,6 +62,18 @@ router.put('/:gameid/players/:pid/team/:team', async (req, res) => {
 router.patch('/:gameid/winner/:team', async (req, res) => {
   const { gameid, team } = req.params;
   return void res.json(await setGameWinner(gameid, team));
+});
+
+// get the last 20 games for a player
+router.get('/player/:playerId', async (req, res) => {
+  const { playerId } = req.params;
+  const games = await Game.find({ 'players.player': playerId })
+    .populate('players.player', 'name') // TODO: display name
+    .limit(20);
+  if (games == undefined) {
+    return void res.status(401).send('Error fetching games for player');
+  }
+  res.json(games);
 });
 
 export default router;

@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import api from '../../api';
 import { IPlayer } from '@/api/types';
+import { AxiosResponse, isAxiosError } from 'axios';
 
 export interface AuthApiState {
   basicPlayerInfo?: IPlayer | null;
@@ -27,9 +28,8 @@ export const googleSignup = createAsyncThunk(
     const data = response.data;
     const email = data.email;
     const domain = email?.split('@')[1];
-
     if (domain !== 'dartmouth.edu') {
-      throw new Error('Unauthorized domain');
+      throw new Error('Unauthorized domain, sign in with a Dartmouth account.');
     }
 
     return response.data;
@@ -41,6 +41,26 @@ export const logout = createAsyncThunk('auth/logout', async () => {
   const response = await api.post('/auth/logout', {});
   return response.data;
 });
+
+export const backdoor =
+  __DEV__ === true
+    ? createAsyncThunk<
+        AxiosResponse<{ player: IPlayer }>,
+        string,
+        { rejectValue: string }
+      >('auth/backdoor', async (email: string, { rejectWithValue }) => {
+        try {
+          return await api.post('/auth/backdoor', { email });
+        } catch (err: unknown) {
+          if (isAxiosError(err)) {
+            return rejectWithValue(
+              err.response?.data ?? 'Backdoor login failed'
+            );
+          }
+          return rejectWithValue('Backdoor login failed');
+        }
+      })
+    : undefined;
 
 const authSlice = createSlice({
   name: 'auth',
@@ -80,6 +100,30 @@ const authSlice = createSlice({
         state.status = 'failed';
         state.error = action.error.message || 'Logout failed';
       });
+    if (backdoor !== undefined) {
+      builder
+        .addCase(backdoor.pending, (state) => {
+          state.status = 'loading';
+          state.error = null;
+        })
+        .addCase(
+          backdoor.fulfilled,
+          (
+            state,
+            action: PayloadAction<AxiosResponse<{ player: IPlayer }>>
+          ) => {
+            state.basicPlayerInfo = action.payload.data.player;
+            state.status = 'idle';
+            state.error = null;
+            state.isAuthenticated = true;
+          }
+        )
+        .addCase(backdoor.rejected, (state, action) => {
+          state.status = 'failed';
+          state.error = action.payload as string;
+          state.isAuthenticated = false;
+        });
+    }
   }
 });
 

@@ -1,10 +1,11 @@
-import { View, Button } from 'react-native';
+import { View } from 'react-native';
 
 import { useRouter } from 'expo-router';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
 import { logout } from '@/redux/slices/authSlice';
 import { styles } from './auth/authstyles';
+import { Button, ButtonText } from '@/components/ui/button';
 
 export default function LogoutButton() {
   const router = useRouter();
@@ -20,7 +21,9 @@ export default function LogoutButton() {
   };
   return (
     <View style={styles.buttonWrapper}>
-      <Button title="Log out" onPress={handleLogout} />
+      <Button onPress={handleLogout}>
+        <ButtonText>Log out</ButtonText>
+      </Button>
     </View>
   );
 }
