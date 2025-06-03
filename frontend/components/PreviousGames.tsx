@@ -111,7 +111,7 @@ export default function PreviousGames({
                   {winner ? <WinArrow size={40} /> : <LossArrow size={40} />}
                   <ThemedText className="text-l font-bold mt-1">
                     {eloChange >= 0 ? '+' : ''}
-                    {eloChange} ELO
+                    {eloChange} Elo
                   </ThemedText>
                 </Box>
               </Box>
