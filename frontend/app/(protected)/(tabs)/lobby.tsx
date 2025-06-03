@@ -1,5 +1,5 @@
 import { getGame } from '@/api/games';
-import { Game } from '@/api/types';
+import { IGame } from '@/api/types';
 import { Text } from '@/components/ui/text';
 import { Toast, useToast } from '@/components/ui/toast';
 import { isAxiosError } from 'axios';
@@ -24,7 +24,24 @@ const Lobby: FC = () => {
   const globalSearchParams = useGlobalSearchParams();
   const rawId = globalSearchParams.gameid;
   // undefined = loading, null = none
-  const [game, setGame] = useState<Game | null | undefined>(undefined);
+  const [lobbyError, setLobbyError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (lobbyError === null) return;
+    toast.show({
+      id: Math.random().toString(),
+      placement: 'top',
+      duration: 3000,
+      render: ({ id }) => (
+        <Toast nativeID={`toast-${id}`} action="error" variant="solid">
+          <Text className="text-white">{lobbyError}</Text>
+        </Toast>
+      )
+    });
+    setLobbyError(null); // reset error after showing toast
+  }, [lobbyError, toast]);
+
+  const [game, setGame] = useState<IGame | null | undefined>(undefined);
   useEffect(() => {
     const id = (() => {
       if (rawId === undefined || rawId === 'undefined') return undefined;
@@ -39,21 +56,11 @@ const Lobby: FC = () => {
       .then((res) => setGame(res.data))
       .catch((err) => {
         if (!(isAxiosError(err) && err.status === 404)) throw err;
-        toast.show({
-          id: Math.random().toString(),
-          placement: 'top',
-          duration: 3000,
-          render: ({ id }) => (
-            <Toast nativeID={`toast-${id}`} action="error" variant="solid">
-              <Text className="text-white">Game not found!</Text>
-            </Toast>
-          )
-        });
+        setLobbyError('Game not found');
 
         router.setParams({ gameid: undefined });
       });
     // toast causes render loop - ignore dependency
-    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rawId]);
 
   if (game === undefined) return null; // clear the screen while the game loads
