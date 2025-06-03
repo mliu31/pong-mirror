@@ -9,14 +9,7 @@ import {
   getTournament,
   startTournament
 } from '@/api/tournament';
-import {
-  Button,
-  ButtonText,
-  Card,
-  CardHeader,
-  CardContent,
-  CardFooter
-} from '@gluestack-ui/themed';
+import { Button, ButtonText, Card } from '@gluestack-ui/themed';
 import { Toast, useToast } from '@/components/ui/toast';
 import { ThemedText } from '@/components/ThemedText';
 
@@ -68,7 +61,11 @@ export default function TournamentTeamsScreen() {
 
   const handleCreateTeam = async () => {
     try {
-      await addTeam(tournamentId as string, basicPlayerInfo?._id || '');
+      const team = await addTeam(
+        tournamentId as string,
+        basicPlayerInfo?._id || '',
+        basicPlayerInfo?.name || ''
+      );
       fetchTeams();
     } catch (error) {
       console.error('Error creating team:', error);
@@ -128,6 +125,7 @@ export default function TournamentTeamsScreen() {
           </Toast>
         )
       });
+      console.error('Error starting tournament:', error);
     } finally {
       setIsLoading(false);
     }
@@ -139,22 +137,18 @@ export default function TournamentTeamsScreen() {
 
     return (
       <Card className="mb-4">
-        <CardHeader>
+        <View>
           <ThemedText type="defaultSemiBold">{item.name}</ThemedText>
-        </CardHeader>
-        <CardContent>
+        </View>
+        <View>
           <ThemedText>Players: {item.players.length}/2</ThemedText>
-        </CardContent>
+        </View>
         {!isFull && !isPlayerInTeam && tournamentStatus === 'PENDING' && (
-          <CardFooter>
-            <Button
-              variant="solid"
-              action="primary"
-              onPress={() => handleJoinTeam(item.id)}
-            >
+          <View>
+            <Button onPress={() => handleJoinTeam(item.id)}>
               <ButtonText>Join Team</ButtonText>
             </Button>
-          </CardFooter>
+          </View>
         )}
       </Card>
     );
@@ -167,12 +161,10 @@ export default function TournamentTeamsScreen() {
       </ThemedText>
       {tournamentStatus === 'PENDING' && (
         <>
-          <Button variant="solid" className="mb-6" onPress={handleCreateTeam}>
+          <Button className="mb-6" onPress={handleCreateTeam}>
             <ButtonText>Create New Team</ButtonText>
           </Button>
           <Button
-            variant="solid"
-            action="primary"
             className="mb-6"
             onPress={handleStartTournament}
             isDisabled={isLoading}

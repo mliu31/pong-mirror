@@ -4,11 +4,16 @@ import { useEffect, useState } from 'react';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { Button, ButtonText } from '@/components/ui/button';
-import { getTeam, getTournament, startTournament } from '@/api/tournament';
+import {
+  getTeam,
+  getTournament,
+  startTournament,
+  leaveTeam
+} from '@/api/tournament';
 import { useAppSelector } from '@/redux/redux-hooks';
-import TeamChips from '@/components/TeamChips';
-import { Player } from '@/api/types';
+import { IPlayer } from '@/api/types';
 import { getPlayer } from '@/api/players';
+import { Toast, useToast } from '@/components/ui/toast';
 
 interface Team {
   _id: string;
@@ -44,9 +49,10 @@ export default function TeamTournamentScreen() {
   const tournamentId = local.tournamentid;
   const teamId = local.teamid;
   const router = useRouter();
+  const toast = useToast();
   const [tournament, setTournament] = useState<Tournament | null>(null);
   const [team, setTeam] = useState<Team | null>(null);
-  const [teamPlayers, setTeamPlayers] = useState<Player[]>([]);
+  const [teamPlayers, setTeamPlayers] = useState<IPlayer[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const basicPlayerInfo = useAppSelector((state) => state.auth.basicPlayerInfo);
@@ -100,7 +106,62 @@ export default function TeamTournamentScreen() {
     // Set up polling for tournament updates
     const interval = setInterval(fetchTournament, 5000);
     return () => clearInterval(interval);
-  }, [tournamentId]);
+  }, []);
+
+  // Add effect to handle navigation when tournament is completed or team is eliminated
+  useEffect(() => {
+    if (tournament?.status === 'COMPLETED') {
+      toast.show({
+        render: ({ id }) => (
+          <Toast
+            action="info"
+            variant="outline"
+            nativeID={'tournament-ended-toast-' + id}
+            className="p-4 gap-6 border-info-500 w-full shadow-hard-5 max-w-[443px] flex-row justify-between"
+          >
+            <ThemedText>Tournament has ended</ThemedText>
+          </Toast>
+        )
+      });
+      router.replace('/(protected)/(tabs)/tournament');
+      return;
+    }
+
+    // Check if team is eliminated
+    if (tournament?.status === 'IN_PROGRESS' && team) {
+      const isTeamEliminated = tournament.bracket.every((round) => {
+        const teamMatches = round.matches.filter(
+          (match) => match.team1 === team._id || match.team2 === team._id
+        );
+        return teamMatches.every((match) => {
+          if (match.team1 === team._id) {
+            return match.winner === 'RIGHT';
+          } else if (match.team2 === team._id) {
+            return match.winner === 'LEFT';
+          }
+          return false;
+        });
+      });
+
+      if (isTeamEliminated) {
+        toast.show({
+          render: ({ id }) => (
+            <Toast
+              action="info"
+              variant="outline"
+              nativeID={'team-eliminated-toast-' + id}
+              className="p-4 gap-6 border-info-500 w-full shadow-hard-5 max-w-[443px] flex-row justify-between"
+            >
+              <ThemedText>
+                Your team has been eliminated from the tournament
+              </ThemedText>
+            </Toast>
+          )
+        });
+        router.replace('/(protected)/(tabs)/tournament');
+      }
+    }
+  }, [tournament?.status, tournament?.bracket, team, router, toast]);
 
   const handleJoinGame = (gameId: string) => {
     router.push(`/game/${gameId}`);
@@ -112,6 +173,50 @@ export default function TeamTournamentScreen() {
       fetchTournament(); // Refresh tournament data
     } catch (error) {
       console.error('Error starting tournament:', error);
+    }
+  };
+
+  const handleLeaveTeam = async () => {
+    try {
+      const result = await leaveTeam(
+        tournamentId as string,
+        teamId as string,
+        basicPlayerInfo?._id || ''
+      );
+
+      console.log('this is the result');
+      console.log(result);
+
+      // Show success toast
+      toast.show({
+        render: ({ id }) => (
+          <Toast
+            action="success"
+            variant="outline"
+            nativeID={'leave-success-toast-' + id}
+            className="p-4 gap-6 border-success-500 w-full shadow-hard-5 max-w-[443px] flex-row justify-between"
+          >
+            <ThemedText>Successfully left the team</ThemedText>
+          </Toast>
+        )
+      });
+
+      // Navigate back to tournament page
+      router.replace(`/tournament/${tournamentId}`);
+    } catch (error) {
+      toast.show({
+        render: ({ id }) => (
+          <Toast
+            action="error"
+            variant="outline"
+            nativeID={'leave-error-toast-' + id}
+            className="p-4 gap-6 border-error-500 w-full shadow-hard-5 max-w-[443px] flex-row justify-between"
+          >
+            <ThemedText>Failed to leave team. Please try again.</ThemedText>
+          </Toast>
+        )
+      });
+      console.error('Error leaving team:', error);
     }
   };
 
@@ -168,6 +273,14 @@ export default function TeamTournamentScreen() {
           </ThemedText>
         ))}
       </View>
+
+      {isPlayerInTeam && tournament.status === 'PENDING' && (
+        <View className="mb-4">
+          <Button size="lg" className="w-full" onPress={handleLeaveTeam}>
+            <ButtonText>Leave Team</ButtonText>
+          </Button>
+        </View>
+      )}
 
       {tournament.status === 'PENDING' && isAdmin && teams.length >= 2 && (
         <View className="mb-4">

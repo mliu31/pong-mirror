@@ -1,6 +1,4 @@
-import { P } from '@expo/html-elements';
 import api from '.';
-import { Player, Game } from './types';
 
 interface Team {
   _id: string;
@@ -88,9 +86,9 @@ export const addTeam = async (
   tournamentId: string,
   playerId: string,
   playerName: string
-): Promise<TournamentResponse> => {
+): Promise<Team> => {
   try {
-    const { data } = await api.post<TournamentResponse>(
+    const { data } = await api.post<Team>(
       `/tournaments/addTeam/${tournamentId}/teams/${playerId}`,
       { playerName }
     );
@@ -209,6 +207,39 @@ export const updateMatchWinner = async (
     return data;
   } catch (error) {
     console.error('Error updating match winner:', error);
+    throw error;
+  }
+};
+
+export const leaveTeam = async (
+  tournamentId: string,
+  teamId: string,
+  playerId: string
+): Promise<Team | { message: string }> => {
+  try {
+    const { data } = await api.post<Team | { message: string }>(
+      `/tournaments/leaveTeam/${tournamentId}/teams/${teamId}/player/${playerId}`
+    );
+    return data;
+  } catch (error) {
+    console.error('Error leaving team:', error);
+    throw error;
+  }
+};
+
+/**
+ * Ends a tournament
+ */
+export const endTournament = async (
+  tournamentId: string
+): Promise<TournamentResponse> => {
+  try {
+    const { data } = await api.post<TournamentResponse>(
+      `/tournaments/endTournament/${tournamentId}`
+    );
+    return data;
+  } catch (error) {
+    console.error('Error ending tournament:', error);
     throw error;
   }
 };

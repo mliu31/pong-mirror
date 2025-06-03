@@ -1,6 +1,6 @@
 import { View, ScrollView } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { Button, ButtonText } from '@/components/ui/button';
@@ -10,14 +10,16 @@ import {
   TournamentResponse,
   getTeam,
   updateMatchWinner,
-  addPlayer
+  addPlayer,
+  endTournament,
+  addTeam
 } from '@/api/tournament';
 import { getPlayer } from '@/api/players';
 import { useAppSelector } from '@/redux/redux-hooks';
 import TeamChips from '@/components/TeamChips';
-import { Game } from '@/api/types';
 import TEAM from '@/constants/TEAM';
 import Clipboard from '@react-native-clipboard/clipboard';
+import { Toast, useToast } from '@/components/ui/toast';
 
 interface Team {
   _id: string;
@@ -40,6 +42,7 @@ export default function TournamentDetailScreen() {
   const local = useLocalSearchParams();
   const tournamentId = local.tournamentid;
   const router = useRouter();
+  const toast = useToast();
   const [tournament, setTournament] = useState<TournamentResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [teams, setTeams] = useState<Team[]>([]);
@@ -47,7 +50,7 @@ export default function TournamentDetailScreen() {
   const basicPlayerInfo = useAppSelector((state) => state.auth.basicPlayerInfo);
   const isAdmin = basicPlayerInfo?._id === tournament?.admin;
 
-  const fetchTournament = async () => {
+  const fetchTournament = useCallback(async () => {
     try {
       const tournamentData = await getTournament(tournamentId as string);
       setTournament(tournamentData);
@@ -79,14 +82,33 @@ export default function TournamentDetailScreen() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [tournamentId]);
 
   useEffect(() => {
     fetchTournament();
     // Set up polling for tournament updates
     const interval = setInterval(fetchTournament, 5000);
     return () => clearInterval(interval);
-  }, [tournamentId]);
+  }, [fetchTournament, tournamentId]);
+
+  // Add effect to handle navigation when tournament is completed
+  useEffect(() => {
+    if (tournament?.status === 'COMPLETED') {
+      toast.show({
+        render: ({ id }) => (
+          <Toast
+            action="info"
+            variant="outline"
+            nativeID={'tournament-ended-toast-' + id}
+            className="p-4 gap-6 border-info-500 w-full shadow-hard-5 max-w-[443px] flex-row justify-between"
+          >
+            <ThemedText>Tournament has ended</ThemedText>
+          </Toast>
+        )
+      });
+      router.replace('/(protected)/(tabs)/tournament');
+    }
+  }, [tournament?.status, router, toast]);
 
   const handleStartTournament = async () => {
     try {
@@ -94,6 +116,39 @@ export default function TournamentDetailScreen() {
       fetchTournament();
     } catch (error) {
       console.error('Error starting tournament:', error);
+    }
+  };
+
+  const handleEndTournament = async () => {
+    try {
+      await endTournament(tournamentId as string);
+      toast.show({
+        render: ({ id }) => (
+          <Toast
+            action="success"
+            variant="outline"
+            nativeID={'end-tournament-success-toast-' + id}
+            className="p-4 gap-6 border-success-500 w-full shadow-hard-5 max-w-[443px] flex-row justify-between"
+          >
+            <ThemedText>Tournament ended successfully</ThemedText>
+          </Toast>
+        )
+      });
+      fetchTournament();
+    } catch (error) {
+      toast.show({
+        render: ({ id }) => (
+          <Toast
+            action="error"
+            variant="outline"
+            nativeID={'end-tournament-error-toast-' + id}
+            className="p-4 gap-6 border-error-500 w-full shadow-hard-5 max-w-[443px] flex-row justify-between"
+          >
+            <ThemedText>Failed to end tournament. Please try again.</ThemedText>
+          </Toast>
+        )
+      });
+      console.error('Error ending tournament:', error);
     }
   };
 
@@ -110,6 +165,67 @@ export default function TournamentDetailScreen() {
       alert('Failed to join team. Please try again.');
     }
   };
+
+  const handleCreateTeam = async () => {
+    if (!basicPlayerInfo?._id || !basicPlayerInfo?.name) {
+      toast.show({
+        render: ({ id }) => (
+          <Toast
+            action="error"
+            variant="outline"
+            nativeID={'create-team-error-toast-' + id}
+            className="p-4 gap-6 border-error-500 w-full shadow-hard-5 max-w-[443px] flex-row justify-between"
+          >
+            <ThemedText>
+              Player information not found. Please try again.
+            </ThemedText>
+          </Toast>
+        )
+      });
+      return;
+    }
+
+    try {
+      const team = await addTeam(
+        tournamentId as string,
+        basicPlayerInfo._id,
+        basicPlayerInfo.name
+      );
+      toast.show({
+        render: ({ id }) => (
+          <Toast
+            action="success"
+            variant="outline"
+            nativeID={'create-team-success-toast-' + id}
+            className="p-4 gap-6 border-success-500 w-full shadow-hard-5 max-w-[443px] flex-row justify-between"
+          >
+            <ThemedText>Team created successfully</ThemedText>
+          </Toast>
+        )
+      });
+      router.push(`/tournament/${tournamentId}/${team._id}`);
+    } catch (error) {
+      toast.show({
+        render: ({ id }) => (
+          <Toast
+            action="error"
+            variant="outline"
+            nativeID={'create-team-error-toast-' + id}
+            className="p-4 gap-6 border-error-500 w-full shadow-hard-5 max-w-[443px] flex-row justify-between"
+          >
+            <ThemedText>Failed to create team. Please try again.</ThemedText>
+          </Toast>
+        )
+      });
+      console.error('Error creating team:', error);
+    }
+  };
+
+  // Check if player is already in a team
+  const isPlayerInTeam = useCallback(() => {
+    if (!basicPlayerInfo?._id || !teams) return false;
+    return teams.some((team) => team.players.includes(basicPlayerInfo._id));
+  }, [basicPlayerInfo?._id, teams]);
 
   const handleSetWinner = async (matchId: string, winnerId: string) => {
     try {
@@ -238,17 +354,32 @@ export default function TournamentDetailScreen() {
                   showLeftBorder={false}
                   showRightBorder={false}
                 />
+                {!isPlayerInTeam() && (
+                  <Button
+                    action="primary"
+                    variant="solid"
+                    size="sm"
+                    className="mt-2"
+                    onPress={() => handleJoinTeam(team._id)}
+                  >
+                    <ButtonText>Join Team</ButtonText>
+                  </Button>
+                )}
+              </View>
+            ))}
+            {!isPlayerInTeam() && (
+              <View className="mt-4">
                 <Button
                   action="primary"
                   variant="solid"
-                  size="sm"
-                  className="mt-2"
-                  onPress={() => handleJoinTeam(team._id)}
+                  size="lg"
+                  className="w-full"
+                  onPress={handleCreateTeam}
                 >
-                  <ButtonText>Join Team</ButtonText>
+                  <ButtonText>Create New Team</ButtonText>
                 </Button>
               </View>
-            ))}
+            )}
             <View style={{ height: 100 }} />
           </View>
         )}
@@ -355,6 +486,24 @@ export default function TournamentDetailScreen() {
           </Button>
         </View>
       )}
+
+      {(tournament.status === 'PENDING' ||
+        tournament.status === 'IN_PROGRESS') &&
+        isAdmin && (
+          <View
+            style={{ position: 'absolute', bottom: 32, left: 20, right: 20 }}
+          >
+            <Button
+              action="primary"
+              variant="solid"
+              size="lg"
+              className="w-full"
+              onPress={handleEndTournament}
+            >
+              <ButtonText>End Tournament</ButtonText>
+            </Button>
+          </View>
+        )}
     </ThemedView>
   );
 }

@@ -11,13 +11,6 @@ export default function TournamentLayout() {
         }}
       />
       <Stack.Screen
-        name="qr"
-        options={{
-          title: 'Tournament QR Code',
-          headerShown: true
-        }}
-      />
-      <Stack.Screen
         name="teams"
         options={{
           title: 'Tournament Teams',

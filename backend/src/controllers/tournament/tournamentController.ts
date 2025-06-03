@@ -66,9 +66,9 @@ export const addTeam = async (
 
   reseedTeams(tournamentId);
 
-  tournament.save();
+  await tournament.save();
 
-  return tournament;
+  return team;
 };
 
 // re-seed teams by Elo
@@ -308,6 +308,21 @@ export const startTournament = async (tournamentId: string) => {
 };
 
 // end tournament
+export const endTournament = async (tournamentId: string) => {
+  const tournament = await Tournament.findById(tournamentId);
+  if (!tournament) throw new Error('404 Tournament not found');
+
+  // Allow ending if tournament is pending or in progress
+  if (tournament.status !== 'PENDING' && tournament.status !== 'IN_PROGRESS') {
+    throw new Error('Tournament must be pending or in progress to end it');
+  }
+
+  // Update tournament status to completed
+  tournament.status = 'COMPLETED';
+  await tournament.save();
+
+  return tournament;
+};
 
 // get all teams in tournament
 export const getAllTeams = async (tournamentId: string) => {
@@ -411,4 +426,48 @@ export const updateMatchWinner = async (
 
   await tournament.save();
   return tournament;
+};
+
+// leave team
+export const leaveTeam = async (
+  tournamentId: string,
+  teamId: string,
+  playerId: string
+) => {
+  const tournament = await Tournament.findById(tournamentId);
+  if (!tournament) throw new Error('404 Tournament not found');
+
+  const team = await Team.findById(teamId);
+  if (!team) throw new Error('404 Team not found');
+
+  const player = await Player.findById(playerId);
+  if (!player) throw new Error('404 Player not found');
+
+  // Check if player is in the team
+  if (!team.players.includes(playerId)) {
+    throw new Error('Player is not in this team');
+  }
+
+  // If player is the only member, delete the team
+  if (team.players.length === 1) {
+    // Remove team from tournament
+    const teamIndex = tournament.teams.indexOf(teamId);
+    if (teamIndex > -1) {
+      tournament.teams.splice(teamIndex, 1);
+    }
+    // Reseed remaining teams
+    await reseedTeams(tournamentId);
+
+    await tournament.save();
+    return { message: 'Team deleted' };
+  }
+
+  // Otherwise, just remove the player from the team
+  team.players = team.players.filter((id) => id !== playerId);
+  await team.save();
+
+  // Reseed teams after player removal
+  await reseedTeams(tournamentId);
+
+  return team;
 };

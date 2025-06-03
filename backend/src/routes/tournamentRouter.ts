@@ -10,7 +10,9 @@ import {
   startTournament,
   getTeam,
   addPlayer,
-  updateMatchWinner
+  updateMatchWinner,
+  leaveTeam,
+  endTournament
 } from '../controllers/tournament/tournamentController';
 
 const router = express.Router();
@@ -157,5 +159,40 @@ router.put(
     }
   }
 );
+
+router.post(
+  '/leaveTeam/:tournamentId/teams/:teamId/player/:playerId',
+  async (req, res) => {
+    try {
+      const result = await leaveTeam(
+        req.params.tournamentId,
+        req.params.teamId,
+        req.params.playerId
+      );
+      res.json(result);
+    } catch (error) {
+      console.error('Error leaving team:', error);
+      if (error instanceof Error && error.message.includes('404')) {
+        res.status(404).json({ error: error.message });
+      } else {
+        res.status(500).json({ error: 'Server error' });
+      }
+    }
+  }
+);
+
+router.post('/endTournament/:tournamentId', async (req, res) => {
+  try {
+    const tournament = await endTournament(req.params.tournamentId);
+    res.json(tournament);
+  } catch (error) {
+    console.error('Error ending tournament:', error);
+    if (error instanceof Error && error.message.includes('404')) {
+      res.status(404).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: 'Server error' });
+    }
+  }
+});
 
 export default router;

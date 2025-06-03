@@ -66,6 +66,7 @@ export default function ScanTournament() {
           </Toast>
         )
       });
+      console.error('Error scanning tournament:', error);
     }
   };
 
