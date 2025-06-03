@@ -33,3 +33,9 @@ export interface IInvite {
   createdAt: Date;
   respondedAt: Date | null;
 }
+
+export interface IGroup {
+  _id: string;
+  name: string;
+  members: string[];
+}
