@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { ScrollView, ActivityIndicator } from 'react-native';
 import { getPlayer } from '@/api/players';
 import { getGameHistory } from '@/api/games';
@@ -13,6 +13,7 @@ import LogoutButton from '@/components/LogoutButton';
 import PreviousGames from '@/components/PreviousGames';
 import WinLossChart from '@/components/WinLossChart';
 import { LineChart } from 'react-native-gifted-charts';
+import { useFocusEffect } from 'expo-router';
 
 export default function Profile() {
   const playerId = useLoggedInPlayer()._id;
@@ -22,30 +23,32 @@ export default function Profile() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!playerId) {
-      setLoading(false);
-      setError('User ID is invalid');
-      return;
-    }
-
-    async function fetchData() {
-      try {
-        const [playerRes, gamesRes] = await Promise.all([
-          getPlayer(playerId),
-          getGameHistory(playerId)
-        ]);
-        setPlayer(playerRes.data);
-        setGames(gamesRes.data);
-      } catch (err) {
-        setError('Error fetching player or game data.');
-      } finally {
+  useFocusEffect(
+    useCallback(() => {
+      if (!playerId) {
         setLoading(false);
+        setError('User ID is invalid');
+        return;
       }
-    }
 
-    fetchData();
-  }, [playerId]);
+      async function fetchData() {
+        try {
+          const [playerRes, gamesRes] = await Promise.all([
+            getPlayer(playerId),
+            getGameHistory(playerId)
+          ]);
+          setPlayer(playerRes.data);
+          setGames(gamesRes.data);
+        } catch (err) {
+          setError('Error fetching player or game data.');
+        } finally {
+          setLoading(false);
+        }
+      }
+
+      fetchData();
+    }, [playerId])
+  );
 
   const eloData =
     player?.eloHistory?.map((entry) => ({
