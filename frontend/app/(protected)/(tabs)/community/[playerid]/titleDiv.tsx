@@ -23,7 +23,9 @@ const styles = {
 export default function TitleDiv() {
   return (
     <View style={styles.titleStyling}>
-      <ThemedText style={styles.titleText}>Community</ThemedText>
+      <ThemedText style={[styles.titleText, { color: '#000' }]}>
+        {'\n    Community\n    '}
+      </ThemedText>
     </View>
   );
 }

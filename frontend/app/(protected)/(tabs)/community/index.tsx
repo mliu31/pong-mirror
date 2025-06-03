@@ -284,16 +284,16 @@ export default function CommunityLandingScreen() {
   return (
     <SafeAreaProvider>
       <ScrollView contentContainerStyle={styles.container}>
-        {/* ─── HEADER ──────────────────────────────────────────────────── */}
+        {/* Header */}
         <View style={styles.header}>
           <TitleDiv />
         </View>
 
-        {/* ─── FRIENDS SECTION ─────────────────────────────────────────── */}
+        {/* Friends */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Friends</Text>
-            <AddButton category="Friends" />
+            <AddButton />
           </View>
 
           {friends.length === 0 ? (
@@ -313,7 +313,7 @@ export default function CommunityLandingScreen() {
           )}
         </View>
 
-        {/* ─── GROUPS SECTION ──────────────────────────────────────────── */}
+        {/* Groups */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>My Groups</Text>
 
@@ -340,7 +340,7 @@ export default function CommunityLandingScreen() {
               <View key={grp._id} style={styles.itemRow}>
                 <GroupBox groupName={grp.name} />
 
-                {/* Example: “Delete” and “Leave”—you can add “Join” if desired */}
+                {/* Example: “Delete” and “Leave”—add “Join” if desired */}
                 <TouchableOpacity
                   style={styles.deleteButton}
                   onPress={() => handleDeleteGroup(grp._id)}

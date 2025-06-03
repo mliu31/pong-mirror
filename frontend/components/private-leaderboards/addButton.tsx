@@ -6,6 +6,7 @@ import { ThemedText } from '@/components/ThemedText';
 
 interface AddButtonProps {
   category: string;
+  showLabel?: boolean;
 }
 
 const styles = StyleSheet.create({
