@@ -42,10 +42,7 @@ export default function SignUp() {
       </Box>
 
       {/* sign in button */}
-      <Box
-        className="w-full items-center space-y-4"
-        style={{ marginTop: -40 }} // move it up by 40 pixels, adjust as needed
-      >
+      <Box className="w-full items-center space-y-4" style={{ marginTop: -40 }}>
         <Button
           action="secondary"
           variant="solid"
@@ -58,7 +55,7 @@ export default function SignUp() {
           {/* Google icon */}
           <Image
             source={GoogleIcon}
-            style={{ width: 40, height: 40, marginRight: 12 }} // bigger icon and spacing
+            style={{ width: 40, height: 40, marginRight: 12 }}
             resizeMode="contain"
           />
           <ButtonText
