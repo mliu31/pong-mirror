@@ -21,3 +21,6 @@ export const updateElo = async (gameId: string, winningColor: string) =>
 
 export const setGameWinner = async (gameId: string, team: TeamValue) =>
   await api.patch(`/games/${gameId}/winner/${team}`);
+
+export const getGameHistory = async (playerId: string) =>
+  await api.get<IGame[]>(`/games/player/${playerId}`);

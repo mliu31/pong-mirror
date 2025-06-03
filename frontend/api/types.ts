@@ -11,6 +11,7 @@ export interface IGame {
   }[];
   captain: IPlayer;
   winner: TeamValue;
+  date: string;
 }
 
 export interface IPlayer {
@@ -23,6 +24,7 @@ export interface IPlayer {
   groups: string[];
   gamesPlayed: number;
   wins: number;
+  eloHistory: { elo: number; date: Date }[];
 }
 
 export interface IInvite {

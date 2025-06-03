@@ -13,7 +13,8 @@ export const createGame = (loggedInPlayer: IPlayer) =>
         newElo: null
       }
     ],
-    captain: loggedInPlayer
+    captain: loggedInPlayer,
+    date: new Date()
   });
 
 export const getGame = async (gameId: string) =>
