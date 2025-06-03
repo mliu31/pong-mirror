@@ -6,7 +6,6 @@ import { ThemedText } from '@/components/ThemedText';
 
 interface AddButtonProps {
   category: string;
-  showLabel?: boolean;
 }
 
 const styles = StyleSheet.create({
@@ -36,15 +35,16 @@ const styles = StyleSheet.create({
   }
 });
 
-const AddButton: React.FC<AddButtonProps> = ({ category, showLabel }) => {
+const AddButton: React.FC<AddButtonProps> = ({ category }) => {
   const router = useRouter();
   if (category === 'Friends') {
     return (
       <>
         <View style={styles.viewStyling}>
+          <ThemedText style={styles.titleStyling}>Friends</ThemedText>
           <TouchableHighlight
             style={styles.buttonStyling}
-            onPress={() => router.push('./')}
+            onPress={() => router.push('/profile/EditFriends')}
           >
             <ThemedText>+</ThemedText>
           </TouchableHighlight>
@@ -55,6 +55,7 @@ const AddButton: React.FC<AddButtonProps> = ({ category, showLabel }) => {
   } else if (category === 'Groups') {
     return (
       <View style={styles.viewStyling}>
+        <ThemedText style={styles.titleStyling}>Groups</ThemedText>
         <TouchableHighlight
           style={styles.buttonStyling}
           onPress={() => router.push('./addGroup')}

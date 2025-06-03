@@ -292,17 +292,20 @@ export default function CommunityLandingScreen() {
 
         {/* Friends */}
         <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <ThemedText style={styles.sectionTitle}>Friends</ThemedText>
-            <AddButton category="Friends" />
-          </View>
-
+          <AddButton category="Friends" />
           {friends.length === 0 ? (
             <Text style={styles.emptyText}>You have no friends yet.</Text>
           ) : (
-            friends.map((f, idx) => (
-              <FriendBox key={f._id} rank={idx + 1} name={f.name} elo={f.elo} />
-            ))
+            [...friends]
+              .sort((a, b) => b.elo - a.elo) // Sort descending (highest ELO first)
+              .map((f, idx) => (
+                <FriendBox
+                  key={f._id}
+                  rank={f.rank}
+                  name={f.name}
+                  elo={f.elo}
+                />
+              ))
           )}
         </View>
 
