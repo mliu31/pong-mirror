@@ -1,15 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import {
-  SafeAreaView,
-  Text,
-  StyleSheet,
-  ActivityIndicator,
-  View
-} from 'react-native';
+import { Text, ActivityIndicator, View } from 'react-native';
 import LeaderboardNav from '@/components/leaderboard/leaderboard-nav';
 import LeaderboardRanking from '@/components/leaderboard/leaderboard-core';
 import { fetchLeaderboard } from '@/api/leaderboard';
 import useLoggedInPlayer from '@/hooks/useLoggedInPlayer';
+import { ThemedView } from '@/components/ThemedView';
 
 type Tab = 'Top' | 'League';
 
@@ -65,9 +60,11 @@ const LeaderboardScreen: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <ThemedView className="flex-1 p-4">
       {/* Header */}
-      <Text style={styles.header}>Leaderboard</Text>
+      <Text className="text-2xl font-bold text-white p-4 pb-2 text-center">
+        Leaderboard
+      </Text>
 
       {/* Navigation Tabs */}
       <LeaderboardNav currentTab={currentTab} onTabChange={handleTabChange} />
@@ -75,45 +72,22 @@ const LeaderboardScreen: React.FC = () => {
       {/* Conditional rendering based on loading/error states */}
       {/* Show loading spinner while fetching data */}
       {isLoading && (
-        <View style={styles.centerContent}>
+        <View>
           <ActivityIndicator size="large" />
         </View>
       )}
 
       {/* Show error message if API call fails */}
       {error && (
-        <View style={styles.centerContent}>
-          <Text style={styles.errorText}>{error}</Text>
+        <View>
+          <Text>{error}</Text>
         </View>
       )}
 
       {/* Show leaderboard only when data is loaded successfully */}
       {!isLoading && !error && <LeaderboardRanking items={items} />}
-    </SafeAreaView>
+    </ThemedView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: '#fff'
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16
-  },
-  // New styles for loading and error states
-  centerContent: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  errorText: {
-    color: 'red',
-    textAlign: 'center'
-  }
-});
 
 export default LeaderboardScreen;
