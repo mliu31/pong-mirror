@@ -100,11 +100,12 @@ export default function Profile() {
               </Box>
             </Box>
           </Box>
+
           <Friends pid={player._id} />
 
           {/* Win/Loss Chart */}
           <Box className="mt-8">
-            <ThemedText className="text-xl font-bold text-center mb-2">
+            <ThemedText className="text-xl font-bold font-center text-left mb-2">
               Game History
             </ThemedText>
             <WinLossChart
@@ -116,7 +117,10 @@ export default function Profile() {
           {/* Previous Games */}
           {games.length > 0 && (
             <Box className="mt-8">
-              <ThemedText className="text-lg font-semibold text-center mb-2">
+              <ThemedText
+                className="text-xl font-semibold text-left"
+                style={{ color: '#277f5a' }}
+              >
                 Previous Games
               </ThemedText>
               <PreviousGames games={games} currentPlayerId={playerId} />
@@ -125,8 +129,11 @@ export default function Profile() {
 
           {/* Elo History Chart */}
           {eloData.length > 1 && (
-            <Box className="mt-10 items-center">
-              <ThemedText className="text-lg font-semibold mb-2">
+            <Box className="mt-10">
+              <ThemedText
+                className="text-xl font-semibold text-left mb-1"
+                style={{ color: '#277f5a' }}
+              >
                 Elo History
               </ThemedText>
               <LineChart

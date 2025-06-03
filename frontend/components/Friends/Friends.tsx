@@ -1,8 +1,9 @@
 import FriendList from './FriendList';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Button, StyleSheet, View, Text } from 'react-native';
+import { Button, Text } from 'react-native';
 import { getPlayer } from '@/api/players';
+import { ThemedView } from '@/components/ThemedView';
 
 const Friends = ({ pid }: { pid: string }) => {
   // friend ids state
@@ -15,7 +16,7 @@ const Friends = ({ pid }: { pid: string }) => {
       setFriends(player.data.friends);
     };
     fetchFriends();
-  }, [pid, setFriends]);
+  }, [pid]);
 
   // route to edit friends page
   const EditFriendHandler = (fids: string[], pid: string) => {
@@ -26,27 +27,17 @@ const Friends = ({ pid }: { pid: string }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Friends</Text>
+    <ThemedView className="w-full rounded-2xl p-4 mb-4">
+      <Text className="text-lg font-bold mb-2 text-white dark:text-white">
+        Friends
+      </Text>
       <FriendList fids={friends} />
       <Button
         onPress={() => EditFriendHandler(friends, pid)}
         title="Edit Friends"
       />
-    </View>
+    </ThemedView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: '#fff'
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold'
-  }
-});
 
 export default Friends;

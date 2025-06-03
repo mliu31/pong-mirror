@@ -4,16 +4,29 @@ import { ScrollView } from 'react-native';
 import { IGame } from '@/api/types';
 import { Box } from '@/components/ui/box';
 import { ThemedText } from '@/components/ThemedText';
+import LossArrow from '@/components/LossArrow';
+import WinArrow from '@/components/WinArrow';
 
 interface IPreviousGames {
   games: IGame[];
   currentPlayerId: string;
 }
 
+// function to get player intials
+const getInitials = (name: string) => {
+  const names = name.split(' ');
+  if (names.length > 1) {
+    return names[0][0] + names[names.length - 1][0];
+  }
+  return names[0][0];
+};
+
+// a scrollable view of players' previous games
 export default function PreviousGames({
   games,
   currentPlayerId
 }: IPreviousGames) {
+  // sort by date
   const sortedGames = [...games].sort((a, b) => {
     if (!a.date) return 1;
     if (!b.date) return -1;
@@ -22,7 +35,10 @@ export default function PreviousGames({
 
   return (
     <Box className="flex-1 my-2">
-      <ScrollView showsVerticalScrollIndicator={true}>
+      <ScrollView
+        showsVerticalScrollIndicator={true}
+        style={{ maxHeight: 3 * 100 }}
+      >
         {sortedGames.map((game) => {
           const playerInfo = game.players.find(
             (p) => p.player._id === currentPlayerId
@@ -32,7 +48,7 @@ export default function PreviousGames({
             (acc, p) => {
               const teamName = p.team ?? 'null';
               if (!acc[teamName]) acc[teamName] = [];
-              acc[teamName].push(p.player.name);
+              acc[teamName].push(getInitials(p.player.name));
               return acc;
             },
             {}
@@ -53,36 +69,51 @@ export default function PreviousGames({
           return (
             <Box
               key={game._id}
-              className="bg-muted p-4 rounded-2xl mb-3 mx-4 w-[90%] self-center"
+              className="bg-muted p-4 rounded-2xl mb-1 mx-4 w-[90%] self-center"
             >
-              <ThemedText className="text-xs text-muted-foreground mb-2">
+              <ThemedText className="text-l text-muted-foreground mb-2">
                 {gameDate}
               </ThemedText>
 
               <Box className="flex-row justify-between items-center">
-                <Box className="mr-6 items-end">
-                  <ThemedText className="text-xs text-muted-foreground mb-2">
+                {/* print team vs. team */}
+                <Box className="mb-2 items-start pl-4">
+                  <ThemedText
+                    className="text-l font-bold mb-1"
+                    style={{
+                      color: team === winner ? '#277f5a' : '#ea4236',
+                      lineHeight: 14
+                    }}
+                  >
                     {teamsMap[team]?.join(', ')}
                   </ThemedText>
-                  <ThemedText className="text-xs text-muted-foreground mb-2">
-                    vs{' '}
+
+                  <ThemedText
+                    className="text-s mb-1"
+                    style={{ lineHeight: 16 }}
+                  >
+                    vs.
                   </ThemedText>
-                  <ThemedText className="text-xs text-muted-foreground mb-2">
+
+                  <ThemedText
+                    className="text-l font-bold"
+                    style={{
+                      color: otherTeam === winner ? '#277f5a' : '#ea4236',
+                      lineHeight: 14
+                    }}
+                  >
                     {teamsMap[otherTeam]?.join(', ')}
                   </ThemedText>
                 </Box>
 
-                <ThemedText
-                  className={`font-bold ${winner ? 'text-green-600' : 'text-red-600'}`}
-                >
-                  {winner ? 'Win' : 'Loss'}
-                </ThemedText>
-                <ThemedText
-                  className={`font-bold text-sm ${eloChange >= 0 ? 'text-green-600' : 'text-red-600'}`}
-                >
-                  {eloChange >= 0 ? '+' : ''}
-                  {eloChange} ELO
-                </ThemedText>
+                {/* print elo changes */}
+                <Box className="flex-col items-center">
+                  {winner ? <WinArrow size={40} /> : <LossArrow size={40} />}
+                  <ThemedText className="text-l font-bold mt-1">
+                    {eloChange >= 0 ? '+' : ''}
+                    {eloChange} ELO
+                  </ThemedText>
+                </Box>
               </Box>
             </Box>
           );

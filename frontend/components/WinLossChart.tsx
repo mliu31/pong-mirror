@@ -42,8 +42,8 @@ export default function WinLossChart({ wins, losses }: WinLossPieChart) {
         data={data}
         donut
         showGradient={false}
-        innerRadius={60}
-        radius={100}
+        innerRadius={40}
+        radius={85}
         centerLabelComponent={() => (
           <View
             className="justify-center items-center"
@@ -54,8 +54,8 @@ export default function WinLossChart({ wins, losses }: WinLossPieChart) {
               height: 120
             }}
           >
-            <ThemedText className="text-white font-bold text-base">
-              {winRate}%
+            <ThemedText className="text-white font-bold text-base text-center">
+              Win Rate {winRate}%
             </ThemedText>
           </View>
         )}
