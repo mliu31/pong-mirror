@@ -15,6 +15,7 @@ import AddButton from '../../../../components/private-leaderboards/addButton';
 import TitleDiv from './[playerid]/titleDiv';
 import FriendBox from './[playerid]/friendBox';
 import GroupBox from './[playerid]/groupBox';
+import { ThemedText } from '@/components/ThemedText';
 
 import useLoggedInPlayer from '@/hooks/useLoggedInPlayer';
 import { getPlayer } from '@/api/players';
@@ -292,7 +293,7 @@ export default function CommunityLandingScreen() {
         {/* Friends */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Friends</Text>
+            <ThemedText style={styles.sectionTitle}>Friends</ThemedText>
             <AddButton category="Friends" />
           </View>
 
@@ -300,16 +301,14 @@ export default function CommunityLandingScreen() {
             <Text style={styles.emptyText}>You have no friends yet.</Text>
           ) : (
             friends.map((f, idx) => (
-              <View key={f._id} style={styles.itemRow}>
-                <FriendBox rank={idx + 1} name={f.name} elo={f.elo} />
-              </View>
+              <FriendBox key={f._id} rank={idx + 1} name={f.name} elo={f.elo} />
             ))
           )}
         </View>
 
         {/* Groups */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>My Groups</Text>
+          <ThemedText style={styles.sectionTitle}>Groups</ThemedText>
 
           {/* ▸ CREATE NEW GROUP ROW ▸ */}
           <View style={styles.newGroupRow}>
@@ -360,8 +359,7 @@ export default function CommunityLandingScreen() {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    paddingBottom: 32,
-    backgroundColor: '#fff'
+    paddingBottom: 32
   },
   centered: {
     flex: 1,
