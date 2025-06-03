@@ -10,6 +10,7 @@ import { ThemedView } from '@/components/ThemedView';
 import TeamChips from '@/components/TeamChips';
 import TeamBoxes from '@/components/TeamBoxes';
 import TEAM from '@/constants/TEAM';
+import BeerPongLogger from '@/components/BeerPongLogger';
 
 export default function InProgress() {
   const local = useLocalSearchParams();
@@ -48,7 +49,7 @@ export default function InProgress() {
           teamBoxHeight={teamBoxHeight}
         />
 
-        <Box className="justify-center px-4 pb-4 mt-auto">
+        <Box className="justify-center px-4 pb-4 mt-auto mb-20">
           <ThemedText className="text-center text-typography-950 text-lg mb-2">
             May the best team win...
           </ThemedText>
@@ -72,6 +73,14 @@ export default function InProgress() {
           </Button>
         </Box>
       </Box>
+
+      {/* Beer Pong Logger */}
+      <BeerPongLogger
+        leftTeam={leftTeam}
+        rightTeam={rightTeam}
+        gameId={local.gameid as string}
+        isVisible={leftTeam.length > 0 && rightTeam.length > 0}
+      />
     </ThemedView>
   );
 }

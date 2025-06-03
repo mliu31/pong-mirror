@@ -46,7 +46,6 @@ export default function GameLayout() {
           title: 'Game Started'
         }}
       />
-      cd
       <Stack.Screen
         name="[gameid]/winner"
         options={{

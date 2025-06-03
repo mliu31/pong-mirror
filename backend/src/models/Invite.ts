@@ -1,6 +1,15 @@
 import mongoose from 'mongoose';
 const { Schema, model, Types } = mongoose;
-import INVITE from '../constants/INVITE';
+import INVITE, { InviteValue } from '../constants/INVITE';
+
+export interface IInvite extends Document {
+  _id: string;
+  gameId: string;
+  playerId: string;
+  status: InviteValue;
+  createdAt: Date;
+  respondedAt: Date | null;
+}
 
 const inviteSchema = new Schema({
   gameId: {

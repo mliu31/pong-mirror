@@ -4,6 +4,6 @@ const TEAM = Object.freeze({
   UNASSIGNED: null
 });
 
-export type TeamValue = keyof typeof TEAM;
+export type TeamValue = (typeof TEAM)[keyof typeof TEAM];
 
 export default TEAM;

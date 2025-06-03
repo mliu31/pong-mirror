@@ -5,7 +5,7 @@ import { PrimitiveIcon, UIIcon } from '@gluestack-ui/icon';
 import { tva } from '@gluestack-ui/nativewind-utils/tva';
 import {
   withStyleContext,
-  useStyleContext,
+  useStyleContext
 } from '@gluestack-ui/nativewind-utils/withStyleContext';
 import { cssInterop } from 'nativewind';
 import type { VariantProps } from '@gluestack-ui/nativewind-utils';
@@ -21,18 +21,18 @@ const badgeStyle = tva({
       warning: 'bg-background-warning border-warning-300',
       success: 'bg-background-success border-success-300',
       info: 'bg-background-info border-info-300',
-      muted: 'bg-background-muted border-background-300',
+      muted: 'bg-background-muted border-background-300'
     },
     variant: {
       solid: '',
-      outline: 'border',
+      outline: 'border'
     },
     size: {
       sm: '',
       md: '',
-      lg: '',
-    },
-  },
+      lg: ''
+    }
+  }
 });
 
 const badgeTextStyle = tva({
@@ -44,37 +44,37 @@ const badgeTextStyle = tva({
       warning: 'text-warning-600',
       success: 'text-success-600',
       info: 'text-info-600',
-      muted: 'text-background-800',
+      muted: 'text-background-800'
     },
     size: {
       sm: 'text-2xs',
       md: 'text-xs',
-      lg: 'text-sm',
-    },
+      lg: 'text-sm'
+    }
   },
   variants: {
     isTruncated: {
-      true: 'web:truncate',
+      true: 'web:truncate'
     },
     bold: {
-      true: 'font-bold',
+      true: 'font-bold'
     },
     underline: {
-      true: 'underline',
+      true: 'underline'
     },
     strikeThrough: {
-      true: 'line-through',
+      true: 'line-through'
     },
     sub: {
-      true: 'text-xs',
+      true: 'text-xs'
     },
     italic: {
-      true: 'italic',
+      true: 'italic'
     },
     highlight: {
-      true: 'bg-yellow-500',
-    },
-  },
+      true: 'bg-yellow-500'
+    }
+  }
 });
 
 const badgeIconStyle = tva({
@@ -85,14 +85,14 @@ const badgeIconStyle = tva({
       warning: 'text-warning-600',
       success: 'text-success-600',
       info: 'text-info-600',
-      muted: 'text-background-800',
+      muted: 'text-background-800'
     },
     size: {
       sm: 'h-3 w-3',
       md: 'h-3.5 w-3.5',
-      lg: 'h-4 w-4',
-    },
-  },
+      lg: 'h-4 w-4'
+    }
+  }
 });
 
 const ContextView = withStyleContext(View, SCOPE);
@@ -105,9 +105,9 @@ cssInterop(PrimitiveIcon, {
       width: true,
       fill: true,
       color: 'classNameColor',
-      stroke: true,
-    },
-  },
+      stroke: true
+    }
+  }
 });
 
 type IBadgeProps = React.ComponentPropsWithoutRef<typeof ContextView> &
@@ -127,7 +127,7 @@ function Badge({
       context={{
         action,
         variant,
-        size,
+        size
       }}
     >
       {children}
@@ -149,10 +149,10 @@ const BadgeText = React.forwardRef<
       className={badgeTextStyle({
         parentVariants: {
           size: parentSize,
-          action: parentAction,
+          action: parentAction
         },
         size,
-        class: className,
+        class: className
       })}
       {...props}
     >
@@ -196,10 +196,10 @@ const BadgeIcon = React.forwardRef<
       className={badgeIconStyle({
         parentVariants: {
           size: parentSize,
-          action: parentAction,
+          action: parentAction
         },
         size,
-        class: className,
+        class: className
       })}
       {...props}
       ref={ref}

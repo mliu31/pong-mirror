@@ -2,15 +2,13 @@ import { useEffect, useState } from 'react';
 import MessageProvider from '@/components/MessageProvider';
 import { IoProvider } from '@/context/IoContext';
 import { Stack, useGlobalSearchParams, usePathname, router } from 'expo-router';
-import store, { RootState } from '@/redux/store';
-import { useSelector } from 'react-redux';
+import store from '@/redux/store';
 import api from '@/api';
 import { logout } from '@/redux/slices/authSlice';
 import InviteProvider from '@/components/InviteProvider';
+import { useLoggedInPlayerUnsafe } from '@/hooks/useLoggedInPlayer';
 
 export default function ProtectedLayout() {
-  // can't navigate to logout before the first render
-  const [isFirstRender, setIsFirstRender] = useState(true);
   useEffect(() => {
     // if we ever get a 401, clear auth state immediately
     // (navigation will handle redirecting to login)
@@ -27,11 +25,12 @@ export default function ProtectedLayout() {
       api.interceptors.response.eject(interceptor);
     };
   });
-  const basicPlayerInfo = useSelector(
-    (state: RootState) => state.auth.basicPlayerInfo
-  );
+  const basicPlayerInfo = useLoggedInPlayerUnsafe();
   const pathname = usePathname();
   const searchParams = useGlobalSearchParams();
+
+  // can't navigate to logout before the first render
+  const [isFirstRender, setIsFirstRender] = useState(true);
 
   useEffect(() => {
     if (isFirstRender) {
