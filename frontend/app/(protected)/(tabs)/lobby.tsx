@@ -55,7 +55,8 @@ const Lobby: FC = () => {
     getGame(id)
       .then((res) => setGame(res.data))
       .catch((err) => {
-        if (!(isAxiosError(err) && err.status === 404)) throw err;
+        if (!((isAxiosError(err) && err.status === 404) || err.status === 400))
+          throw err;
         setLobbyError('Game not found');
 
         router.setParams({ gameid: undefined });

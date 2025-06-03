@@ -10,6 +10,7 @@ import {
 } from '../controllers/game/gameController';
 import { getPlayer } from '../controllers/player/playerController';
 import { requireLoggedInHandler } from './authRouter';
+import { isValidObjectId } from 'mongoose';
 
 const router = express.Router();
 
@@ -29,8 +30,11 @@ router.post('/', async (req, res) => {
 
 // get game
 router.get('/:gameid', async (req, res) => {
+  if (isValidObjectId(req.params.gameid) === false) {
+    return void res.status(400).send('Invalid game ID');
+  }
   const game = await getGame(req.params.gameid);
-  if (game === null) return void res.status(404).send('Game not found');
+  if (!game) return void res.status(404).send('Game not found');
   return void res.json(game);
 });
 
