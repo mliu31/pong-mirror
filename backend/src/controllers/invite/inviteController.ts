@@ -37,9 +37,6 @@ export const invitePlayers = async (gameid: string, pids: string[]) => {
         playerId: pid
       });
       const captain = await Player.findById(game.captain);
-      console.log(
-        `Inviting player ${player.name} to game ${gameid} with captain ${captain?.name}`
-      );
       invitePlayer(player, { captainName: captain?.name ?? 'A player' });
     }
   }
