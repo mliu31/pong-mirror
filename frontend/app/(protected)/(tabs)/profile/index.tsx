@@ -101,6 +101,9 @@ export default function Profile() {
             </Box>
           </Box>
 
+          <ThemedText className="text-xl font-bold font-center text-left">
+            Friends
+          </ThemedText>
           <Friends pid={player._id} />
 
           {/* Win/Loss Chart */}

@@ -1,7 +1,7 @@
 import FriendList from './FriendList';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Button, Text } from 'react-native';
+import { Button, ButtonText } from '@/components/ui/button';
 import { getPlayer } from '@/api/players';
 import { ThemedView } from '@/components/ThemedView';
 
@@ -28,14 +28,13 @@ const Friends = ({ pid }: { pid: string }) => {
 
   return (
     <ThemedView className="w-full rounded-2xl p-4 mb-4">
-      <Text className="text-lg font-bold mb-2 text-white dark:text-white">
-        Friends
-      </Text>
       <FriendList fids={friends} />
       <Button
+        className="mt-4 self-start"
         onPress={() => EditFriendHandler(friends, pid)}
-        title="Edit Friends"
-      />
+      >
+        <ButtonText>Edit Friends</ButtonText>
+      </Button>
     </ThemedView>
   );
 };
