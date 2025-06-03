@@ -33,7 +33,7 @@ const Friends = ({ pid }: { pid: string }) => {
         className="mt-4 self-start"
         onPress={() => EditFriendHandler(friends, pid)}
       >
-        <ButtonText>Edit Friends</ButtonText>
+        <ButtonText>Edit friends</ButtonText>
       </Button>
     </ThemedView>
   );

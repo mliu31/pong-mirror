@@ -87,7 +87,7 @@ export default function Profile() {
               <Box className="items-center mr-2">
                 {/* TODO: a better way to implement text color? */}
                 <ThemedText style={{ color: '#277f5a' }} className="text-lg">
-                  ELO:
+                  Elo:
                 </ThemedText>
                 <ThemedText style={{ color: '#277f5a' }} className="text-lg">
                   Rank:

@@ -62,7 +62,7 @@ export const updateElo = async (gameid: string, winner: string) => {
     const winnerEloChange = Math.round(avgWinnerK * (1 - expectedScoreWinner));
     const loserEloChange = Math.round(avgLoserK * (0 - expectedScoreLoser));
 
-    // Update ELO scores in parallel
+    // Update Elo scores in parallel
     const updatedWinners = await Promise.all(
       winningPlayers.map(async (player) => {
         const oldElo = player.oldElo ?? 1200; // TODO: should not need 1200 here
