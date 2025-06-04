@@ -28,9 +28,8 @@ export const googleSignup = createAsyncThunk(
     const data = response.data;
     const email = data.email;
     const domain = email?.split('@')[1];
-
     if (domain !== 'dartmouth.edu') {
-      throw new Error('Unauthorized domain');
+      throw new Error('Unauthorized domain, sign in with a Dartmouth account.');
     }
 
     return response.data;

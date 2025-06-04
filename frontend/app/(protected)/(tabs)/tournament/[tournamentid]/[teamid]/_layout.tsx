@@ -1,13 +1,13 @@
 import { Stack } from 'expo-router';
 
-export default function GameLayout() {
+export default function TeamLayout() {
   return (
     <Stack>
       <Stack.Screen
         name="index"
         options={{
-          title: 'Profile',
-          headerShown: false
+          title: 'Team View',
+          headerShown: true
         }}
       />
     </Stack>

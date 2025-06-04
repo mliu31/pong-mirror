@@ -1,6 +1,6 @@
 import io from '.';
 import { IPlayer } from '../models/Player';
-import { IOEvent, IONotificationEvent } from './messageTypes';
+import { IOEvent, IOInviteEvent, IONotificationEvent } from './messageTypes';
 
 const ioMessagePlayer = <T extends IOEvent>(
   player: IPlayer | { _id: string },
@@ -13,4 +13,11 @@ export const notifyPlayer = (
   data: IONotificationEvent['data']
 ) => {
   ioMessagePlayer(player, 'notification', data);
+};
+
+export const invitePlayer = (
+  player: IPlayer | { _id: string },
+  data: IOInviteEvent['data']
+) => {
+  ioMessagePlayer(player, 'invite', data);
 };

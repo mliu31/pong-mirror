@@ -5,14 +5,24 @@ import {
   deleteTournament,
   addTeam,
   reseedTeams,
-  removeTeam
+  removeTeam,
+  getAllTeams,
+  startTournament,
+  getTeam,
+  addPlayer,
+  updateMatchWinner,
+  leaveTeam,
+  endTournament
 } from '../controllers/tournament/tournamentController';
 
 const router = express.Router();
 
 router.put('/createTournament/:name', async (req, res) => {
   try {
-    const tournament = await createTournament(req.params.name);
+    const tournament = await createTournament(
+      req.params.name,
+      req.body.adminId
+    );
 
     res.status(201).json(tournament);
   } catch (error) {
@@ -47,9 +57,14 @@ router.delete('/:id', async (req, res) => {
 });
 
 router.post('/addTeam/:id/teams/:playerId', async (req, res) => {
+  console.log('Router - Request body:', req.body);
+  console.log('Router - playerName:', req.body.playerName);
   try {
-    const tournament = await addTeam(req.params.id, req.params.playerId);
-
+    const tournament = await addTeam(
+      req.params.id,
+      req.params.playerId,
+      req.body.playerName
+    );
     res.json(tournament);
   } catch (error) {
     console.error('Error adding team to tournament:', error);
@@ -78,6 +93,105 @@ router.delete('/removeTeam/:tournamentId/teams/:teamId', async (req, res) => {
   } catch (error) {
     console.error('Error removing team from tournament:', error);
     res.status(500).json({ error: 'Server error' });
+  }
+});
+
+router.get('/:id/teams', async (req, res) => {
+  try {
+    const teams = await getAllTeams(req.params.id);
+    res.json(teams);
+  } catch (error) {
+    console.error('Error fetching tournament teams:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+router.post('/:id/start', async (req, res) => {
+  try {
+    const tournament = await startTournament(req.params.id);
+    res.json(tournament);
+  } catch (error) {
+    console.error('Error starting tournament:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+router.get('/getTeam/:id', async (req, res) => {
+  try {
+    const team = await getTeam(req.params.id);
+    res.json(team);
+  } catch (error) {
+    console.error('Error fetching team:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+router.post(
+  '/addPlayer/:tournamentId/teams/:teamId/player/:playerId',
+  async (req, res) => {
+    try {
+      const tournament = await addPlayer(
+        req.params.tournamentId,
+        req.params.teamId,
+        req.params.playerId
+      );
+      res.json(tournament);
+    } catch (error) {
+      console.error('Error adding player to tournament:', error);
+      res.status(500).json({ error: 'Server error' });
+    }
+  }
+);
+
+router.put(
+  '/updateMatchWinner/:tournamentId/match/:matchId/side/:winningSide',
+  async (req, res) => {
+    try {
+      const tournament = await updateMatchWinner(
+        req.params.tournamentId,
+        req.params.matchId,
+        req.params.winningSide as 'LEFT' | 'RIGHT'
+      );
+      res.json(tournament);
+    } catch (error) {
+      console.error('Error updating match winner:', error);
+      res.status(500).json({ error: 'Server error' });
+    }
+  }
+);
+
+router.post(
+  '/leaveTeam/:tournamentId/teams/:teamId/player/:playerId',
+  async (req, res) => {
+    try {
+      const result = await leaveTeam(
+        req.params.tournamentId,
+        req.params.teamId,
+        req.params.playerId
+      );
+      res.json(result);
+    } catch (error) {
+      console.error('Error leaving team:', error);
+      if (error instanceof Error && error.message.includes('404')) {
+        res.status(404).json({ error: error.message });
+      } else {
+        res.status(500).json({ error: 'Server error' });
+      }
+    }
+  }
+);
+
+router.post('/endTournament/:tournamentId', async (req, res) => {
+  try {
+    const tournament = await endTournament(req.params.tournamentId);
+    res.json(tournament);
+  } catch (error) {
+    console.error('Error ending tournament:', error);
+    if (error instanceof Error && error.message.includes('404')) {
+      res.status(404).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: 'Server error' });
+    }
   }
 });
 

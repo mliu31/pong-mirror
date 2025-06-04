@@ -2,6 +2,7 @@ import { Tabs } from 'expo-router';
 import { useContext } from 'react';
 import { HapticTab } from '@/components/HapticTab';
 import { IconSymbol } from '@/components/ui/IconSymbol';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
@@ -23,24 +24,8 @@ export default function TabLayout() {
           height: 60,
           paddingTop: 8
         }
-        // tabBarStyle: Platform.select({
-        //   ios: {
-        //     // Use a transparent background on iOS to show the blur effect
-        //     position: 'absolute'
-        //   },
-        //   default: {}
-        // })
       }}
     >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="house.fill" color={color} />
-          )
-        }}
-      />
       <Tabs.Screen
         name="game"
         options={{
@@ -60,11 +45,21 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="tournament"
+        options={{
+          title: 'Tournament',
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons name="tournament" size={28} color={color} />
+          )
+        }}
+      />
+      <Tabs.Screen
         name="leaderboard"
         options={{
           title: 'Leaderboard',
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="chart.bar.fill" color={color} />
+            // <IconSymbol size={28} name="chart.bar.fill" color={color} />
+            <MaterialCommunityIcons name="trophy" size={28} color={color} />
           )
         }}
       />

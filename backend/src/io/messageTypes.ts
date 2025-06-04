@@ -11,4 +11,9 @@ export interface IONotificationEvent extends IOEventBase {
   };
 }
 
-export type IOEvent = IONotificationEvent;
+export interface IOInviteEvent extends IOEventBase {
+  title: 'invite';
+  data: { captainName: string };
+}
+
+export type IOEvent = IONotificationEvent | IOInviteEvent;

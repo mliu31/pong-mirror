@@ -62,7 +62,7 @@ export const updateElo = async (gameid: string, winner: string) => {
     const winnerEloChange = Math.round(avgWinnerK * (1 - expectedScoreWinner));
     const loserEloChange = Math.round(avgLoserK * (0 - expectedScoreLoser));
 
-    // Update ELO scores in parallel
+    // Update Elo scores in parallel
     const updatedWinners = await Promise.all(
       winningPlayers.map(async (player) => {
         const oldElo = player.oldElo ?? 1200; // TODO: should not need 1200 here
@@ -70,9 +70,14 @@ export const updateElo = async (gameid: string, winner: string) => {
 
         await Player.findByIdAndUpdate(player.player, {
           $inc: { wins: 1, gamesPlayed: 1 },
-          $set: { elo: newElo }
+          $set: { elo: newElo },
+          $push: {
+            eloHistory: {
+              elo: newElo,
+              date: new Date()
+            }
+          }
         });
-        // console.log(`${player.player}: ${oldElo} → ${newElo}`);
         return {
           player: player.player,
           team: player.team,
@@ -88,9 +93,14 @@ export const updateElo = async (gameid: string, winner: string) => {
 
         await Player.findByIdAndUpdate(player.player, {
           $inc: { gamesPlayed: 1 },
-          $set: { elo: newElo }
+          $set: { elo: newElo },
+          $push: {
+            eloHistory: {
+              elo: newElo,
+              date: new Date()
+            }
+          }
         });
-        // console.log(`${player.player}: ${oldElo} → ${newElo}`);
         return {
           player: player.player,
           team: player.team,
@@ -100,18 +110,6 @@ export const updateElo = async (gameid: string, winner: string) => {
       })
     );
     foundGame.set('players', [...updatedWinners, ...updatedLosers]);
-
-    // TODO: update player object with newElo
-    // foundGame.players.forEach((playerEntry) => {
-    //   const updatedPlayerDoc = allPlayersDoc.find((p) =>
-    //     (p._id as unknown as Types.ObjectId).equals(
-    //       playerEntry.player as Types.ObjectId
-    //     )
-    //   );
-    //   if (updatedPlayerDoc) {
-    //     playerEntry.newElo = updatedPlayerDoc.elo;
-    //   }
-    // });
 
     await foundGame.save();
     return allPlayersDoc;
