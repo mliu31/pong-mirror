@@ -22,26 +22,22 @@ export const joinGroup = async (playerId: string, groupId: string) => {
   const player = await Player.findById(playerId);
 
   if (group === null) throw new Error('Group not found');
-
-  // check if the person exists
-
   if (player == null) throw new Error('Player not found');
 
-  // check if the person is already in the group
+  // MODIFIED: Only check player's groups, not group's members
+  if (player.groups.includes(groupId)) throw new Error('Already in group');
 
-  if (player.groups.includes(groupId) || group.members.includes(playerId))
-    throw new Error('Already in group');
+  // Add them to the array on group side
+  if (!group.members.includes(playerId)) {
+    group.members.push(playerId);
+    await group.save();
+  }
 
-  // add them to the array on group side
-  group.members.push(playerId);
-  await group.save();
+  // Add group to player
   player.groups.push(groupId);
-
   await player.save();
 
   return group;
-
-  // for the player, add the group to their side
 };
 
 export const leaveGroup = async (playerId: string, groupId: string) => {

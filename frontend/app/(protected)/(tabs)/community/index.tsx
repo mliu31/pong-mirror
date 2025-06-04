@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   View,
   ScrollView,
@@ -10,7 +10,7 @@ import {
   Alert
 } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-
+import { Dimensions } from 'react-native';
 import AddButton from '../../../../components/private-leaderboards/addButton';
 import TitleDiv from './[playerid]/titleDiv';
 import FriendBox from './[playerid]/friendBox';
@@ -292,16 +292,21 @@ export default function CommunityLandingScreen() {
 
         {/* Friends */}
         <View style={styles.section}>
-          <AddButton category="Friends" />
+          <AddButton
+            category="Friends"
+            playerId={player?._id}
+            friendIds={player?.friends}
+          />
+
           {friends.length === 0 ? (
             <Text style={styles.emptyText}>You have no friends yet.</Text>
           ) : (
             [...friends]
-              .sort((a, b) => b.elo - a.elo) // Sort descending (highest ELO first)
+              .sort((a, b) => b.elo - a.elo)
               .map((f, idx) => (
                 <FriendBox
                   key={f._id}
-                  rank={f.rank}
+                  rank={idx + 1}
                   name={f.name}
                   elo={f.elo}
                 />
@@ -313,11 +318,11 @@ export default function CommunityLandingScreen() {
         <View style={styles.section}>
           <ThemedText style={styles.sectionTitle}>Groups</ThemedText>
 
-          {/* ▸ CREATE NEW GROUP ROW ▸ */}
+          {/* Create New Group */}
           <View style={styles.newGroupRow}>
             <TextInput
               style={styles.textInput}
-              placeholder="New group name"
+              placeholder="New Group Name"
               value={newGroupName}
               onChangeText={setNewGroupName}
             />
@@ -389,8 +394,13 @@ const styles = StyleSheet.create({
     marginBottom: 12
   },
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: '600'
+    alignSelf: 'flex-start',
+    fontSize: 25,
+    paddingLeft: Dimensions.get('window').height / 20,
+    paddingRight: Dimensions.get('window').height / 20,
+    flex: 1,
+    textAlign: 'left',
+    textAlignVertical: 'center'
   },
 
   emptyText: {
@@ -422,7 +432,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 12,
-    marginTop: 8
+    marginTop: 20,
+    marginLeft: 12,
+    marginRight: 12
   },
   textInput: {
     flex: 1,

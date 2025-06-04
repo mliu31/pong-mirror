@@ -6,6 +6,8 @@ import { ThemedText } from '@/components/ThemedText';
 
 interface AddButtonProps {
   category: string;
+  playerId?: string;
+  friendIds?: string[];
 }
 
 const styles = StyleSheet.create({
@@ -35,8 +37,28 @@ const styles = StyleSheet.create({
   }
 });
 
-const AddButton: React.FC<AddButtonProps> = ({ category }) => {
+const AddButton: React.FC<AddButtonProps> = ({
+  category,
+  playerId,
+  friendIds
+}) => {
   const router = useRouter();
+
+  const handleFriendsPress = () => {
+    if (!playerId) {
+      console.error('Player ID is missing');
+      return;
+    }
+
+    router.push({
+      pathname: '/profile/EditFriends',
+      params: {
+        friendIds: JSON.stringify(friendIds || []),
+        pid: playerId
+      }
+    });
+  };
+
   if (category === 'Friends') {
     return (
       <>
@@ -44,7 +66,7 @@ const AddButton: React.FC<AddButtonProps> = ({ category }) => {
           <ThemedText style={styles.titleStyling}>Friends</ThemedText>
           <TouchableHighlight
             style={styles.buttonStyling}
-            onPress={() => router.push('/profile/EditFriends')}
+            onPress={handleFriendsPress}
           >
             <ThemedText>+</ThemedText>
           </TouchableHighlight>
