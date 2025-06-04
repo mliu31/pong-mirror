@@ -4,6 +4,7 @@ import { useCallback, useState } from 'react';
 import { Button, ButtonText } from '@/components/ui/button';
 import { getPlayer } from '@/api/players';
 import { ThemedView } from '@/components/ThemedView';
+import { Box } from '@/components/ui/box';
 
 const Friends = ({ pid }: { pid: string }) => {
   // friend ids state
@@ -31,12 +32,14 @@ const Friends = ({ pid }: { pid: string }) => {
   return (
     <ThemedView className="w-full rounded-2xl p-4 mb-4">
       <FriendList fids={friends} />
-      <Button
-        className="mt-4 self-start"
-        onPress={() => EditFriendHandler(friends, pid)}
-      >
-        <ButtonText>Edit friends</ButtonText>
-      </Button>
+      <Box className="items-center">
+        <Button
+          className="mt-4"
+          onPress={() => EditFriendHandler(friends, pid)}
+        >
+          <ButtonText>Edit friends</ButtonText>
+        </Button>
+      </Box>
     </ThemedView>
   );
 };

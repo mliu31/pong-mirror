@@ -1,14 +1,15 @@
 import { getAllPlayers } from '@/api/players';
 import { IPlayer } from '@/api/types';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { FlatList, ActivityIndicator } from 'react-native';
+import { FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
 
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { Box } from '@/components/ui/box';
-import Checkbox from 'expo-checkbox';
 import { addFriend, removeFriend } from '@/api/friends';
+
+import { Button, ButtonText } from '@/components/ui/button';
 
 export default function EditFriend() {
   // read in params
@@ -21,6 +22,8 @@ export default function EditFriend() {
   const [fids, setFids] = useState<Set<string>>(new Set());
   const [sortedPlayers, setSortedPlayers] = useState<IPlayer[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const router = useRouter();
 
   // on page load
   useEffect(() => {
@@ -69,17 +72,25 @@ export default function EditFriend() {
     }
   };
 
-  const Item = ({ name, _id }: { name: string; _id: string }) => (
-    <Box className="flex flex-row items-center px-4 py-2 border-b border-gray-700 bg-background-dark">
-      <Checkbox
-        value={fids.has(_id)}
-        onValueChange={(isChecked) => checkboxHandler(isChecked, _id)}
-        className="mr-3"
-        color={fids.has(_id) ? '#65b684' : undefined}
-      />
-      <ThemedText className="text-base text-text-light">{name}</ThemedText>
-    </Box>
-  );
+  const Item = ({ name, _id }: { name: string; _id: string }) => {
+    const isFriend = fids.has(_id);
+
+    // select friends
+    return (
+      <TouchableOpacity
+        onPress={() => checkboxHandler(!isFriend, _id)}
+        className="flex flex-row items-center px-4 py-3 border-b border-gray-700"
+        style={{ backgroundColor: isFriend ? '#65b684' : undefined }}
+      >
+        <ThemedText
+          className="text-base"
+          style={{ color: isFriend ? 'white' : '#ddd' }}
+        >
+          {name}
+        </ThemedText>
+      </TouchableOpacity>
+    );
+  };
 
   if (loading) {
     return (
@@ -103,6 +114,11 @@ export default function EditFriend() {
           className="bg-background-dark"
           showsVerticalScrollIndicator={false}
         />
+      </Box>
+      <Box className="items-center mt-4">
+        <Button onPress={() => router.push('/profile')}>
+          <ButtonText>Done</ButtonText>
+        </Button>
       </Box>
     </ThemedView>
   );

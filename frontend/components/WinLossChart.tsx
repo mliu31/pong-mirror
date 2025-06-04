@@ -48,7 +48,7 @@ export default function WinLossChart({ wins, losses }: WinLossPieChart) {
           <View
             className="justify-center items-center"
             style={{
-              backgroundColor: '#000',
+              backgroundColor: '#161719',
               borderRadius: 60,
               width: 120,
               height: 120
