@@ -80,7 +80,7 @@ export default function Profile() {
   return (
     <ScrollView contentContainerStyle={{ paddingBottom: 32 }}>
       <ThemedView className="px-4 pt-10 items-center">
-        <Box className="w-full max-w-[380px]">
+        <Box className="w-full max-w-[800px]">
           {/* Player Info */}
           <Box className="items-center mb-4">
             <ThemedText className="text-3xl font-bold">
@@ -142,25 +142,27 @@ export default function Profile() {
               >
                 Elo History
               </ThemedText>
-              <LineChart
-                data={eloData}
-                thickness={2}
-                color="#65b684"
-                hideDataPoints={false}
-                isAnimated
-                areaChart
-                startFillColor="#65b684"
-                endFillColor="#374051"
-                startOpacity={0.3}
-                endOpacity={0}
-                yAxisTextStyle={{ color: '#444' }}
-                xAxisLabelTextStyle={{ color: '#444', fontSize: 10 }}
-                yAxisLabelWidth={40}
-                noOfSections={4}
-                spacing={40}
-                width={300}
-                height={200}
-              />
+              <Box style={{ alignSelf: 'center' }}>
+                <LineChart
+                  data={eloData}
+                  thickness={2}
+                  color="#65b684"
+                  hideDataPoints={true}
+                  isAnimated
+                  areaChart
+                  startFillColor="#65b684"
+                  endFillColor="#161719"
+                  startOpacity={0.3}
+                  endOpacity={0}
+                  yAxisTextStyle={{ color: '#444' }}
+                  xAxisLabelTextStyle={{ color: '#444', fontSize: 10 }}
+                  yAxisLabelWidth={40}
+                  noOfSections={4}
+                  spacing={40}
+                  width={400}
+                  height={300}
+                />
+              </Box>
             </Box>
           )}
 
