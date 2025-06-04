@@ -68,7 +68,7 @@ const AddButton: React.FC<AddButtonProps> = ({
             style={styles.buttonStyling}
             onPress={handleFriendsPress}
           >
-            <ThemedText>+</ThemedText>
+            <ThemedText>Edit</ThemedText>
           </TouchableHighlight>
         </View>
         <View></View>
