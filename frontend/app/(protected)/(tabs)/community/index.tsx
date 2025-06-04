@@ -50,6 +50,11 @@ export default function CommunityLandingScreen() {
   const [loadingAllGroups, setLoadingAllGroups] = useState<boolean>(true);
   const [allGroupsError, setAllGroupsError] = useState<string | null>(null);
 
+  const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
+  const [groupMembers, setGroupMembers] = useState<IPlayer[]>([]);
+  const [loadingMembers, setLoadingMembers] = useState<boolean>(false);
+  const [membersError, setMembersError] = useState<string | null>(null);
+
   // Fetch  full player document
   useEffect(() => {
     if (!playerId) {
@@ -210,21 +215,31 @@ export default function CommunityLandingScreen() {
 
   const handleDeleteGroup = async (groupId: string) => {
     try {
+      // 1) Call API to delete from backend
       await deleteGroup(groupId);
+
+      // If this group was expanded, collapse it and clear members:
+      if (selectedGroupId === groupId) {
+        setSelectedGroupId(null);
+        setGroupMembers([]);
+        setMembersError(null);
+      }
+
+      // 2) Remove from “My Groups” state
       setGroups((prev) => prev.filter((g) => g._id !== groupId));
       setPlayer((prev) =>
         prev
           ? { ...prev, groups: prev.groups.filter((id) => id !== groupId) }
           : prev
       );
+
+      // ── NEW: Remove from “All Groups” state so it disappears immediately
+      setAllGroups((prev) => prev.filter((g) => g._id !== groupId));
     } catch (err) {
-      if (err instanceof Error) {
-        console.error('Error deleting group:', err.message);
-        Alert.alert('Failed to delete group', err.message);
-      } else {
-        console.error('Unexpected error deleting group:', err);
-        Alert.alert('Failed to delete group', 'Unknown error occurred');
-      }
+      const msg =
+        err instanceof Error ? err.message : 'Unknown error deleting group';
+      console.error('Error deleting group:', msg);
+      Alert.alert('Failed to delete group', msg);
     }
   };
 
@@ -256,26 +271,86 @@ export default function CommunityLandingScreen() {
 
   const handleLeaveGroup = async (groupId: string) => {
     if (!playerId) return;
+
     try {
-      const updated = await leaveGroup(playerId, groupId);
+      // 1) Call the API so the backend removes you from that group
+      const updated: IGroup = await leaveGroup(playerId, groupId);
+
+      // 2) Remove groupId from player.groups
       setPlayer((prev) =>
         prev
           ? { ...prev, groups: prev.groups.filter((id) => id !== groupId) }
           : prev
       );
+
+      // 3) Remove the group from your “My Groups” list
       setGroups((prev) =>
         prev
           .map((g) => (g._id === updated._id ? updated : g))
           .filter((g) => g._id !== groupId)
       );
-    } catch (err) {
-      if (err instanceof Error) {
-        console.error('Error leaving group:', err.message);
-        Alert.alert('Could not leave group', err.message);
-      } else {
-        console.error('Unexpected error leaving group:', err);
-        Alert.alert('Could not leave group', 'Unknown error occurred');
+
+      // ── 4) **Ensure this group exists in allGroups** so that the filter can pass.
+      setAllGroups((prev) => {
+        const alreadyPresent = prev.find((g) => g._id === updated._id);
+        if (alreadyPresent) {
+          // If it’s already in state, just update its data (e.g. .members, .name, etc.)
+          return prev.map((g) => (g._id === updated._id ? updated : g));
+        } else {
+          // Otherwise append it back to allGroups
+          return [...prev, updated];
+        }
+      });
+
+      // 5) If that group was expanded (showing members), collapse it
+      if (selectedGroupId === groupId) {
+        setSelectedGroupId(null);
+        setGroupMembers([]);
+        setMembersError(null);
       }
+    } catch (err) {
+      const msg =
+        err instanceof Error ? err.message : 'Unknown error leaving group';
+      console.error('Error leaving group:', msg);
+      Alert.alert('Could not leave group', msg);
+    }
+  };
+
+  const handleSelectGroup = async (groupId: string) => {
+    // 1) If you tap the same group twice, “toggle” it closed:
+    if (selectedGroupId === groupId) {
+      setSelectedGroupId(null);
+      setGroupMembers([]);
+      setMembersError(null);
+      return;
+    }
+
+    // 2) Otherwise, open this group and fetch its members
+    setSelectedGroupId(groupId);
+    setLoadingMembers(true);
+    setMembersError(null);
+
+    try {
+      // Fetch the up‐to‐date group object (so you can read its `members: string[]`)
+      const grp: IGroup = await getGroup(groupId);
+
+      if (!grp.members || grp.members.length === 0) {
+        setGroupMembers([]);
+      } else {
+        // Assuming `getFriends` can take an array of player IDs and return IPlayer[]
+        const membersList = await getFriends(grp.members);
+        // Sort by descending Elo:
+        const sorted = [...membersList].sort((a, b) => b.elo - a.elo);
+        setGroupMembers(sorted);
+      }
+    } catch (err) {
+      const msg =
+        err instanceof Error ? err.message : 'Unknown error fetching members';
+      console.error('[Community] Error loading members for group:', msg);
+      setMembersError('Failed to load group members: ' + msg);
+      setGroupMembers([]);
+    } finally {
+      setLoadingMembers(false);
     }
   };
 
@@ -336,11 +411,12 @@ export default function CommunityLandingScreen() {
           )}
         </View>
 
-        {/* Groups */}
+        {/* ─── “My Groups” Section ────────────────────────────────────────────────── */}
         <View style={styles.section}>
+          {/* 1) Section Title */}
           <ThemedText style={styles.sectionTitle}>My Groups</ThemedText>
 
-          {/* Create New Group */}
+          {/* 2) Create New Group Bar */}
           <View style={styles.newGroupRow}>
             <TextInput
               style={styles.textInput}
@@ -356,31 +432,85 @@ export default function CommunityLandingScreen() {
             </TouchableOpacity>
           </View>
 
+          {/* 3) If no groups, show empty text */}
           {groups.length === 0 ? (
             <Text style={styles.emptyText}>You’re not in any groups yet.</Text>
           ) : (
-            groups.map((grp) => (
-              <View key={grp._id} style={styles.itemRow}>
-                <GroupBox groupName={grp.name} />
+            /* 4) Otherwise, loop through each group and render: 
+         - Left side: group name + toggle
+         - Right side: Delete & Leave buttons
+         - Below: expanded member list (if selected) */
+            groups.map((grp) => {
+              const isExpanded = selectedGroupId === grp._id;
+              return (
+                <View key={grp._id} style={{ marginBottom: 4 }}>
+                  <View style={styles.itemRow}>
+                    {/* a) Expand/Collapse Touchable (takes up flex: 1) */}
+                    <TouchableOpacity
+                      style={{
+                        flex: 1,
+                        flexDirection: 'row',
+                        alignItems: 'center'
+                      }}
+                      onPress={() => handleSelectGroup(grp._id)}
+                    >
+                      <GroupBox groupName={grp.name} />
+                      <Text
+                        style={{
+                          marginLeft: 8,
+                          fontSize: 16,
+                          color: '#007AFF'
+                        }}
+                      >
+                        {isExpanded ? '▼' : '▶'}
+                      </Text>
+                    </TouchableOpacity>
 
-                {/* Delete and Leave */}
-                <TouchableOpacity
-                  style={styles.deleteButton}
-                  onPress={() => handleDeleteGroup(grp._id)}
-                >
-                  <Text style={styles.deleteButtonText}>Delete</Text>
-                </TouchableOpacity>
+                    {/* b) Delete Button */}
+                    <TouchableOpacity
+                      style={styles.deleteButton}
+                      onPress={() => handleDeleteGroup(grp._id)}
+                    >
+                      <Text style={styles.deleteButtonText}>Delete</Text>
+                    </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={styles.leaveButton}
-                  onPress={() => handleLeaveGroup(grp._id)}
-                >
-                  <Text style={styles.leaveButtonText}>Leave</Text>
-                </TouchableOpacity>
-              </View>
-            ))
+                    {/* c) Leave Button */}
+                    <TouchableOpacity
+                      style={styles.leaveButton}
+                      onPress={() => handleLeaveGroup(grp._id)}
+                    >
+                      <Text style={styles.leaveButtonText}>Leave</Text>
+                    </TouchableOpacity>
+                  </View>
+
+                  {/* d) Expanded member list, only if isExpanded === true */}
+                  {isExpanded && (
+                    <View style={styles.membersContainer}>
+                      {loadingMembers ? (
+                        <ActivityIndicator size="small" color="#007AFF" />
+                      ) : membersError ? (
+                        <Text style={styles.errorText}>{membersError}</Text>
+                      ) : groupMembers.length === 0 ? (
+                        <Text style={styles.emptyText}>
+                          No members in this group.
+                        </Text>
+                      ) : (
+                        groupMembers.map((pl, idx) => (
+                          <View key={pl._id} style={styles.memberRow}>
+                            <Text style={styles.memberRank}>{idx + 1}.</Text>
+                            <Text style={styles.memberName}>{pl.name}</Text>
+                            <Text style={styles.memberElo}>{pl.elo}</Text>
+                          </View>
+                        ))
+                      )}
+                    </View>
+                  )}
+                </View>
+              );
+            })
           )}
         </View>
+        {/* ─────────────────────────────────────────────────────────────────────────────── */}
 
         <View style={styles.section}>
           <ThemedText style={styles.sectionTitle}>All Groups</ThemedText>
@@ -561,6 +691,34 @@ const styles = StyleSheet.create({
   },
   joinedButtonText: {
     color: '#444',
+    fontWeight: '500'
+  },
+  membersContainer: {
+    marginLeft: 16,
+    marginTop: 4,
+    marginBottom: 12,
+    padding: 8,
+    backgroundColor: '#F5F5F5',
+    borderRadius: 6
+  },
+  memberRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 4
+  },
+  memberRank: {
+    width: 24,
+    fontWeight: '600',
+    fontSize: 14
+  },
+  memberName: {
+    flex: 1,
+    fontSize: 16
+  },
+  memberElo: {
+    width: 50,
+    textAlign: 'right',
+    fontSize: 14,
     fontWeight: '500'
   }
 });
