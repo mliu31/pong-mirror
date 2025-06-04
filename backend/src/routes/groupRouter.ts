@@ -25,6 +25,20 @@ router.get('/:groupid', async (req, res) => {
   }
 });
 
+// GET all groups
+router.get('/', async (req, res) => {
+  try {
+    const groups = await Group.find();
+    res.json(groups);
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).json({ message: error.message });
+    } else {
+      res.status(404).json({ message: '404 Error group not found' });
+    }
+  }
+});
+
 // PUT request to create a group
 router.put('/addGroup/:pid/:groupName', async (req, res) => {
   try {
