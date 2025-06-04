@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   ScrollView,
@@ -316,7 +316,7 @@ export default function CommunityLandingScreen() {
 
         {/* Groups */}
         <View style={styles.section}>
-          <ThemedText style={styles.sectionTitle}>Groups</ThemedText>
+          <ThemedText style={styles.sectionTitle}>My Groups</ThemedText>
 
           {/* Create New Group */}
           <View style={styles.newGroupRow}>
