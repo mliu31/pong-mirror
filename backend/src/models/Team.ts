@@ -4,6 +4,7 @@ export interface ITeam extends Document {
   elo: number;
   players: string[];
   seed: number;
+  name: string;
 }
 
 const teamSchema = new mongoose.Schema<ITeam>({
@@ -18,6 +19,10 @@ const teamSchema = new mongoose.Schema<ITeam>({
   },
   seed: {
     type: Number,
+    required: true
+  },
+  name: {
+    type: String,
     required: true
   }
 });

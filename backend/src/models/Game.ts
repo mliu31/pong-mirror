@@ -1,6 +1,14 @@
 import mongoose from 'mongoose';
 import TEAM from '../constants/TEAM';
 
+export interface IGame extends mongoose.Document {
+  players: {
+    player: mongoose.Types.ObjectId;
+    team: 'LEFT' | 'RIGHT' | null;
+  }[];
+  winner: 'LEFT' | 'RIGHT' | null;
+}
+
 const gameSchema = new mongoose.Schema({
   players: [
     {
@@ -49,4 +57,4 @@ const gameSchema = new mongoose.Schema({
   date: String
 });
 
-export default mongoose.model('Game', gameSchema);
+export default mongoose.model<IGame>('Game', gameSchema);
