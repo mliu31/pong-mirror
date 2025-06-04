@@ -61,7 +61,7 @@ const InviteProvider: FC<PropsWithChildren> = ({ children }) => {
 
   return (
     <InviteContext.Provider value={{ invites, setInvites, refreshInvites }}>
-      {children},
+      {children}
     </InviteContext.Provider>
   );
 };
