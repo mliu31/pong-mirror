@@ -16,7 +16,8 @@ const MAPPING = {
   plus: 'add',
   'person.circle.fill': 'person',
   'chart.bar.fill': 'leaderboard',
-  'person.3.fill': 'people'
+  'person.3.fill': 'people',
+  tournament: 'tournament'
 } as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],
