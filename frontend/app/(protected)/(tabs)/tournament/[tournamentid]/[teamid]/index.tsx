@@ -61,8 +61,8 @@ export default function TeamTournamentScreen() {
   const fetchTournament = async () => {
     try {
       const tournamentData = await getTournament(tournamentId as string);
-      console.log('this is the team data');
-      console.log(teamPlayers);
+      // console.log('this is the team data');
+      // console.log(teamPlayers);
       setTournament(tournamentData);
 
       // Fetch team data for each team ID
@@ -72,18 +72,18 @@ export default function TeamTournamentScreen() {
       const teamData = await Promise.all(teamPromises);
       setTeams(teamData);
     } catch (error) {
-      console.error('Error fetching tournament:', error);
+      // console.error('Error fetching tournament:', error);
     } finally {
       setIsLoading(false);
     }
   };
 
   const fetchTeam = async () => {
-    console.log('fetching team');
+    // console.log('fetching team');
     try {
       const teamData = await getTeam(teamId as string);
-      console.log('this is the team data');
-      console.log(teamData);
+      // console.log('this is the team data');
+      // console.log(teamData);
       setTeam(teamData);
 
       // Fetch player data for each player ID
