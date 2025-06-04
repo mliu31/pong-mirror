@@ -78,7 +78,7 @@ export default function Profile() {
   }
 
   return (
-    <ScrollView contentContainerStyle={{ paddingBottom: 32 }}>
+    <ScrollView>
       <ThemedView className="px-4 pt-10 items-center">
         <Box className="w-full max-w-[380px]">
           {/* Player Info */}
@@ -125,7 +125,7 @@ export default function Profile() {
             <Box className="mt-8">
               <ThemedText
                 className="text-xl font-semibold text-left"
-                style={{ color: '#65b684' }}
+                // style={{ color: '#65b684' }}
               >
                 Previous Games
               </ThemedText>
@@ -165,7 +165,7 @@ export default function Profile() {
           )}
 
           {/* Logout */}
-          <Box className="mt-10">
+          <Box className="my-10">
             <LogoutButton />
           </Box>
         </Box>
