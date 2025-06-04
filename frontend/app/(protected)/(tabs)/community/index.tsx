@@ -28,7 +28,8 @@ import {
   createGroup,
   joinGroup,
   leaveGroup,
-  deleteGroup
+  deleteGroup,
+  getAllGroups
 } from '@/api/groups';
 
 export default function CommunityLandingScreen() {
@@ -44,6 +45,10 @@ export default function CommunityLandingScreen() {
   const [friends, setFriends] = useState<IPlayer[]>([]);
   const [groups, setGroups] = useState<IGroup[]>([]);
   const [newGroupName, setNewGroupName] = useState<string>('');
+
+  const [allGroups, setAllGroups] = useState<IGroup[]>([]);
+  const [loadingAllGroups, setLoadingAllGroups] = useState<boolean>(true);
+  const [allGroupsError, setAllGroupsError] = useState<string | null>(null);
 
   // Fetch  full player document
   useEffect(() => {
@@ -118,6 +123,23 @@ export default function CommunityLandingScreen() {
       }
     })();
   }, [player]);
+
+  // fetch all groups
+  useEffect(() => {
+    (async () => {
+      try {
+        const fetchedAll = await getAllGroups();
+        setAllGroups(fetchedAll);
+        setLoadingAllGroups(false);
+      } catch (err) {
+        const msg =
+          err instanceof Error ? err.message : 'Unknown error occurred';
+        console.error('Error loading all groups:', msg);
+        setAllGroupsError('Failed to load all groups: ' + msg);
+        setLoadingAllGroups(false);
+      }
+    })();
+  }, []);
 
   // Handlers for adding/removing friends
   const handleAddFriend = async (friendId: string) => {
@@ -341,7 +363,7 @@ export default function CommunityLandingScreen() {
               <View key={grp._id} style={styles.itemRow}>
                 <GroupBox groupName={grp.name} />
 
-                {/* Example: “Delete” and “Leave”—add “Join” if desired */}
+                {/* Delete and Leave */}
                 <TouchableOpacity
                   style={styles.deleteButton}
                   onPress={() => handleDeleteGroup(grp._id)}
@@ -358,6 +380,43 @@ export default function CommunityLandingScreen() {
               </View>
             ))
           )}
+        </View>
+
+        <View style={styles.section}>
+          <ThemedText style={styles.sectionTitle}>All Groups</ThemedText>
+
+          {/* Loading spinner */}
+          {loadingAllGroups ? (
+            <ActivityIndicator size="small" color="#007AFF" />
+          ) : null}
+
+          {/* Error text */}
+          {allGroupsError ? (
+            <Text style={[styles.errorText, { fontSize: 14, marginTop: 8 }]}>
+              {allGroupsError}
+            </Text>
+          ) : null}
+
+          {/* Once loaded, list every group */}
+          {!loadingAllGroups && !allGroupsError ? (
+            allGroups.length === 0 ? (
+              <Text style={styles.emptyText}>No groups available.</Text>
+            ) : (
+              allGroups
+                .filter((grp) => !player?.groups?.includes(grp._id))
+                .map((grp) => (
+                  <View key={grp._id} style={styles.itemRow}>
+                    <GroupBox groupName={grp.name} />
+                    <TouchableOpacity
+                      style={styles.joinButton}
+                      onPress={() => handleJoinGroup(grp._id)}
+                    >
+                      <Text style={styles.joinButtonText}>Join</Text>
+                    </TouchableOpacity>
+                  </View>
+                ))
+            )
+          ) : null}
         </View>
       </ScrollView>
     </SafeAreaProvider>
@@ -400,7 +459,8 @@ const styles = StyleSheet.create({
     paddingRight: Dimensions.get('window').height / 20,
     flex: 1,
     textAlign: 'left',
-    textAlignVertical: 'center'
+    textAlignVertical: 'center',
+    marginBottom: 20
   },
 
   emptyText: {
@@ -477,6 +537,30 @@ const styles = StyleSheet.create({
   },
   leaveButtonText: {
     color: 'white',
+    fontWeight: '500'
+  },
+  joinButton: {
+    marginLeft: 12,
+    backgroundColor: '#34C759', // green to indicate “join”
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 6
+  },
+  joinButtonText: {
+    color: 'white',
+    fontWeight: '500'
+  },
+
+  joinedButton: {
+    marginLeft: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 6,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  joinedButtonText: {
+    color: '#444',
     fontWeight: '500'
   }
 });

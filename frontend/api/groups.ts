@@ -5,6 +5,11 @@ export const getGroup = async (groupId: string) => {
   return response.data;
 };
 
+export const getAllGroups = async () => {
+  const response = await api.get('/groups');
+  return response.data;
+};
+
 export const createGroup = async (playerId: string, groupName: string) => {
   // Note: groupName should be URL-encoded if it has spaces/special chars
   const encodedName = encodeURIComponent(groupName);
