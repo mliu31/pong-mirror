@@ -72,7 +72,7 @@ export default function TeamTournamentScreen() {
       const teamData = await Promise.all(teamPromises);
       setTeams(teamData);
     } catch (error) {
-      console.error('Error fetching tournament:', error);
+      // console.error('Error fetching tournament:', error);
     } finally {
       setIsLoading(false);
     }
