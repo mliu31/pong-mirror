@@ -61,7 +61,7 @@ export default function TournamentTeamsScreen() {
 
   const handleCreateTeam = async () => {
     try {
-      const team = await addTeam(
+      await addTeam(
         tournamentId as string,
         basicPlayerInfo?._id || '',
         basicPlayerInfo?.name || ''

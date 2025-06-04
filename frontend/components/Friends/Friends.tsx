@@ -1,6 +1,6 @@
 import FriendList from './FriendList';
 import { router, useFocusEffect } from 'expo-router';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Button, ButtonText } from '@/components/ui/button';
 import { getPlayer } from '@/api/players';
 import { ThemedView } from '@/components/ThemedView';
