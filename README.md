@@ -45,10 +45,10 @@ Invite friends, host tournaments, view leaderboards, track performance with elo 
 
 Our stack: MongoDB, Express, Expo, and Bun with TypeScript  
 
-- MongoDB → database (stores users, rides, etc.)  
-- Express → backend server (routes, APIs, logic)  
-- Expo → wrapper for React Native (cross-platform mobile + camera, gps, notifs)  
-- Bun → runtime + package manager (runs the server, installs deps)  
+- MongoDB → database (stores users, games, etc.)  
+- Express → backend server (routes, controllers)  
+- Expo → wrapper for React Native (cross-platform mobile + camera, notifs)  
+- Bun → runtime + package manager (runs the server, manages deps)  
 - TypeScript → type safety across frontend + backend  
 
 
