@@ -38,7 +38,7 @@ Invite friends, host tournaments, view leaderboards, track performance with elo 
 <img width="150" height="1250" alt="Profile" src="https://github.com/user-attachments/assets/8f8a722e-a895-4f96-8d7f-97ff50c9440a" style="vertical-align: top;"/>
 
 
----
+
 ## Architecture
 
 <!-- TODO: continue to update descriptions of code organization and tools and libraries used -->
