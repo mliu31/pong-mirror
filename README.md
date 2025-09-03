@@ -98,7 +98,6 @@ This project was developed with assistance from generative AI models by OpenAI, 
 
 
 
-First Meeting of Winter Term 
-![Team Photo](https://github.com/user-attachments/assets/e8ff7122-5bea-4236-9e76-0320ec9af3c5)
-Technigala Wrap-Up
-![technigala](https://github.com/user-attachments/assets/936bfb18-b370-4a81-931e-ed31d89d1d1e)
+First --> Last Meetings  
+<img width="500" height="300" alt="First Meeting" src="https://github.com/user-attachments/assets/e8ff7122-5bea-4236-9e76-0320ec9af3c5" />
+<img width="300" height="300" alt="Last Meeting" src="https://github.com/user-attachments/assets/d30cbc53-38cc-46dd-a4a8-e3a1d90b8105" />
