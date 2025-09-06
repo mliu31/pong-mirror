@@ -5,38 +5,37 @@ We created a mobile app that facilitates in-person connection through Dartmouth 
 
 Invite friends, host tournaments, view leaderboards, track performance with elo rating, and listen to AI commentary. 
 
-<img width="150" height="340" alt="Signup Page ft Google Auth" src="https://github.com/user-attachments/assets/69f93238-90fb-4191-8d05-dc198e2c2715" />
-<img width="150" height="340" alt="Game Page" src="https://github.com/user-attachments/assets/36158222-a608-4d4d-86f6-d6550bec8769" />
-<img width="150" height="340" alt="Game Invitation" src="https://github.com/user-attachments/assets/ab3b9790-feec-4909-af5f-6af67bbcdee4" />
-<img width="150" height="340" alt="Game Confirmation - Player" src="https://github.com/user-attachments/assets/813646c4-f3fa-4f04-a92a-997005502976" />
-<img width="150" height="340" alt="Pending Invites" src="https://github.com/user-attachments/assets/bc1859af-c28d-43d0-998b-63ffc879422e" />
-<img width="150" height="340" alt="Game Confirmation - Captain" src="https://github.com/user-attachments/assets/a0a93e51-795c-4384-a356-aa5a89b075a6" />
-<img width="150" height="340" alt="Form Teams" src="https://github.com/user-attachments/assets/31af09e7-90fa-4eeb-a5be-d7131c19dd28" />
-<img width="150" height="340" alt="Assign Teams" src="https://github.com/user-attachments/assets/971d1037-e80d-459f-8156-fe05c5787105" />
-<img width="150" height="340" alt="Record Winner" src="https://github.com/user-attachments/assets/ab7a0490-e9a9-4d3a-abf4-1703d132aa27" />
-<img width="150" height="340" alt="Game Summary" src="https://github.com/user-attachments/assets/083ca5ee-0223-44c3-bded-516d3a4491f5" />
-<img width="150" height="340" alt="Leaderboard" src="https://github.com/user-attachments/assets/b45b1f83-b72d-4276-ba9b-38fea07c6a0a" />
-<img width="150" height="340" alt="Profile Page incl Elo, Game History" src="https://github.com/user-attachments/assets/0eabc1fb-d334-4627-a1bc-2be06119acc1" />
+<img width="150" height="340" alt="1" src="https://github.com/user-attachments/assets/1aa7c3e2-4eb6-4756-877b-e92fa47a6e71" />
+<img width="150" height="340" alt="2" src="https://github.com/user-attachments/assets/a9251f37-3d21-4ff8-a565-fccebb1ad8c9" />
+<img width="150" height="340" alt="3" src="https://github.com/user-attachments/assets/589284b1-03e7-4c43-ad70-3e204610a345" />
+<img width="150" height="340" alt="4" src="https://github.com/user-attachments/assets/8a1f6fa8-f8a7-45d9-b823-db50b23eb85d" />
+<img width="150" height="340" alt="5" src="https://github.com/user-attachments/assets/921aded4-4aeb-4075-ad07-77aeb49ed1c4" />
+<img width="150" height="340" alt="6" src="https://github.com/user-attachments/assets/43e22cec-cc3b-401a-8098-6175c2622725" />
+<img width="150" height="340" alt="7" src="https://github.com/user-attachments/assets/e3a9cce9-a9f3-485c-aac7-be12702318a2" />
+<img width="150" height="340" alt="8" src="https://github.com/user-attachments/assets/4ad1f683-2048-417b-ba98-4d7ccaa75eca" />
+<img width="150" height="340" alt="9" src="https://github.com/user-attachments/assets/9ec9132b-9ba3-4df0-9036-6015177a4ca1" />
+<img width="150" height="340" alt="10" src="https://github.com/user-attachments/assets/ef80d400-f73d-4515-96ee-93fb09291995" />
+<img width="150" height="340" alt="11" src="https://github.com/user-attachments/assets/6215c27b-7d6b-4cc2-aa99-92639dfb9c35" />
+<img width="150" height="340" alt="12" src="https://github.com/user-attachments/assets/75cd3e13-b09c-4e23-a37a-40ebcdc7e076" />
+
 
 ---
 ### Figma Designs
-<img width="150" height="340" alt="Log In Screen" src="https://github.com/user-attachments/assets/0fabd639-76de-4a03-a557-005b4ac66cde" />
-<img width="150" height="340" alt="New Game" src="https://github.com/user-attachments/assets/011f2798-616b-40ad-8e91-fd03119a98f6" />
-<img width="150" height="340" alt="Add Players" src="https://github.com/user-attachments/assets/d1c715db-fc64-43c1-9f68-86561f43ab6d" />
-<img width="150" height="340" alt="Join Game (1)" src="https://github.com/user-attachments/assets/10587474-15fb-4b82-b342-8acfe3c5f998" />
-<img width="150" height="340" alt="Assign Teams" src="https://github.com/user-attachments/assets/f276cf5a-ad9e-4a62-9e96-5eb7de778e52" />
-<img width="150" height="340" alt="Confirm Team Assignment" src="https://github.com/user-attachments/assets/1fe69d62-72e1-47a3-82ba-aa91a5c9e42c" />
-<img width="150" height="340" alt="Game Started" src="https://github.com/user-attachments/assets/74787ad9-02b3-4f6d-bd28-f18834be11f2" />
-<img width="150" height="340" alt="Record Results" src="https://github.com/user-attachments/assets/19627d61-f8d5-4dc7-a449-9c2b49ca3c57" />
-<img width="150" height="340" alt="Confirm Results" src="https://github.com/user-attachments/assets/ecaf0d28-1da3-41da-980f-493cc0b7f865" />
-<img width="150" height="340" alt="Wait for Results Confirmation" src="https://github.com/user-attachments/assets/62985154-f992-447a-9676-9d38ee9c8bcc" />
-<img width="150" height="340" alt="Summary" src="https://github.com/user-attachments/assets/d200bcdf-876a-4b10-94fe-6e779c353225" />
-<img width="150" height="340" alt="Leaderboard" src="https://github.com/user-attachments/assets/bdb46cdb-d27e-4ce9-846e-05c18a301b5f" />
-<img width="150" height="340" alt="Community" src="https://github.com/user-attachments/assets/967d9ad0-7ea0-45dd-bb49-fe878f296ec1" />
-<img width="150" height="340" alt="Edit Groups (3)" src="https://github.com/user-attachments/assets/6d6c4ca4-79b7-4c05-a406-e000b566bf81" />
-<img width="150" height="340" alt="Edit Friends" src="https://github.com/user-attachments/assets/d10267f2-c9d7-4595-a35e-08c4cc14b0d3" />
-<img width="150" height="1250" alt="Profile" src="https://github.com/user-attachments/assets/8f8a722e-a895-4f96-8d7f-97ff50c9440a" style="vertical-align: top;"/>
-
+<img width="150" height="340" alt="1" src="https://github.com/user-attachments/assets/19af3933-96f4-4afa-a134-6190e2d997df" />
+<img width="150" height="340" alt="2" src="https://github.com/user-attachments/assets/67631622-904f-443f-8b4f-a611dad28ef6" />
+<img width="150" height="340" alt="3" src="https://github.com/user-attachments/assets/0f90c76b-bb3b-4771-9236-efbc49b95f25" />
+<img width="150" height="340" alt="4" src="https://github.com/user-attachments/assets/fb0cfbb6-3bf5-4df2-b8dc-c15296876fad" />
+<img width="150" height="340" alt="5" src="https://github.com/user-attachments/assets/bcb668b1-650b-4ac0-90b8-02107851d268" />
+<img width="150" height="340" alt="6" src="https://github.com/user-attachments/assets/aaafe4d4-68b9-4a00-ae25-d78d3a2a5488" />
+<img width="150" height="340" alt="7" src="https://github.com/user-attachments/assets/4a22b43a-1bd3-4dbb-862a-7b2ae64298e0" />
+<img width="150" height="340" alt="8" src="https://github.com/user-attachments/assets/bcac100c-74da-45f7-b5a2-c8e5a69118a2" />
+<img width="150" height="340" alt="9" src="https://github.com/user-attachments/assets/aba2dae0-503b-4ca4-85a3-5d074d87bd37" />
+<img width="150" height="340" alt="10" src="https://github.com/user-attachments/assets/33f72e24-a5a5-450b-aeeb-c60ba1fe636f" />
+<img width="150" height="340" alt="11" src="https://github.com/user-attachments/assets/e1813d43-00b6-4bb8-b357-9a2029685f5d" />
+<img width="150" height="340" alt="12" src="https://github.com/user-attachments/assets/79f1913d-eeb4-44d5-88ce-f3c36a9ac787" /> 
+<img width="150" height="340" alt="13" src="https://github.com/user-attachments/assets/431412fb-5cd9-435d-9933-8b1b13968f4f" />
+<img width="150" height="340" alt="14" src="https://github.com/user-attachments/assets/1a97e5ad-4412-4c2c-8e69-4999966f3b84" />
+<img width="150" height="1250" alt="15" src="https://github.com/user-attachments/assets/a1225506-a2cb-4e8e-9c37-5ca95fab2ba4" />
 
 
 ## Architecture
@@ -106,5 +105,6 @@ This project was developed with assistance from generative AI models by OpenAI, 
 
 
 First --> Last Meetings  
-<img width="500" height="300" alt="First Meeting" src="https://github.com/user-attachments/assets/e8ff7122-5bea-4236-9e76-0320ec9af3c5" />
-<img width="300" height="300" alt="Last Meeting" src="https://github.com/user-attachments/assets/d30cbc53-38cc-46dd-a4a8-e3a1d90b8105" />
+<img width="500" height="300" alt="First Meeting" src="https://github.com/user-attachments/assets/d2317d9e-0d4e-4e3d-bf39-3ec7c7bb3b58" />
+<img width="300" height="300" alt="Last Meeting" src="https://github.com/user-attachments/assets/fef65fc1-eef2-40ba-95ad-78ee222298e9" />
+
